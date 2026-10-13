@@ -26,8 +26,8 @@ export async function generateMetadata({ params }: PageProps<"/w/[id]">): Promis
   const description =
     wish.status === "fulfilled" && wish.first_link
       ? `Fulfilled by @${wish.first_link.developer.handle}. ${pluralize(wish.metoo_count, "me-too")} on Wishcode.`
-      : `${pluralize(wish.metoo_count, "me-too")} on Wishcode. ${statusLabel(wish.status)}.`;
-  const image = `/api/og/wish/${wish.id}?v=${wish.status}-${wish.link_count}-${wish.metoo_count}`;
+      : `${pluralize(wish.metoo_count, "me-too")} on Wishcode. ${statusLabel(wish.status, wish.verified)}.`;
+  const image = `/api/og/wish/${wish.id}?v=${wish.status}-${wish.verified ? 1 : 0}-${wish.link_count}-${wish.metoo_count}`;
   return {
     title,
     description,
@@ -246,7 +246,7 @@ function WishHero({ wish, metooActive }: { wish: WishDetail; metooActive: boolea
           <TimeAgo iso={wish.created_at} prefix="Posted" /> by anonymous wisher
           <span className="font-mono text-outline">{wishLabel(wish.id)}</span>
         </p>
-        <StatusChip status={wish.status} className="uppercase tracking-wider" />
+        <StatusChip status={wish.status} verified={wish.verified} className="uppercase tracking-wider" />
       </div>
       <h1 className="mt-5 font-serif text-[26px] leading-9 font-medium tracking-[-0.01em] text-ink sm:text-[32px] sm:leading-[42px]">
         “{wish.text}”
@@ -278,7 +278,7 @@ function RemovedHero({ wish }: { wish: WishDetail }) {
         </div>
       </div>
       <div className="mt-5 flex items-center gap-3 text-label-sm text-ink-muted">
-        <StatusChip status={wish.status} removed />
+        <StatusChip status={wish.status} verified={wish.verified} removed />
         <TimeAgo iso={wish.created_at} prefix="Posted" />
         <span className="font-mono">{wishLabel(wish.id)}</span>
       </div>
@@ -312,7 +312,7 @@ function WishRecord({ wish }: { wish: WishDetail }) {
         ))}
         <div className="flex items-center justify-between gap-4">
           <dt className="text-ink-muted">Status</dt>
-          <dd>{wish.removed ? <StatusChip status={wish.status} removed /> : <StatusChip status={wish.status} />}</dd>
+          <dd>{wish.removed ? <StatusChip status={wish.status} verified={wish.verified} removed /> : <StatusChip status={wish.status} verified={wish.verified} />}</dd>
         </div>
       </dl>
     </section>
@@ -329,7 +329,7 @@ function ShareCardPreview({ wish }: { wish: WishDetail }) {
             <span className="flex size-5 items-center justify-center rounded bg-amber text-caption font-bold">W</span>
             Wishcode public ledger
           </span>
-          <StatusChip status={wish.status} />
+          <StatusChip status={wish.status} verified={wish.verified} />
         </div>
         <p className="mt-6 line-clamp-3 font-serif text-[22px] leading-8 text-ink sm:text-[26px] sm:leading-9">“{wish.text}”</p>
       </div>

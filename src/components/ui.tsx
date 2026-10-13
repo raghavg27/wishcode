@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
-import { CircleCheck, Info, ShieldCheck } from "lucide-react";
+import { Info, ShieldCheck } from "lucide-react";
 import { DISCLAIMER } from "@/lib/config";
 import { developerPath } from "@/lib/site";
 import type { DeveloperRef, WishStatus } from "@/lib/types";
@@ -16,27 +16,38 @@ export const buttonStyles = {
     "inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-label font-medium text-ink-muted transition-colors hover:bg-surface-low hover:text-ink disabled:cursor-not-allowed disabled:opacity-50",
 } as const;
 
-const STATUS_META: Record<WishStatus | "removed", { label: string; className: string }> = {
+type BadgeKey = WishStatus | "fulfilled_unverified" | "removed";
+
+const STATUS_META: Record<BadgeKey, { label: string; className: string }> = {
   open: { label: "Open", className: "border-ink/15 bg-surface-container text-ink" },
   being_built: { label: "Being built", className: "border-craft-border bg-craft-chip text-craft-ink" },
-  fulfilled: { label: "Fulfilled", className: "border-leaf-border bg-leaf-chip/60 text-leaf-ink" },
+  fulfilled: { label: "Fulfilled ✓", className: "border-leaf-border bg-leaf-chip/60 text-leaf-ink" },
+  fulfilled_unverified: { label: "Fulfilled · unverified", className: "border-amber/50 bg-amber-soft/60 text-primary" },
   removed: { label: "Removed", className: "border-stone-border bg-stone-soft text-stone" },
 };
 
-export function statusLabel(status: WishStatus) {
-  return STATUS_META[status].label;
+function badgeKey(status: WishStatus, verified: boolean): Exclude<BadgeKey, "removed"> {
+  return status === "fulfilled" && !verified ? "fulfilled_unverified" : status;
 }
 
+/** "Fulfilled ✓" only once a link is verified; otherwise "Fulfilled · unverified". */
+export function statusLabel(status: WishStatus, verified: boolean) {
+  return STATUS_META[badgeKey(status, verified)].label;
+}
+
+/** The wish status badge used everywhere a wish appears. */
 export function StatusChip({
   status,
+  verified,
   removed,
   className,
 }: {
   status: WishStatus;
+  verified: boolean;
   removed?: boolean;
   className?: string;
 }) {
-  const key = removed ? "removed" : status;
+  const key = removed ? "removed" : badgeKey(status, verified);
   const meta = STATUS_META[key];
   return (
     <span
@@ -46,7 +57,6 @@ export function StatusChip({
         className,
       )}
     >
-      {key === "fulfilled" && <CircleCheck className="size-3.5" aria-hidden />}
       {key === "being_built" && <span className="size-1.5 animate-pulse rounded-full bg-craft" aria-hidden />}
       {meta.label}
     </span>

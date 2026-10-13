@@ -19,7 +19,7 @@ export function WishCard({ wish, metooActive }: { wish: Wish; metooActive: boole
     <article className="card group relative p-5 transition-shadow duration-200 hover:shadow-card-hover sm:p-6">
       <div className="flex items-center justify-between gap-2">
         <TimeAgo iso={wish.created_at} prefix="posted" className="text-caption text-outline" />
-        <StatusChip status={wish.status} />
+        <StatusChip status={wish.status} verified={wish.verified} />
       </div>
 
       <h2 className="my-3 font-serif text-wish-sm text-ink sm:text-wish">

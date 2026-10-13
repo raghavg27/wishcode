@@ -79,7 +79,7 @@ async function Profile({ params, searchParams }: PageProps<"/d/[handle]">) {
                 <li key={l.id} className="card p-5 sm:p-6">
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <div className="flex flex-wrap items-center gap-2">
-                      <StatusChip status={l.wish.status} />
+                      <StatusChip status={l.wish.status} verified={l.wish.verified} />
                       {l.first_to_ship && (
                         <span className="inline-flex h-6 items-center gap-1 rounded-full bg-leaf-soft px-2.5 text-label-sm font-medium text-leaf-ink">
                           <Sprout className="size-3.5" aria-hidden /> First to ship
