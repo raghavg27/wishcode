@@ -2,7 +2,7 @@
 // source of truth). Lengths are counted in Unicode code points to match
 // Postgres char_length().
 
-import { LINK_DESCRIPTION_MAX, URL_MAX, WISH_MAX, WISH_MIN } from "./config";
+import { EMAIL_MAX, LINK_DESCRIPTION_MAX, URL_MAX, WISH_MAX, WISH_MIN } from "./config";
 
 // Control characters except tab/newline, plus bidi overrides that can be used
 // to visually spoof text.
@@ -82,4 +82,20 @@ export function validateLinkInput(raw: { url: string; description: string; repoU
   }
 
   return { value: { url, description, repoUrl }, issues };
+}
+
+// Matches the check in public.subscribe(): one @, no whitespace, a dot in
+// the domain. Deliverability is the mailer's problem, not ours.
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+export function normalizeEmail(raw: string): string {
+  return raw.trim().toLowerCase();
+}
+
+export type EmailIssue = "required" | "too_long" | "invalid";
+
+export function emailIssue(normalized: string): EmailIssue | null {
+  if (!normalized) return "required";
+  if (charLength(normalized) > EMAIL_MAX) return "too_long";
+  return EMAIL_PATTERN.test(normalized) ? null : "invalid";
 }

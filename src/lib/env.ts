@@ -33,6 +33,18 @@ export const env = {
   get embeddingsFunction() {
     return process.env.EMBEDDINGS_FUNCTION || "";
   },
+  /** Gmail account that sends notification emails. Unset: emails are skipped. */
+  get gmailUser() {
+    return process.env.GMAIL_USER || "";
+  },
+  /** Google App Password for GMAIL_USER (needs 2-Step Verification). */
+  get gmailAppPassword() {
+    return process.env.GMAIL_APP_PASSWORD || "";
+  },
+  /** Key for signing the links in emails (defaults to the secret key). */
+  get emailTokenSecret() {
+    return process.env.EMAIL_TOKEN_SECRET || required("SUPABASE_SECRET_KEY");
+  },
   /** Comma-separated GitHub handles that get admin rights on sign-in. */
   get adminHandles(): Set<string> {
     return new Set(
