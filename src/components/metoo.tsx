@@ -95,7 +95,7 @@ export function MetooButton({ wishId, active: initialActive, count: initialCount
       >
         <Hand className="size-5" aria-hidden />
         <span className="tabular">
-          {formatNumber(count)} {count === 1 ? "person" : "people"} wished this
+          {formatNumber(count)} {count === 1 ? "me-too" : "me-toos"}
         </span>
         <span className="text-label font-medium opacity-70" aria-hidden>
           ·

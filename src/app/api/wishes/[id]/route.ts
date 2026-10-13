@@ -1,4 +1,5 @@
-import { getWish, parseWishId } from "@/lib/data";
+import { getWish } from "@/lib/data";
+import { parseWishId } from "@/lib/site";
 
 // GET /api/wishes/:id — a wish with its claims and links.
 export async function GET(_request: Request, { params }: RouteContext<"/api/wishes/[id]">) {

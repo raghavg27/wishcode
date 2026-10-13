@@ -1,9 +1,9 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
-import { getWish, parseWishId } from "@/lib/data";
+import { getWish } from "@/lib/data";
 import { domainOf, formatNumber } from "@/lib/format";
-import { siteUrl, wishPath } from "@/lib/site";
+import { parseWishId, siteUrl, wishPath } from "@/lib/site";
 
 // GET /api/og/wish/:id — 1200×630 share card (PRD F8). The page links it with
 // a ?v= that changes with status/links/me-toos, so CDN caching is safe.

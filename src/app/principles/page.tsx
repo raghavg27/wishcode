@@ -18,7 +18,7 @@ const PRINCIPLES = [
   },
   {
     title: "Claims are a signal, not a lock",
-    body: "Developers who connect GitHub can say “I'm building this”. Claims never expire, have no limit, and many developers can claim the same wish. Claiming is never required before shipping.",
+    body: "Developers who connect GitHub can say “I'm building this”. Claims never expire, and many developers can claim the same wish. Claiming is never required before shipping.",
   },
   {
     title: "Fulfilled means a live link exists",
@@ -30,7 +30,7 @@ const PRINCIPLES = [
   },
   {
     title: "Fair use",
-    body: `To keep the ledger useful: ${LIMITS.wishesPerDevicePerDay} wishes and ${LIMITS.metoosPerDevicePerDay} me-toos per device per day, and ${LIMITS.linksPerDeveloperPerDay} links per developer per day.`,
+    body: `To keep the ledger useful: ${LIMITS.wishesPerDevicePerDay} wishes and ${LIMITS.metoosPerDevicePerDay} me-toos per device per day (${LIMITS.wishesPerNetworkPerDay} wishes and ${LIMITS.metoosPerNetworkPerDay} me-toos per shared network), and ${LIMITS.claimsPerDeveloperPerDay} claims and ${LIMITS.linksPerDeveloperPerDay} links per developer per day. Limits reset at midnight UTC.`,
   },
 ];
 

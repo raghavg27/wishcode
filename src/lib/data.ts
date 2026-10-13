@@ -81,25 +81,38 @@ export async function getDirectory(): Promise<DirectoryEntry[]> {
   return (data ?? []) as DirectoryEntry[];
 }
 
-/** Which of these wishes this browser has me-too'd. Never cached. */
-export async function getViewerMetoos(wishIds: number[]): Promise<number[]> {
-  if (wishIds.length === 0) return [];
+export type LiveMetoos = { counts: Map<number, number>; mine: number[] };
+
+/**
+ * Current me-too counts for these wishes, and which of them this browser has
+ * me-too'd. Never cached: one primary-key lookup per page keeps counts live
+ * while the feed and wish entries above stay cached. Falls back to the cached
+ * counts if the lookup fails.
+ */
+export async function getLiveMetoos(wishIds: number[]): Promise<LiveMetoos> {
+  const live: LiveMetoos = { counts: new Map(), mine: [] };
+  if (wishIds.length === 0) return live;
   await connection();
   const hash = await readDeviceHash();
-  if (!hash) return [];
-  const { data, error } = await db().rpc("viewer_metoos", { p_token_hash: hash, p_wish_ids: wishIds });
+  const { data, error } = await db().rpc("live_metoos", { p_token_hash: hash, p_wish_ids: wishIds });
   if (error) {
-    console.error("[viewer_metoos]", error);
-    return [];
+    console.error("[live_metoos]", error);
+    return live;
   }
-  return ((data ?? []) as (number | string)[]).map(Number);
+  for (const row of (data ?? []) as { wish_id: number | string; metoo_count: number; mine: boolean }[]) {
+    const id = Number(row.wish_id);
+    live.counts.set(id, row.metoo_count);
+    if (row.mine) live.mine.push(id);
+  }
+  return live;
 }
 
-/** Parses a /w/:id path segment. */
-export function parseWishId(raw: string): number | null {
-  if (!/^[1-9][0-9]{0,15}$/.test(raw)) return null;
-  const id = Number(raw);
-  return Number.isSafeInteger(id) ? id : null;
+/** Overlays live me-too counts onto cached wishes. */
+export function withLiveCounts<T extends { id: number; metoo_count: number }>(wishes: T[], live: LiveMetoos): T[] {
+  return wishes.map((w) => {
+    const count = live.counts.get(w.id);
+    return count === undefined || count === w.metoo_count ? w : { ...w, metoo_count: count };
+  });
 }
 
 export async function getSitemapEntries(): Promise<{ wishes: { id: number; updated_at: string }[]; developers: string[] }> {

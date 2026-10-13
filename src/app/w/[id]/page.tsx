@@ -12,9 +12,9 @@ import { TimeAgo } from "@/components/time-ago";
 import { DevChip, Disclaimer, Skeleton, StatusChip, buttonStyles, statusLabel } from "@/components/ui";
 import { EXTERNAL_REL } from "@/components/wish-card";
 import { getViewer } from "@/lib/auth";
-import { getViewerMetoos, getWish, parseWishId } from "@/lib/data";
+import { getLiveMetoos, getWish, withLiveCounts } from "@/lib/data";
 import { domainOf, durationBetween, formatDate, formatNumber, pluralize, repoLabel } from "@/lib/format";
-import { siteUrl, wishLabel, wishPath } from "@/lib/site";
+import { parseWishId, siteUrl, wishLabel, wishPath } from "@/lib/site";
 import type { WishDetail } from "@/lib/types";
 
 export async function generateMetadata({ params }: PageProps<"/w/[id]">): Promise<Metadata> {
@@ -25,8 +25,8 @@ export async function generateMetadata({ params }: PageProps<"/w/[id]">): Promis
   const title = wish.text.length > 70 ? `${wish.text.slice(0, 67)}…` : wish.text;
   const description =
     wish.status === "fulfilled" && wish.first_link
-      ? `Fulfilled by @${wish.first_link.developer.handle}. ${pluralize(wish.metoo_count, "person", "people")} wished for this on Wishcode.`
-      : `${pluralize(wish.metoo_count, "person", "people")} wished for this on Wishcode. ${statusLabel(wish.status)}.`;
+      ? `Fulfilled by @${wish.first_link.developer.handle}. ${pluralize(wish.metoo_count, "me-too")} on Wishcode.`
+      : `${pluralize(wish.metoo_count, "me-too")} on Wishcode. ${statusLabel(wish.status)}.`;
   const image = `/api/og/wish/${wish.id}?v=${wish.status}-${wish.link_count}-${wish.metoo_count}`;
   return {
     title,
@@ -47,18 +47,21 @@ export default function WishPage({ params, searchParams }: PageProps<"/w/[id]">)
   );
 }
 
+// Unknown ids get their 404 status from src/proxy.ts; by the time this runs
+// the response is already streaming.
 async function WishView({ params, searchParams }: PageProps<"/w/[id]">) {
   const id = parseWishId((await params).id);
   if (!id) notFound();
-  const wish = await getWish(id);
-  if (!wish) notFound();
+  const cached = await getWish(id);
+  if (!cached) notFound();
 
-  const [{ developer }, metoos, sp] = await Promise.all([
+  const [{ developer }, live, sp] = await Promise.all([
     getViewer().catch(() => ({ developer: null })),
-    getViewerMetoos([id]),
+    getLiveMetoos([id]),
     searchParams,
   ]);
-  const metooActive = metoos.includes(id);
+  const [wish] = withLiveCounts([cached], live);
+  const metooActive = live.mine.includes(id);
   const viewerLink = developer ? wish.links.find((l) => l.developer.id === developer.id) : undefined;
   const claimed = Boolean(developer && wish.claims.some((c) => c.developer.id === developer.id));
   const path = wishPath(wish.id);
@@ -256,7 +259,7 @@ function WishHero({ wish, metooActive }: { wish: WishDetail; metooActive: boolea
         Wishers are 100% anonymous. Tap to add your me-too to this wish.
       </p>
       <p className="mt-6 text-label text-ink-muted sm:hidden">
-        <span className="font-semibold text-ink tabular">{pluralize(wish.metoo_count, "person", "people")}</span> wished this
+        <span className="font-semibold text-ink tabular">{pluralize(wish.metoo_count, "me-too")}</span>
         {wish.link_count > 0 && ` · ${pluralize(wish.link_count, "ship")}`}
         {wish.claim_count > 0 && ` · ${pluralize(wish.claim_count, "builder")}`}
       </p>

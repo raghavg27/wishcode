@@ -11,14 +11,12 @@ import { EXTERNAL_REL } from "@/components/wish-card";
 import { getViewer } from "@/lib/auth";
 import { getDeveloperProfile } from "@/lib/data";
 import { domainOf, formatDate, formatNumber, repoLabel } from "@/lib/format";
-import { developerPath, wishPath } from "@/lib/site";
+import { GITHUB_HANDLE, developerPath, wishPath } from "@/lib/site";
 import type { DeveloperProfile } from "@/lib/types";
-
-const HANDLE = /^[A-Za-z0-9][A-Za-z0-9-]{0,38}$/;
 
 async function load(params: PageProps<"/d/[handle]">["params"]) {
   const handle = decodeURIComponent((await params).handle);
-  if (!HANDLE.test(handle)) return null;
+  if (!GITHUB_HANDLE.test(handle)) return null;
   return getDeveloperProfile(handle);
 }
 
@@ -42,6 +40,7 @@ export default function DeveloperPage({ params, searchParams }: PageProps<"/d/[h
   );
 }
 
+// Unknown handles get their 404 status from src/proxy.ts.
 async function Profile({ params, searchParams }: PageProps<"/d/[handle]">) {
   const profile = await load(params);
   if (!profile) notFound();

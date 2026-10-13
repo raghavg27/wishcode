@@ -1,6 +1,8 @@
 // Maps database errors (SQLSTATE P0001 with a stable message) to results the
 // UI can show. Anything unexpected is logged and reported generically.
 
+import { LIMITS } from "@/lib/config";
+
 export type ActionError = {
   ok: false;
   code:
@@ -20,17 +22,19 @@ export type ActionError = {
 
 type PgError = { code?: string; message?: string; details?: string | null };
 
+const RESETS = "The limit resets at midnight UTC.";
+
 const RATE_LIMIT_MESSAGES: Record<string, Record<string, string>> = {
   wish: {
-    device: "You've posted 5 wishes today, try again tomorrow.",
-    ip: "Too many wishes from your network today. Try again tomorrow.",
+    device: `You've posted ${LIMITS.wishesPerDevicePerDay} wishes today. ${RESETS}`,
+    ip: `Your network has posted ${LIMITS.wishesPerNetworkPerDay} wishes today. ${RESETS}`,
   },
   metoo: {
-    device: "You've given 200 me-toos today, try again tomorrow.",
-    ip: "Too many me-toos from your network today. Try again tomorrow.",
+    device: `You've given ${LIMITS.metoosPerDevicePerDay} me-toos today. ${RESETS}`,
+    ip: `Your network has given ${LIMITS.metoosPerNetworkPerDay} me-toos today. ${RESETS}`,
   },
-  link: { developer: "You've posted 20 links today, try again tomorrow." },
-  claim: { developer: "You've made a lot of claims today, try again tomorrow." },
+  link: { developer: `You've posted ${LIMITS.linksPerDeveloperPerDay} links today. ${RESETS}` },
+  claim: { developer: `You've claimed ${LIMITS.claimsPerDeveloperPerDay} wishes today. ${RESETS}` },
 };
 
 export function toActionError(err: unknown, action: keyof typeof RATE_LIMIT_MESSAGES): ActionError {

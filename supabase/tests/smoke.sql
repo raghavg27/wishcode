@@ -29,11 +29,11 @@ begin
   perform public.upsert_developer(dev_a, 1, 'alice2', null, false);
   assert (select github_handle from public.developers where github_id = 1) = 'alice2', 'handle restored';
 
-  -- Create wish: starts open with the wisher's own me-too.
+  -- Create wish: starts open with no me-toos (not even the wisher's).
   r := public.create_wish(tok1, 'ip1', 'A menu bar app that mutes my mic when my dog barks', null, 5, 50);
   w1 := (r->>'id')::bigint;
   assert (r->>'existing')::boolean = false;
-  assert (select metoo_count from public.wishes where id = w1) = 1, 'auto metoo';
+  assert (select metoo_count from public.wishes where id = w1) = 0, 'no auto metoo';
   assert (select status from public.wishes where id = w1) = 'open';
 
   -- Double submit is idempotent.
@@ -59,14 +59,20 @@ begin
 
   -- Me-too toggle is idempotent in both directions.
   r := public.set_metoo(tok2, 'ip2', w1, true, 200, 2000);
-  assert (r->>'metoo_count')::int = 2;
-  r := public.set_metoo(tok2, 'ip2', w1, true, 200, 2000);
-  assert (r->>'metoo_count')::int = 2, 'double metoo ignored';
-  r := public.set_metoo(tok2, 'ip2', w1, false, 200, 2000);
   assert (r->>'metoo_count')::int = 1;
+  r := public.set_metoo(tok2, 'ip2', w1, true, 200, 2000);
+  assert (r->>'metoo_count')::int = 1, 'double metoo ignored';
+  assert (select count(*) from public.live_metoos(tok2, array[w1, w2]) where mine) = 1, 'live metoos: mine';
+  assert (select metoo_count from public.live_metoos(null, array[w1]) where wish_id = w1) = 1, 'live metoos: count';
+  assert not exists (select 1 from public.live_metoos(null, array[w1, w2]) where mine), 'live metoos: no device';
   r := public.set_metoo(tok2, 'ip2', w1, false, 200, 2000);
-  assert (r->>'metoo_count')::int = 1, 'double un-metoo ignored';
-  assert public.viewer_metoos(tok1, array[w1, w2]) = array[w1], 'viewer metoos';
+  assert (r->>'metoo_count')::int = 0;
+  r := public.set_metoo(tok2, 'ip2', w1, false, 200, 2000);
+  assert (r->>'metoo_count')::int = 0, 'double un-metoo ignored';
+
+  -- Page existence for the proxy's 404s.
+  assert public.page_exists(w1, null) and not public.page_exists(-1, null), 'wish exists';
+  assert public.page_exists(null, 'ALICE2') and not public.page_exists(null, 'nobody'), 'developer exists';
 
   -- Claims move Open -> Being built -> Open.
   r := public.set_claim(dev_a, w1, true, 200);

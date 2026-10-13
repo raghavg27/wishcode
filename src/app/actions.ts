@@ -49,8 +49,8 @@ export async function postWish(input: { text: string; force?: boolean }): Promis
   try {
     const [deviceHash, ipKey] = await Promise.all([ensureDeviceHash(), clientIpKey()]);
 
-    // Embedding calls cost money: cap them per IP and fall back to trigram
-    // matching (no embedding) past the cap instead of failing.
+    // Embedding calls use Edge Function CPU time: cap them per IP and fall
+    // back to trigram matching (no embedding) past the cap instead of failing.
     const canEmbed = ipKey
       ? ((await db().rpc("consume_rate_limit", {
           p_key: `embed:${ipKey}`,
@@ -81,12 +81,12 @@ export async function postWish(input: { text: string; force?: boolean }): Promis
       p_text: text,
       p_embedding: embedding,
       p_device_limit: LIMITS.wishesPerDevicePerDay,
-      p_ip_limit: LIMITS.wishesPerIpPerDay,
+      p_ip_limit: LIMITS.wishesPerNetworkPerDay,
     });
     if (error) return toActionError(error, "wish");
 
     updateTag(tags.ledger);
-    revalidateTag(tags.stats, "max");
+    updateTag(tags.stats);
     return { ok: true, id: Number((data as { id: number }).id) };
   } catch (err) {
     return toActionError(err, "wish");
@@ -107,12 +107,14 @@ export async function setMetoo(wishId: number, active: boolean): Promise<MetooRe
       p_wish_id: wishId,
       p_active: active,
       p_device_limit: LIMITS.metoosPerDevicePerDay,
-      p_ip_limit: LIMITS.metoosPerIpPerDay,
+      p_ip_limit: LIMITS.metoosPerNetworkPerDay,
     });
     if (error) return toActionError(error, "metoo");
 
-    // Me-toos are high volume: serve stale and refresh in the background
-    // rather than forcing a recompute on every tap.
+    // Pages read me-too counts live (getLiveMetoos), so the cached feed and
+    // wish entries stay warm. Only the sidebar stats are recomputed, at most
+    // once per write rather than once per view.
+    updateTag(tags.stats);
     revalidateTag(tags.wish(wishId), "max");
     const result = data as { active: boolean; metoo_count: number };
     return { ok: true, active: result.active, metooCount: result.metoo_count };
@@ -129,7 +131,7 @@ function invalidateWish(wishId: number, handle: string) {
   updateTag(tags.wish(wishId));
   updateTag(tags.ledger);
   updateTag(tags.developer(handle));
-  revalidateTag(tags.stats, "max");
+  updateTag(tags.stats);
   revalidateTag(tags.directory, "max");
 }
 

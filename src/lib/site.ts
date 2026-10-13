@@ -18,3 +18,13 @@ export function developerPath(handle: string) {
 export function wishLabel(id: number | string) {
   return `#WISH-${id}`;
 }
+
+/** Parses a /w/:id path segment. */
+export function parseWishId(raw: string): number | null {
+  if (!/^[1-9][0-9]{0,15}$/.test(raw)) return null;
+  const id = Number(raw);
+  return Number.isSafeInteger(id) ? id : null;
+}
+
+/** GitHub handle syntax, as used in /d/:handle. */
+export const GITHUB_HANDLE = /^[A-Za-z0-9][A-Za-z0-9-]{0,38}$/;

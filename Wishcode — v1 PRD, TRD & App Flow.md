@@ -23,7 +23,7 @@ Wishcode v1 is a public ledger of software wishes. Anyone can post a one-sentenc
 | Developers can ship against demand | A developer goes from GitHub connect to a posted link in under 2 minutes |
 | Fulfilment is shareable | Every fulfilled wish has a share card and a developer profile to link to |
 
-Non-goals for v1: any fulfilment gate or automated checks, wisher confirmation or verdicts, wisher accounts or emails, notifications of any kind, public reporting, payments, claim expiry or claim limits, hosting apps, native mobile apps, digests, build-off events, seed imports.
+Non-goals for v1: any fulfilment gate or automated checks, wisher confirmation or verdicts, wisher accounts or emails, notifications of any kind, public reporting, payments, claim expiry, hosting apps, native mobile apps, digests, build-off events, seed imports.
 
 ### 1.3 Users
 
@@ -40,15 +40,15 @@ Non-goals for v1: any fulfilment gate or automated checks, wisher confirmation o
 | --- | --- | --- |
 | F1 | Post a wish | One text field, 20–200 chars, placeholder "I wish there was an app that…"; no login and no email; tied to an anonymous device token |
 | F2 | Duplicate suggestions | On submit, show up to 3 similar existing wishes with their me-too counts; the user can me-too one of those instead, or post anyway |
-| F3 | Me too | One tap, no login, one per device per wish, toggleable |
+| F3 | Me too | One tap, no login, one per device per wish, toggleable. A new wish starts at zero me-toos: the wisher does not get one automatically |
 | F4 | Public ledger | Home page lists every wish; filters: All, Open, Being built, Fulfilled; sort: Newest, Most me-toos |
 | F5 | Connect GitHub | GitHub OAuth is the only sign-in and is for developers only; it is required before claiming or posting a link |
-| F6 | Claim (optional) | A public "I'm building this" signal. No expiry, no limit, and many developers can claim one wish. A developer can unclaim. Claiming is never required before posting a link |
+| F6 | Claim (optional) | A public "I'm building this" signal. No expiry, and many developers can claim one wish. A developer can unclaim. Claiming is never required before posting a link |
 | F7 | Post live link | A developer posts a URL (https only), a one-line description and an optional repo URL. One link per developer per wish. The first link marks the wish Fulfilled. Other developers can still add links, and all of them show |
 | F8 | Share card | Every fulfilled wish gets a 1200×630 OG image with the wish text, me-too count, the first developer's GitHub handle and avatar, and the app URL |
 | F9 | Developer profile | Public page built from GitHub: handle, avatar, links posted, wishes claimed |
-| F10 | Rate limits | Per device: 5 wishes a day, 200 me-toos a day. Per developer: 20 links a day |
-| F11 | Admin delete | An allowlisted admin can soft-delete a wish or a link; nobody else can delete anything except a developer removing their own link or claim |
+| F10 | Rate limits | Per device: 2 wishes and 100 me-toos a day. Per network (salted IP hash, shared by everyone behind one IP): 20 wishes and 1,000 me-toos a day. Per developer: 5 claims and 20 links a day. Daily limits reset at midnight UTC. Duplicate checks: 60 per IP per hour |
+| F11 | Admin delete | An allowlisted admin can soft-delete a wish or a link; nobody else can delete anything except a developer removing their own link or claim. A removed wish keeps its page and number, but its text is hidden everywhere and its actions are disabled |
 
 ### 1.5 Rules
 
@@ -73,7 +73,7 @@ Non-goals for v1: any fulfilment gate or automated checks, wisher confirmation o
 
 | Risk | Mitigation |
 | --- | --- |
-| Spam wishes with anonymous posting | Device rate limits; admin delete |
+| Spam wishes with anonymous posting | Per-device and per-network rate limits; admin delete |
 | Malicious or broken live links, since nothing is checked | GitHub identity on every link; visible "not checked" disclaimer; links open in a new tab; admin delete |
 | Wishers never learn their wish was fulfilled | Accepted for v1. Wishes are permalinks, and the ledger and share cards carry discovery |
 | Duplicate wishes split the demand | Duplicate suggestions on submit |
@@ -87,7 +87,7 @@ v1 is a single Next.js app on Vercel with Supabase (Postgres, pgvector, GitHub a
 
 ```mermaid
 flowchart LR
-  U[Browser] --> N[Next.js app<br/>pages + API routes]
+  U[Browser] --> N[Next.js app<br/>pages, Server Actions,<br/>read API]
   N --> DB[(Postgres + pgvector<br/>Supabase)]
   N --> A[Supabase Auth<br/>GitHub OAuth]
   N --> L[Embeddings API]
@@ -98,13 +98,13 @@ flowchart LR
 
 | Layer | Choice | Why |
 | --- | --- | --- |
-| Frontend + API | Next.js, TypeScript, Tailwind | One repo, one deploy |
+| Frontend + API | Next.js, TypeScript, Tailwind, Lucide icons | One repo, one deploy |
 | Database | Postgres on Supabase with pgvector | Relational core plus similarity search for duplicate suggestions |
 | Auth | Supabase Auth, GitHub provider only | Developers only; gives the handle, avatar and GitHub id |
 | Anonymous identity | Random device token in an httpOnly cookie, stored hashed | Posting and me-too without signup |
-| Embeddings | An embeddings model (1,536-dim), called synchronously on submit | Duplicate suggestions |
+| Embeddings | Supabase's built-in `gte-small` model (384-dim) in an Edge Function, called synchronously on submit. Falls back to `pg_trgm` text similarity when the function is not configured or fails | Duplicate suggestions at no model cost |
 | Share cards | Next.js OG image route (Satori), CDN-cached | No storage needed |
-| Rate limiting | Postgres counters (or Upstash Redis) | Per device and per developer |
+| Rate limiting | Postgres fixed-window counters, in the same transaction as the write | Per network, per device and per developer |
 | Hosting | Vercel + Supabase free/hobby tiers | Low cost at launch |
 | Analytics | PostHog | Funnel: land → post → me-too → claim → link → share |
 
@@ -114,29 +114,36 @@ flowchart LR
 | --- | --- | --- |
 | devices | id, token\_hash, created\_at | Anonymous identity; never linked to a person |
 | developers | id, github\_id, github\_handle, avatar\_url, is\_admin, created\_at | Created on first GitHub connect; `is_admin` set from an env allowlist |
-| wishes | id, text, embedding vector(1536), status (open, being\_built, fulfilled), device\_id, metoo\_count, created\_at, fulfilled\_at, deleted\_at | `status` and `metoo_count` are denormalised and updated in the same transaction as claims, links and me-toos |
+| wishes | id, text, embedding vector(384), status (open, being\_built, fulfilled), device\_id, metoo\_count, created\_at, fulfilled\_at, deleted\_at | `status` and `metoo_count` are denormalised and updated in the same transaction as claims, links and me-toos |
 | metoos | wish\_id, device\_id, created\_at | Primary key (wish\_id, device\_id) |
 | claims | wish\_id, developer\_id, created\_at | Primary key (wish\_id, developer\_id); no expiry |
 | links | id, wish\_id, developer\_id, url, description, repo\_url nullable, created\_at, deleted\_at | Unique (wish\_id, developer\_id) where not deleted |
 
 ### 2.4 API surface
 
-| Method and path | Purpose | Auth |
+Writes are Next.js Server Actions, not REST endpoints. Next.js enforces same-origin POSTs for them, and they can refresh cached pages for the author straight away.
+
+| Server Action | Purpose | Auth |
 | --- | --- | --- |
-| POST /api/wishes | Create a wish. Returns up to 3 similar wishes (cosine ≥ 0.88) unless `force=true` | Device token |
-| GET /api/wishes?status=&sort=&cursor= | Ledger feed, cursor-paginated | Public |
-| GET /api/wishes/:id | Wish with claims and links | Public |
-| POST /api/wishes/:id/metoo | Toggle me-too | Device token |
-| POST / DELETE /api/wishes/:id/claim | Claim or unclaim | Developer |
-| POST /api/wishes/:id/links | Post a live link (https URL, description, optional repo) | Developer |
-| DELETE /api/links/:id | Remove a link | Link owner or admin |
-| DELETE /api/wishes/:id | Soft-delete a wish | Admin |
-| GET /api/og/wish/:id | Share card PNG | Public |
-| GET /api/developers/:handle | Developer profile | Public |
+| `postWish({ text, force })` | Create a wish. Returns up to 3 similar wishes (cosine ≥ 0.89) unless `force` is true | Device token |
+| `setMetoo(wishId, active)` | Add or remove a me-too | Device token |
+| `setClaim(wishId, active)` | Claim or unclaim | Developer |
+| `postLink(wishId, { url, description, repoUrl })` | Post a live link (https URL, description, optional repo) | Developer |
+| `removeLink(linkId)` | Remove a link | Link owner or admin |
+| Admin wish delete | Soft-delete a wish (database function exists; admin UI not built yet) | Admin |
+
+Public read endpoints:
+
+| Method and path | Purpose |
+| --- | --- |
+| GET /api/wishes?status=&sort=&cursor= | Ledger feed, cursor-paginated, with live me-too counts |
+| GET /api/wishes/:id | Wish with claims and links |
+| GET /api/developers/:handle | Developer profile |
+| GET /api/og/wish/:id | Share card PNG |
 
 ### 2.5 Duplicate suggestions
 
-On submit the API embeds the text and runs a cosine similarity query against non-deleted wishes (pgvector HNSW index). If any score 0.88 or above, it returns the top 3 instead of creating the wish. The client shows them with "Me too on this one" or "Post mine anyway", and the second option resubmits with `force=true`.
+On submit the server embeds the text with `gte-small` and runs a cosine similarity query against non-deleted wishes (pgvector HNSW index). If any score 0.89 or above, it returns the top 3 instead of creating the wish. Wishes that have no embedding yet, and every wish when embeddings are unavailable, are matched by trigram similarity instead. The client shows them with "Me too on this one" or "Post mine anyway", and the second option resubmits with `force: true`.
 
 ### 2.6 Link validation (input only, not a gate)
 
@@ -144,7 +151,7 @@ The server only checks that the URL parses, uses `https://` and is under 2,048 c
 
 ### 2.7 Security and privacy
 
-- Row-level security on every table. Writes go through API routes that check the device token or the developer session.
+- Row-level security on every table, with no policies; browsers have no database access. Writes go through Server Actions that check the device token or the developer session.
 - The device token is a random value in an httpOnly cookie, and only its hash is stored. No IP retention beyond standard request logs.
 - Personal data stored: GitHub id, handle and avatar for developers only. Wishers are fully anonymous.
 - Links are never iframed. They open in a new tab with `rel="noopener noreferrer"`.
@@ -156,9 +163,14 @@ The server only checks that the URL parses, uses `https://` and is under 2,048 c
 | Wish length | 20–200 characters |
 | Link description | 1–140 characters |
 | Links per developer per wish | 1 |
-| Wishes per device per day | 5 |
-| Me-toos per device per day | 200 |
+| Wishes per device per day | 2 |
+| Wishes per network per day | 20 |
+| Me-toos per device per day | 100 |
+| Me-toos per network per day | 1,000 |
+| Claims per developer per day | 5 |
 | Links per developer per day | 20 |
+| Duplicate checks per IP per hour | 60 |
+| Daily limits reset | Midnight UTC |
 | Feed latency | p95 under 300 ms |
 
 ## 3. App Flow
@@ -223,8 +235,9 @@ stateDiagram-v2
 ### 3.5 Edge paths
 
 - Wish under 20 or over 200 chars → inline hint, submit disabled.
-- Rate limit hit → "You've posted 5 wishes today, try again tomorrow."
+- Rate limit hit → "You've posted 2 wishes today. The limit resets at midnight UTC."
 - Non-https or malformed link → inline error, no submit.
 - A developer posts a second link on the same wish → blocked; they can remove their existing link and post a new one.
-- Me-too on a deleted wish → the wish page shows "Removed" and actions are disabled.
+- Me-too on a deleted wish → the wish page shows "Removed", hides the wish text and disables actions.
+- Unknown wish or developer URL → 404 page (HTTP 404) with a way back to the ledger.
 - A developer revokes GitHub access → their links and claims stay listed under their handle.

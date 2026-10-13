@@ -26,17 +26,12 @@ export const env = {
   get rateLimitSalt() {
     return process.env.RATE_LIMIT_SALT || required("SUPABASE_SECRET_KEY");
   },
-  /** OpenAI-compatible embeddings endpoint. Optional: falls back to trigram matching. */
-  embeddings: {
-    get apiKey() {
-      return process.env.EMBEDDINGS_API_KEY || process.env.OPENAI_API_KEY || "";
-    },
-    get baseUrl() {
-      return (process.env.EMBEDDINGS_BASE_URL || "https://api.openai.com/v1").replace(/\/$/, "");
-    },
-    get model() {
-      return process.env.EMBEDDINGS_MODEL || "text-embedding-3-small";
-    },
+  /**
+   * Name of the deployed gte-small Edge Function (supabase/functions/embed).
+   * Optional: unset means duplicate suggestions use trigram matching only.
+   */
+  get embeddingsFunction() {
+    return process.env.EMBEDDINGS_FUNCTION || "";
   },
   /** Comma-separated GitHub handles that get admin rights on sign-in. */
   get adminHandles(): Set<string> {
