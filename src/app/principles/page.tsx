@@ -18,11 +18,15 @@ const PRINCIPLES = [
   },
   {
     title: "Claims are a signal, not a lock",
-    body: "Developers who connect GitHub can say “I'm building this”. Claims never expire, have no limit, and many developers can claim the same wish. Claiming is never required before shipping.",
+    body: "Developers who connect GitHub can say “I'm building this”. Claims never expire, and many developers can claim the same wish. Claiming is never required before shipping.",
   },
   {
     title: "Fulfilled means a live link exists",
-    body: "The first live link marks a wish Fulfilled. Nothing is checked, reviewed or voted on first. Other developers can still add their own builds, and all of them show.",
+    body: "The first live link marks a wish Fulfilled. Nothing is checked or reviewed first. Other developers can still add their own builds, and all of them show.",
+  },
+  {
+    title: "The people who wanted it decide if it works",
+    body: "The wisher and everyone who me-too'd can vote on whether each link works. The wisher's vote, or 3 votes, turn a link Works ✓ or collapse it as not working. Leave an email if you like, and we'll write once each time someone posts a link, with an unsubscribe in every email.",
   },
   {
     title: "Links open at your own discretion",
@@ -30,7 +34,7 @@ const PRINCIPLES = [
   },
   {
     title: "Fair use",
-    body: `To keep the ledger useful: ${LIMITS.wishesPerDevicePerDay} wishes and ${LIMITS.metoosPerDevicePerDay} me-toos per device per day, and ${LIMITS.linksPerDeveloperPerDay} links per developer per day.`,
+    body: `To keep the ledger useful: ${LIMITS.wishesPerDevicePerDay} wishes and ${LIMITS.metoosPerDevicePerDay} me-toos per device per day (${LIMITS.wishesPerNetworkPerDay} wishes and ${LIMITS.metoosPerNetworkPerDay} me-toos per shared network), ${LIMITS.claimsPerDeveloperPerDay} claims and ${LIMITS.linksPerDeveloperPerDay} links per developer per day, and ${LIMITS.subscriptionsPerDevicePerDay} email sign-ups per device per day. Limits reset at midnight UTC.`,
   },
 ];
 

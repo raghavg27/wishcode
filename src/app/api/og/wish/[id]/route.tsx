@@ -1,12 +1,12 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
-import { getWish, parseWishId } from "@/lib/data";
+import { getWish } from "@/lib/data";
 import { domainOf, formatNumber } from "@/lib/format";
-import { siteUrl, wishPath } from "@/lib/site";
+import { parseWishId, siteUrl, wishPath } from "@/lib/site";
 
 // GET /api/og/wish/:id — 1200×630 share card (PRD F8). The page links it with
-// a ?v= that changes with status/links/me-toos, so CDN caching is safe.
+// a ?v= that changes with status/verification/links/me-toos, so CDN caching is safe.
 
 const fonts = Promise.all([
   readFile(join(process.cwd(), "assets/fonts/Newsreader-Medium.ttf")),
@@ -17,7 +17,8 @@ const fonts = Promise.all([
 const STATUS = {
   open: { label: "Open", bg: "#f5ece8", fg: "#1e1b19", border: "#e0d8d5" },
   being_built: { label: "Being built", bg: "#fffbeb", fg: "#904d00", border: "#fde68a" },
-  fulfilled: { label: "Fulfilled", bg: "#f0fdf4", fg: "#00743a", border: "#bbf7d0" },
+  fulfilled: { label: "Fulfilled ✓", bg: "#f0fdf4", fg: "#00743a", border: "#bbf7d0" },
+  fulfilled_unverified: { label: "Fulfilled · unverified", bg: "#fff3e0", fg: "#835400", border: "#f5c97a" },
 } as const;
 
 async function avatarDataUrl(url: string | null | undefined): Promise<string | null> {
@@ -40,7 +41,7 @@ export async function GET(_request: Request, { params }: RouteContext<"/api/og/w
   if (!wish || wish.removed || !wish.text) return new Response("Not found", { status: 404 });
 
   const [[serif, sans, sansBold], avatar] = await Promise.all([fonts, avatarDataUrl(wish.first_link?.developer.avatar_url)]);
-  const status = STATUS[wish.status];
+  const status = STATUS[wish.status === "fulfilled" && !wish.verified ? "fulfilled_unverified" : wish.status];
   const host = new URL(siteUrl()).host;
   const fontSize = wish.text.length > 140 ? 48 : wish.text.length > 90 ? 56 : 64;
 
@@ -55,7 +56,6 @@ export async function GET(_request: Request, { params }: RouteContext<"/api/og/w
             <div style={{ fontSize: 22, fontWeight: 700, letterSpacing: 3, color: "#1e1b19" }}>WISHCODE PUBLIC LEDGER</div>
           </div>
           <div style={{ display: "flex", alignItems: "center", padding: "8px 20px", borderRadius: 999, background: status.bg, color: status.fg, border: `2px solid ${status.border}`, fontSize: 24, fontWeight: 700 }}>
-            {wish.status === "fulfilled" ? "✓ " : ""}
             {status.label}
           </div>
         </div>

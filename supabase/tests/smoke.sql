@@ -29,11 +29,11 @@ begin
   perform public.upsert_developer(dev_a, 1, 'alice2', null, false);
   assert (select github_handle from public.developers where github_id = 1) = 'alice2', 'handle restored';
 
-  -- Create wish: starts open with the wisher's own me-too.
+  -- Create wish: starts open with no me-toos (not even the wisher's).
   r := public.create_wish(tok1, 'ip1', 'A menu bar app that mutes my mic when my dog barks', null, 5, 50);
   w1 := (r->>'id')::bigint;
   assert (r->>'existing')::boolean = false;
-  assert (select metoo_count from public.wishes where id = w1) = 1, 'auto metoo';
+  assert (select metoo_count from public.wishes where id = w1) = 0, 'no auto metoo';
   assert (select status from public.wishes where id = w1) = 'open';
 
   -- Double submit is idempotent.
@@ -59,14 +59,20 @@ begin
 
   -- Me-too toggle is idempotent in both directions.
   r := public.set_metoo(tok2, 'ip2', w1, true, 200, 2000);
-  assert (r->>'metoo_count')::int = 2;
-  r := public.set_metoo(tok2, 'ip2', w1, true, 200, 2000);
-  assert (r->>'metoo_count')::int = 2, 'double metoo ignored';
-  r := public.set_metoo(tok2, 'ip2', w1, false, 200, 2000);
   assert (r->>'metoo_count')::int = 1;
+  r := public.set_metoo(tok2, 'ip2', w1, true, 200, 2000);
+  assert (r->>'metoo_count')::int = 1, 'double metoo ignored';
+  assert (select count(*) from public.live_metoos(tok2, array[w1, w2]) where mine) = 1, 'live metoos: mine';
+  assert (select metoo_count from public.live_metoos(null, array[w1]) where wish_id = w1) = 1, 'live metoos: count';
+  assert not exists (select 1 from public.live_metoos(null, array[w1, w2]) where mine), 'live metoos: no device';
   r := public.set_metoo(tok2, 'ip2', w1, false, 200, 2000);
-  assert (r->>'metoo_count')::int = 1, 'double un-metoo ignored';
-  assert public.viewer_metoos(tok1, array[w1, w2]) = array[w1], 'viewer metoos';
+  assert (r->>'metoo_count')::int = 0;
+  r := public.set_metoo(tok2, 'ip2', w1, false, 200, 2000);
+  assert (r->>'metoo_count')::int = 0, 'double un-metoo ignored';
+
+  -- Page existence for the proxy's 404s.
+  assert public.page_exists(w1, null) and not public.page_exists(-1, null), 'wish exists';
+  assert public.page_exists(null, 'ALICE2') and not public.page_exists(null, 'nobody'), 'developer exists';
 
   -- Claims move Open -> Being built -> Open.
   r := public.set_claim(dev_a, w1, true, 200);
@@ -149,20 +155,238 @@ begin
 end;
 $$;
 
+-- Verdicts, derived status and email subscriptions.
+do $$
+declare
+  dev_c   uuid := '00000000-0000-0000-0000-00000000000c';
+  dev_d   uuid := '00000000-0000-0000-0000-00000000000d';
+  wisher  text := repeat('c', 64);
+  m       text[] := array[repeat('1', 64), repeat('2', 64), repeat('3', 64), repeat('4', 64),
+                          repeat('5', 64), repeat('6', 64), repeat('7', 64)];
+  outsider text := repeat('e', 64);
+  w       bigint;
+  w_open  bigint;
+  l1      bigint;
+  l2      bigint;
+  sub     bigint;
+  r       jsonb;
+  failed  boolean;
+  i       integer;
+begin
+  perform public.upsert_developer(dev_c, 10, 'carol', null, false);
+  perform public.upsert_developer(dev_d, 11, 'dave', null, false);
+  w := (public.create_wish(wisher, 'ipw', 'A tiny app that reminds me to water my plants daily', null, 5, 50)->>'id')::bigint;
+  for i in 1..7 loop perform public.set_metoo(m[i], 'ipm', w, true, 200, 2000); end loop;
+  -- The outsider has a device (their own wish) but no me-too on w.
+  perform public.create_wish(outsider, 'ipo', 'An outsider wish that exists only for this test', null, 5, 50);
+
+  perform public.set_claim(dev_c, w, true, 200);
+  l1 := (public.create_link(dev_c, w, 'https://plants.app', 'Waters plants', null, 20)->>'id')::bigint;
+  assert (select status from public.wishes where id = w) = 'fulfilled', 'link fulfils';
+  assert (select verdict from public.links where id = l1) = 'unverified', 'new link unverified';
+  assert not (select verified from public.wishes where id = w), 'new link not verified';
+
+  -- Wisher's works vote verifies with no crowd votes.
+  r := public.set_verdict(wisher, l1, true);
+  assert r->>'verdict' = 'verified' and (r->>'wisher_verdict')::boolean and (r->>'wish_verified')::boolean, 'wisher verifies';
+  assert (select verified from public.wishes where id = w), 'wish verified';
+
+  -- Wisher's no vote flags even with 5 works votes.
+  for i in 1..5 loop perform public.set_verdict(m[i], l1, true); end loop;
+  r := public.set_verdict(wisher, l1, false);
+  assert r->>'verdict' = 'flagged' and (r->>'works_count')::int = 5, 'wisher flags over crowd';
+  -- Only link flagged, claim remains: Being built, fulfilled_at cleared.
+  assert (select status from public.wishes where id = w) = 'being_built', 'flagged -> being built';
+  assert (select fulfilled_at from public.wishes where id = w) is null, 'fulfilled_at cleared';
+  assert (select live_link_count from public.wishes where id = w) = 0
+     and (select link_count from public.wishes where id = w) = 1, 'live vs all links';
+  assert public.get_wish(w)->'first_link' = 'null'::jsonb, 'flagged link is not first_link';
+
+  -- Wisher changes their mind: Fulfilled again.
+  r := public.set_verdict(wisher, l1, true);
+  assert r->>'wish_status' = 'fulfilled', 'unflag restores fulfilled';
+  assert (select fulfilled_at from public.wishes where id = w) is not null, 'unflag restores fulfilled_at';
+
+  -- Clearing the wisher's vote hands the decision to the crowd (5 works).
+  r := public.set_verdict(wisher, l1, null);
+  assert r->>'verdict' = 'verified' and r->'wisher_verdict' = 'null'::jsonb, 'crowd verifies';
+  for i in 1..5 loop perform public.set_verdict(m[i], l1, null); end loop;
+  assert (select verdict from public.links where id = l1) = 'unverified', 'all votes cleared';
+
+  -- Crowd thresholds.
+  perform public.set_verdict(m[1], l1, true);
+  perform public.set_verdict(m[2], l1, true);
+  assert (select verdict from public.links where id = l1) = 'unverified', '2 works -> unverified';
+  perform public.set_verdict(m[3], l1, true);
+  assert (select verdict from public.links where id = l1) = 'verified', '3 works -> verified';
+  perform public.set_verdict(m[4], l1, false);
+  perform public.set_verdict(m[5], l1, false);
+  perform public.set_verdict(m[6], l1, false);
+  assert (select verdict from public.links where id = l1) = 'flagged', '3 broken vs 3 works -> flagged';
+  perform public.set_verdict(m[7], l1, true);
+  assert (select verdict from public.links where id = l1) = 'verified', '4 works vs 3 broken -> verified';
+  assert (select works_count from public.links where id = l1) = 4
+     and (select broken_count from public.links where id = l1) = 3, 'counts';
+
+  -- verified follows verified links, including deletion.
+  l2 := (public.create_link(dev_d, w, 'https://water.app', 'Also waters', null, 20)->>'id')::bigint;
+  assert (select verified from public.wishes where id = w), 'still verified with unverified second link';
+  perform public.remove_link(dev_c, l1);
+  assert not (select verified from public.wishes where id = w), 'verified cleared when verified link deleted';
+  assert (select status from public.wishes where id = w) = 'fulfilled', 'unverified link still fulfils';
+
+  -- Eligibility.
+  failed := false;
+  begin perform public.set_verdict(outsider, l2, true);
+  exception when others then failed := sqlerrm = 'not_eligible'; end;
+  assert failed, 'outsider cannot vote';
+  failed := false;
+  begin perform public.set_verdict(null, l2, true);
+  exception when others then failed := sqlerrm = 'not_eligible'; end;
+  assert failed, 'no device cannot vote';
+
+  -- Removing a me-too deletes that device's verdicts and recomputes the link.
+  perform public.set_verdict(m[1], l2, false);
+  perform public.set_verdict(m[2], l2, false);
+  perform public.set_verdict(m[3], l2, false);
+  assert (select verdict from public.links where id = l2) = 'flagged', 'crowd flags';
+  assert (select status from public.wishes where id = w) = 'being_built', 'only live link flagged';
+  perform public.set_metoo(m[3], 'ipm', w, false, 200, 2000);
+  assert not exists (select 1 from public.verdicts v join public.devices d on d.id = v.device_id
+                     where d.token_hash = m[3]), 'verdicts removed with me-too';
+  assert (select verdict from public.links where id = l2) = 'unverified', 'link recomputed';
+  assert (select status from public.wishes where id = w) = 'fulfilled', 'wish recomputed';
+  -- The wisher's own verdicts survive removing their me-too.
+  perform public.set_metoo(wisher, 'ipw', w, true, 200, 2000);
+  perform public.set_verdict(wisher, l2, true);
+  perform public.set_metoo(wisher, 'ipw', w, false, 200, 2000);
+  assert (select wisher_verdict from public.links where id = l2), 'wisher verdict kept';
+
+  -- A flagged only link on an unclaimed wish drops to Open.
+  w_open := (public.create_wish(wisher, 'ipw', 'A widget that shows the next train home from work', null, 5, 50)->>'id')::bigint;
+  perform public.set_verdict(wisher, (public.create_link(dev_c, w_open, 'https://train.app', 'Trains', null, 20)->>'id')::bigint, false);
+  assert (select status from public.wishes where id = w_open) = 'open', 'flagged -> open';
+
+  -- Viewer state.
+  r := public.viewer_wish_state(m[1], w);
+  assert not (r->>'is_wisher')::boolean and (r->>'has_metoo')::boolean and not (r->>'subscribed')::boolean, 'viewer state';
+  assert (r->'verdicts'->>l2::text)::boolean = false, 'viewer verdicts';
+  r := public.viewer_wish_state(null, w);
+  assert not (r->>'is_wisher')::boolean and not (r->>'has_metoo')::boolean and r->'verdicts' = '{}'::jsonb, 'no device';
+  assert (public.viewer_wish_state(wisher, w)->>'is_wisher')::boolean, 'wisher state';
+
+  -- Subscribe: eligibility, validation, idempotency, rate limit.
+  failed := false;
+  begin perform public.subscribe(outsider, 'ipo', w, 'out@example.com', 2, 100);
+  exception when others then failed := sqlerrm = 'not_eligible'; end;
+  assert failed, 'outsider cannot subscribe';
+  failed := false;
+  begin perform public.subscribe(m[1], 'ipm', w, 'not-an-email', 2, 100);
+  exception when others then failed := sqlerrm = 'invalid_email'; end;
+  assert failed, 'invalid email';
+  r := public.subscribe(wisher, 'ipw', w, '  Wisher@Example.com ', 2, 100);
+  assert (r->>'subscribed')::boolean, 'wisher subscribes';
+  assert (select email from public.subscriptions where wish_id = w) = 'wisher@example.com', 'email normalised';
+  perform public.subscribe(m[1], 'ipm', w, 'm1@example.com', 2, 100);
+  perform public.subscribe(m[1], 'ipm', w, 'm1@example.com', 2, 100); -- idempotent: no limit used
+  perform public.subscribe(m[1], 'ipm', w, 'm1b@example.com', 2, 100);
+  failed := false;
+  begin perform public.subscribe(m[1], 'ipm', w, 'm1c@example.com', 2, 100);
+  exception when others then failed := sqlerrm = 'rate_limited'; end;
+  assert failed, 'subscribe rate limit';
+  assert (public.viewer_wish_state(m[1], w)->>'subscribed')::boolean, 'viewer subscribed';
+
+  -- Notification recipients: wisher flag, unsubscribe, suppression.
+  r := public.link_notification(l2);
+  assert jsonb_array_length(r->'recipients') = 3 and r->>'handle' = 'dave', 'recipients';
+  assert (select bool_and((x->>'is_wisher')::boolean = (x->>'email' = 'wisher@example.com'))
+          from jsonb_array_elements(r->'recipients') x), 'is_wisher';
+  sub := (select id from public.subscriptions where email = 'm1b@example.com');
+  perform public.unsubscribe(sub, false);
+  assert jsonb_array_length(public.link_notification(l2)->'recipients') = 2, 'unsubscribed excluded';
+  -- Re-subscribing after unsubscribing reactivates and moves to this device.
+  perform public.subscribe(m[2], 'ipm2', w, 'm1b@example.com', 5, 100);
+  assert (select unsubscribed_at is null and device_id = (select id from public.devices where token_hash = m[2])
+          from public.subscriptions where id = sub), 'resubscribe moves device';
+  perform public.unsubscribe(sub, true);
+  assert jsonb_array_length(public.link_notification(l2)->'recipients') = 2, 'suppressed excluded';
+  failed := false;
+  begin perform public.subscribe(m[2], 'ipm2', w, 'M1B@example.com', 5, 100);
+  exception when others then failed := sqlerrm = 'suppressed'; end;
+  assert failed, 'suppression not cleared by subscribing';
+  r := public.subscription_context(sub);
+  assert (r->>'wish_id')::bigint = w and (r->>'unsubscribed')::boolean and (r->>'suppressed')::boolean
+     and r::text !~ '"email"', 'subscription context';
+  assert public.subscription_context(-1) is null, 'unknown subscription';
+
+  -- Removing a me-too ends that device's subscription.
+  perform public.set_metoo(m[1], 'ipm', w, false, 200, 2000);
+  assert not exists (select 1 from public.subscriptions where email like 'm1%' and unsubscribed_at is null),
+    'un-me-too ends subscription';
+  assert jsonb_array_length(public.link_notification(l2)->'recipients') = 1, 'only the wisher left';
+
+  -- Votes from email count as the subscription's device and follow eligibility.
+  sub := (select id from public.subscriptions where email = 'wisher@example.com');
+  r := public.set_verdict_by_subscription(sub, l2, false);
+  assert r->>'verdict' = 'flagged', 'email vote counts as wisher';
+  failed := false;
+  begin perform public.set_verdict_by_subscription(sub, (select id from public.links where wish_id = w_open), true);
+  exception when others then failed := sqlerrm = 'not_found'; end;
+  assert failed, 'email vote limited to its wish';
+  failed := false;
+  begin perform public.set_verdict_by_subscription((select id from public.subscriptions where email = 'm1@example.com'), l2, true);
+  exception when others then failed := sqlerrm = 'not_eligible'; end;
+  assert failed, 'email vote after un-me-too';
+
+  -- Deleted links have no recipients.
+  perform public.remove_link(dev_d, l2);
+  assert jsonb_array_length(public.link_notification(l2)->'recipients') = 0, 'deleted link: no recipients';
+
+  -- No read RPC exposes an email address.
+  assert public.get_wish(w)::text !~ '"email"' and public.viewer_wish_state(wisher, w)::text !~ '"email"'
+     and public.ledger_feed(null, 'newest', null, null, null, 50)::text !~ '"email"'
+     and public.developer_profile('dave')::text !~ '"email"' and public.ledger_stats()::text !~ '"email"',
+    'no email in read RPCs';
+
+  raise notice 'verdicts and subscriptions: all assertions passed';
+end;
+$$;
+
 reset role;
 
 -- Privileges: anon and authenticated can touch nothing.
-set local role anon;
+create temp table role_checks (role_name text);
+insert into role_checks values ('anon'), ('authenticated');
+grant select on role_checks to anon, authenticated;
 do $$
-declare failed boolean := false;
+declare
+  rn     text;
+  stmt   text;
+  failed boolean;
 begin
-  begin perform public.ledger_feed(null, 'newest', null, null, null, 1);
-  exception when insufficient_privilege then failed := true; end;
-  assert failed, 'anon cannot execute';
-  failed := false;
-  begin perform 1 from public.wishes limit 1;
-  exception when insufficient_privilege then failed := true; end;
-  assert failed, 'anon cannot select';
+  for rn in select role_name from role_checks loop
+    execute format('set local role %I', rn);
+    foreach stmt in array array[
+      'select public.ledger_feed(null, ''newest'', null, null, null, 1)',
+      'select public.set_verdict(null, 1, true)',
+      'select public.set_verdict_by_subscription(1, 1, true)',
+      'select public.subscribe(null, null, 1, ''a@b.co'', 1, 1)',
+      'select public.unsubscribe(1, false)',
+      'select public.link_notification(1)',
+      'select public.viewer_wish_state(null, 1)',
+      'select public.subscription_context(1)',
+      'select 1 from public.wishes limit 1',
+      'select 1 from public.verdicts limit 1',
+      'select 1 from public.subscriptions limit 1',
+      'select 1 from public.email_suppressions limit 1'
+    ] loop
+      failed := false;
+      begin execute stmt;
+      exception when insufficient_privilege then failed := true; end;
+      assert failed, format('%s must not run: %s', rn, stmt);
+    end loop;
+    reset role;
+  end loop;
   raise notice 'privileges: ok';
 end;
 $$;

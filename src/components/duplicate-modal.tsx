@@ -55,7 +55,7 @@ export function DuplicateModal({ open, typed, similar, busy, onClose, onMetoo, o
                 {w.text}
               </Link>
               <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-label text-ink-muted">
-                <StatusChip status={w.status} />
+                <StatusChip status={w.status} verified={w.verified} />
                 <span className="inline-flex items-center gap-1 font-semibold text-ink tabular">
                   <Hand className="size-4 text-primary" aria-hidden /> {formatNumber(w.metoo_count)} me-toos
                 </span>

@@ -5,7 +5,7 @@ import { LedgerList } from "@/components/ledger-list";
 import { BuildCta, MostWanted, SidebarFootnote, WeekStats } from "@/components/sidebar";
 import { LedgerNote, Skeleton } from "@/components/ui";
 import { parseSort, parseStatus } from "@/lib/config";
-import { getLedgerPage, getStats, getViewerMetoos } from "@/lib/data";
+import { getLedgerPage, getLiveMetoos, getStats, withLiveCounts } from "@/lib/data";
 
 export default function LedgerPage({ searchParams }: PageProps<"/">) {
   return (
@@ -36,7 +36,7 @@ async function Feed({ searchParams }: Pick<PageProps<"/">, "searchParams">) {
   const status = parseStatus(params.status);
   const sort = parseSort(params.sort);
   const [page, stats] = await Promise.all([getLedgerPage(status, sort, null), getStats().catch(() => null)]);
-  const metoos = await getViewerMetoos(page.items.map((w) => w.id));
+  const live = await getLiveMetoos(page.items.map((w) => w.id));
 
   return (
     <>
@@ -45,9 +45,9 @@ async function Feed({ searchParams }: Pick<PageProps<"/">, "searchParams">) {
         key={`${status}:${sort}`}
         status={status}
         sort={sort}
-        initialItems={page.items}
+        initialItems={withLiveCounts(page.items, live)}
         initialCursor={page.nextCursor}
-        initialMetoos={metoos}
+        initialMetoos={live.mine}
       />
     </>
   );

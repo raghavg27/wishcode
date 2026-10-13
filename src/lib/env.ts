@@ -26,17 +26,24 @@ export const env = {
   get rateLimitSalt() {
     return process.env.RATE_LIMIT_SALT || required("SUPABASE_SECRET_KEY");
   },
-  /** OpenAI-compatible embeddings endpoint. Optional: falls back to trigram matching. */
-  embeddings: {
-    get apiKey() {
-      return process.env.EMBEDDINGS_API_KEY || process.env.OPENAI_API_KEY || "";
-    },
-    get baseUrl() {
-      return (process.env.EMBEDDINGS_BASE_URL || "https://api.openai.com/v1").replace(/\/$/, "");
-    },
-    get model() {
-      return process.env.EMBEDDINGS_MODEL || "text-embedding-3-small";
-    },
+  /**
+   * Name of the deployed gte-small Edge Function (supabase/functions/embed).
+   * Optional: unset means duplicate suggestions use trigram matching only.
+   */
+  get embeddingsFunction() {
+    return process.env.EMBEDDINGS_FUNCTION || "";
+  },
+  /** Gmail account that sends notification emails. Unset: emails are skipped. */
+  get gmailUser() {
+    return process.env.GMAIL_USER || "";
+  },
+  /** Google App Password for GMAIL_USER (needs 2-Step Verification). */
+  get gmailAppPassword() {
+    return process.env.GMAIL_APP_PASSWORD || "";
+  },
+  /** Key for signing the links in emails (defaults to the secret key). */
+  get emailTokenSecret() {
+    return process.env.EMAIL_TOKEN_SECRET || required("SUPABASE_SECRET_KEY");
   },
   /** Comma-separated GitHub handles that get admin rights on sign-in. */
   get adminHandles(): Set<string> {

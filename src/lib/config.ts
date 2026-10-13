@@ -4,33 +4,44 @@ export const WISH_MIN = 20;
 export const WISH_MAX = 200;
 export const LINK_DESCRIPTION_MAX = 140;
 export const URL_MAX = 2048;
+export const EMAIL_MAX = 254;
 
+// Rate limits. Daily windows reset at midnight UTC.
 export const LIMITS = {
-  /** PRD F10: per device. */
-  wishesPerDevicePerDay: 5,
-  metoosPerDevicePerDay: 200,
-  /** PRD F10: per developer. */
-  linksPerDeveloperPerDay: 20,
+  wishesPerDevicePerDay: 2,
   /**
-   * Not in the PRD. Device tokens are free to mint (clear cookies), so a
-   * coarse per-IP ceiling backs up the device limits. Kept generous because
-   * offices, campuses and mobile carriers share IPs.
+   * Network = salted IP hash. Offices, campuses and mobile carriers put many
+   * people behind one IP, so network caps are looser abuse backstops.
    */
-  wishesPerIpPerDay: 50,
-  metoosPerIpPerDay: 2000,
-  /** Anti-abuse only; claiming itself has no limit on open claims. */
-  claimsPerDeveloperPerDay: 200,
-  /** Caps embedding calls (which cost money) from one IP. */
+  wishesPerNetworkPerDay: 20,
+  metoosPerDevicePerDay: 100,
+  metoosPerNetworkPerDay: 1000,
+  linksPerDeveloperPerDay: 20,
+  /** Many developers can claim one wish; this caps new claims per developer. */
+  claimsPerDeveloperPerDay: 5,
+  /** Caps embedding calls (Edge Function CPU time) from one IP. */
   duplicateChecksPerIpPerHour: 60,
+  /** New email subscriptions (re-subscribing an active address is free). */
+  subscriptionsPerDevicePerDay: 20,
+  subscriptionsPerNetworkPerDay: 100,
 } as const;
 
-/** TRD 2.5: cosine similarity at or above this counts as a likely duplicate. */
-export const DUPLICATE_THRESHOLD = 0.88;
+/**
+ * Cosine similarity (gte-small) at or above this counts as a likely duplicate.
+ * On sample wishes, paraphrases scored 0.886–0.955 and related-but-different
+ * wishes 0.855–0.901. A false positive costs one "Post mine anyway" tap, so
+ * this leans toward catching duplicates.
+ */
+export const DUPLICATE_THRESHOLD = 0.89;
 export const DUPLICATE_LIMIT = 3;
 
 export const FEED_PAGE_SIZE = 20;
 
 export const DISCLAIMER = "Wishcode doesn't check or vouch for linked apps.";
+
+/** Shown above a wish's links. */
+export const LINKS_DISCLAIMER =
+  "Wishcode doesn't check linked apps. People who wanted this wish vote on whether each link works.";
 
 export const STATUS_FILTERS = ["all", "open", "being_built", "fulfilled"] as const;
 export type StatusFilter = (typeof STATUS_FILTERS)[number];

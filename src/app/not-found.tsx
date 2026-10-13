@@ -1,20 +1,23 @@
-import { Archive } from "lucide-react";
-import Link from "next/link";
-import { buttonStyles } from "@/components/ui";
+import type { Metadata } from "next";
+import { headers } from "next/headers";
+import { Suspense } from "react";
+import { NotFoundView, type NotFoundKind } from "@/components/not-found-view";
+import { MISSING_HEADER } from "@/lib/page-exists";
 
+export const metadata: Metadata = { title: "Not found" };
+
+// Also serves unknown /w/:id and /d/:handle page loads, which src/proxy.ts
+// rewrites here (with a header naming what was missing) to get a 404 status.
 export default function NotFound() {
   return (
-    <main className="flex flex-1 items-center justify-center px-4 py-20">
-      <div className="text-center">
-        <span className="mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-surface-low text-outline">
-          <Archive className="size-6" aria-hidden />
-        </span>
-        <h1 className="font-serif text-display-sm text-ink">Not on the ledger</h1>
-        <p className="mt-2 text-[15px] text-ink-muted">That page doesn&apos;t exist, or the link is mistyped.</p>
-        <Link href="/" className={`${buttonStyles.amber} mt-6`}>
-          Back to the ledger
-        </Link>
-      </div>
-    </main>
+    <Suspense fallback={<NotFoundView kind="page" />}>
+      <ContextualNotFound />
+    </Suspense>
   );
+}
+
+async function ContextualNotFound() {
+  const missing = (await headers()).get(MISSING_HEADER);
+  const kind: NotFoundKind = missing === "wish" || missing === "developer" ? missing : "page";
+  return <NotFoundView kind={kind} />;
 }

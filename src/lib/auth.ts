@@ -3,6 +3,7 @@ import { cache } from "react";
 import { cookies } from "next/headers";
 import { connection } from "next/server";
 import { env } from "@/lib/env";
+import { GITHUB_HANDLE } from "@/lib/site";
 import { db } from "@/lib/supabase/admin";
 import { createAuthClient } from "@/lib/supabase/server";
 import type { Viewer } from "@/lib/types";
@@ -15,13 +16,11 @@ type GithubMetadata = {
   sub?: string;
 };
 
-const HANDLE = /^[A-Za-z0-9][A-Za-z0-9-]{0,38}$/;
-
 /** Extracts the GitHub identity Supabase stores in user_metadata. */
 export function githubIdentity(meta: GithubMetadata | undefined) {
   const handle = meta?.user_name || meta?.preferred_username;
   const githubId = Number(meta?.provider_id || meta?.sub);
-  if (!handle || !HANDLE.test(handle) || !Number.isSafeInteger(githubId) || githubId <= 0) return null;
+  if (!handle || !GITHUB_HANDLE.test(handle) || !Number.isSafeInteger(githubId) || githubId <= 0) return null;
   const avatar = meta?.avatar_url?.startsWith("https://") ? meta.avatar_url : null;
   return { handle, githubId, avatar };
 }

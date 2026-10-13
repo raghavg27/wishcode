@@ -11,14 +11,12 @@ import { EXTERNAL_REL } from "@/components/wish-card";
 import { getViewer } from "@/lib/auth";
 import { getDeveloperProfile } from "@/lib/data";
 import { domainOf, formatDate, formatNumber, repoLabel } from "@/lib/format";
-import { developerPath, wishPath } from "@/lib/site";
+import { GITHUB_HANDLE, developerPath, wishPath } from "@/lib/site";
 import type { DeveloperProfile } from "@/lib/types";
-
-const HANDLE = /^[A-Za-z0-9][A-Za-z0-9-]{0,38}$/;
 
 async function load(params: PageProps<"/d/[handle]">["params"]) {
   const handle = decodeURIComponent((await params).handle);
-  if (!HANDLE.test(handle)) return null;
+  if (!GITHUB_HANDLE.test(handle)) return null;
   return getDeveloperProfile(handle);
 }
 
@@ -42,6 +40,7 @@ export default function DeveloperPage({ params, searchParams }: PageProps<"/d/[h
   );
 }
 
+// Unknown handles get their 404 status from src/proxy.ts.
 async function Profile({ params, searchParams }: PageProps<"/d/[handle]">) {
   const profile = await load(params);
   if (!profile) notFound();
@@ -80,7 +79,7 @@ async function Profile({ params, searchParams }: PageProps<"/d/[handle]">) {
                 <li key={l.id} className="card p-5 sm:p-6">
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <div className="flex flex-wrap items-center gap-2">
-                      <StatusChip status={l.wish.status} />
+                      <StatusChip status={l.wish.status} verified={l.wish.verified} />
                       {l.first_to_ship && (
                         <span className="inline-flex h-6 items-center gap-1 rounded-full bg-leaf-soft px-2.5 text-label-sm font-medium text-leaf-ink">
                           <Sprout className="size-3.5" aria-hidden /> First to ship

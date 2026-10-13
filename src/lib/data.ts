@@ -5,7 +5,15 @@ import { FEED_PAGE_SIZE, type Sort, type StatusFilter } from "@/lib/config";
 import { decodeCursor, encodeCursor } from "@/lib/cursor";
 import { readDeviceHash } from "@/lib/identity";
 import { db } from "@/lib/supabase/admin";
-import type { DeveloperProfile, DirectoryEntry, FeedPage, LedgerStats, WishCard, WishDetail } from "@/lib/types";
+import type {
+  DeveloperProfile,
+  DirectoryEntry,
+  FeedPage,
+  LedgerStats,
+  ViewerWishState,
+  WishCard,
+  WishDetail,
+} from "@/lib/types";
 
 // Public reads are cached in the Next.js data cache and shared by every
 // visitor; per-viewer state (me-toos, session) is read separately per request.
@@ -81,25 +89,67 @@ export async function getDirectory(): Promise<DirectoryEntry[]> {
   return (data ?? []) as DirectoryEntry[];
 }
 
-/** Which of these wishes this browser has me-too'd. Never cached. */
-export async function getViewerMetoos(wishIds: number[]): Promise<number[]> {
-  if (wishIds.length === 0) return [];
+export type LiveMetoos = { counts: Map<number, number>; mine: number[] };
+
+/**
+ * Current me-too counts for these wishes, and which of them this browser has
+ * me-too'd. Never cached: one primary-key lookup per page keeps counts live
+ * while the feed and wish entries above stay cached. Falls back to the cached
+ * counts if the lookup fails.
+ */
+export async function getLiveMetoos(wishIds: number[]): Promise<LiveMetoos> {
+  const live: LiveMetoos = { counts: new Map(), mine: [] };
+  if (wishIds.length === 0) return live;
   await connection();
   const hash = await readDeviceHash();
-  if (!hash) return [];
-  const { data, error } = await db().rpc("viewer_metoos", { p_token_hash: hash, p_wish_ids: wishIds });
+  const { data, error } = await db().rpc("live_metoos", { p_token_hash: hash, p_wish_ids: wishIds });
   if (error) {
-    console.error("[viewer_metoos]", error);
-    return [];
+    console.error("[live_metoos]", error);
+    return live;
   }
-  return ((data ?? []) as (number | string)[]).map(Number);
+  for (const row of (data ?? []) as { wish_id: number | string; metoo_count: number; mine: boolean }[]) {
+    const id = Number(row.wish_id);
+    live.counts.set(id, row.metoo_count);
+    if (row.mine) live.mine.push(id);
+  }
+  return live;
 }
 
-/** Parses a /w/:id path segment. */
-export function parseWishId(raw: string): number | null {
-  if (!/^[1-9][0-9]{0,15}$/.test(raw)) return null;
-  const id = Number(raw);
-  return Number.isSafeInteger(id) ? id : null;
+const NO_VIEWER_STATE: ViewerWishState = { is_wisher: false, has_metoo: false, subscribed: false, verdicts: {} };
+
+/**
+ * Whether this browser posted the wish, me-too'd it, subscribed to it, and
+ * its votes on the wish's links. Never cached; skipped without a device
+ * cookie. Falls back to "nothing" if the lookup fails.
+ */
+export async function getViewerWishState(wishId: number): Promise<ViewerWishState> {
+  await connection();
+  const hash = await readDeviceHash();
+  if (!hash) return NO_VIEWER_STATE;
+  const { data, error } = await db().rpc("viewer_wish_state", { p_token_hash: hash, p_wish_id: wishId });
+  if (error) {
+    console.error("[viewer_wish_state]", error);
+    return NO_VIEWER_STATE;
+  }
+  return (data as ViewerWishState | null) ?? NO_VIEWER_STATE;
+}
+
+export type SubscriptionContext = { wish_id: number; unsubscribed: boolean; suppressed: boolean };
+
+/** Which wish an email token is for. Never cached; never the address. */
+export async function getSubscriptionContext(subscriptionId: number): Promise<SubscriptionContext | null> {
+  await connection();
+  const { data, error } = await db().rpc("subscription_context", { p_subscription_id: subscriptionId });
+  if (error) throw error;
+  return (data as SubscriptionContext | null) ?? null;
+}
+
+/** Overlays live me-too counts onto cached wishes. */
+export function withLiveCounts<T extends { id: number; metoo_count: number }>(wishes: T[], live: LiveMetoos): T[] {
+  return wishes.map((w) => {
+    const count = live.counts.get(w.id);
+    return count === undefined || count === w.metoo_count ? w : { ...w, metoo_count: count };
+  });
 }
 
 export async function getSitemapEntries(): Promise<{ wishes: { id: number; updated_at: string }[]; developers: string[] }> {
