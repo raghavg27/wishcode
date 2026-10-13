@@ -134,6 +134,16 @@ export async function getViewerWishState(wishId: number): Promise<ViewerWishStat
   return (data as ViewerWishState | null) ?? NO_VIEWER_STATE;
 }
 
+export type SubscriptionContext = { wish_id: number; unsubscribed: boolean; suppressed: boolean };
+
+/** Which wish an email token is for. Never cached; never the address. */
+export async function getSubscriptionContext(subscriptionId: number): Promise<SubscriptionContext | null> {
+  await connection();
+  const { data, error } = await db().rpc("subscription_context", { p_subscription_id: subscriptionId });
+  if (error) throw error;
+  return (data as SubscriptionContext | null) ?? null;
+}
+
 /** Overlays live me-too counts onto cached wishes. */
 export function withLiveCounts<T extends { id: number; metoo_count: number }>(wishes: T[], live: LiveMetoos): T[] {
   return wishes.map((w) => {
