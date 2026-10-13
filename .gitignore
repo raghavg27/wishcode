@@ -14,3 +14,6 @@ next-env.d.ts
 .playwright-mcp/
 .env*
 !.env.example
+
+# Supabase CLI local state
+supabase/.temp
