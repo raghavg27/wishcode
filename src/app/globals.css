@@ -1,0 +1,126 @@
+@import "tailwindcss";
+
+/* Design tokens from design/public_ledger_of_wishes/DESIGN.md (the "paper and
+   ink" palette used by the screens). Light only, as designed. */
+@theme {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-newsreader), ui-serif, Georgia, serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --color-surface: #fff8f5;
+  --color-surface-lowest: #ffffff;
+  --color-surface-low: #faf2ee;
+  --color-surface-container: #f5ece8;
+  --color-surface-high: #efe6e3;
+  --color-surface-highest: #e9e1dd;
+  --color-surface-dim: #e0d8d5;
+  --color-ink: #1e1b19;
+  --color-ink-muted: #524434;
+  --color-outline: #857462;
+  --color-outline-variant: #d7c3ae;
+  --color-hairline: #eae4da;
+  --color-inverse: #34302d;
+  --color-inverse-ink: #f7efeb;
+
+  --color-primary: #835400;
+  --color-amber: #f5a524;
+  --color-amber-hover: #e0941c;
+  --color-on-amber: #14110f;
+  --color-amber-soft: #ffddb5;
+
+  --color-leaf: #1f9d55;
+  --color-leaf-ink: #00743a;
+  --color-leaf-strong: #006d37;
+  --color-leaf-soft: #f0fdf4;
+  --color-leaf-border: #bbf7d0;
+  --color-leaf-chip: #86faa7;
+
+  --color-craft: #d97706;
+  --color-craft-ink: #904d00;
+  --color-craft-soft: #fffbeb;
+  --color-craft-border: #fde68a;
+  --color-craft-chip: #ffdcc3;
+
+  --color-stone: #9ca3af;
+  --color-stone-soft: #f3f4f6;
+  --color-stone-border: #e5e7eb;
+
+  --color-danger: #ba1a1a;
+  --color-danger-soft: #ffdad6;
+
+  --text-display: 40px;
+  --text-display--line-height: 48px;
+  --text-display--letter-spacing: -0.02em;
+  --text-display-sm: 30px;
+  --text-display-sm--line-height: 38px;
+  --text-display-sm--letter-spacing: -0.015em;
+  --text-wish: 26px;
+  --text-wish--line-height: 36px;
+  --text-wish--letter-spacing: -0.01em;
+  --text-wish-sm: 21px;
+  --text-wish-sm--line-height: 30px;
+  --text-wish-sm--letter-spacing: -0.01em;
+  --text-headline: 18px;
+  --text-headline--line-height: 26px;
+  --text-label: 13px;
+  --text-label--line-height: 18px;
+  --text-label-sm: 12px;
+  --text-label-sm--line-height: 16px;
+  --text-caption: 11px;
+  --text-caption--line-height: 16px;
+
+  --shadow-card: 0 1px 3px rgba(20, 17, 15, 0.04), 0 1px 2px rgba(20, 17, 15, 0.02);
+  --shadow-card-hover: 0 4px 12px rgba(20, 17, 15, 0.06);
+
+  --animate-pop: pop 180ms ease-out;
+  @keyframes pop {
+    0% { transform: scale(0.97); }
+    100% { transform: scale(1); }
+  }
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background: var(--color-surface);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection {
+    background: var(--color-amber-soft);
+    color: #2a1800;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-amber);
+    outline-offset: 2px;
+  }
+  dialog::backdrop {
+    background: rgba(20, 17, 15, 0.4);
+  }
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+@utility card {
+  background: var(--color-surface-lowest);
+  border-radius: 0.75rem;
+  box-shadow: var(--shadow-card);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
