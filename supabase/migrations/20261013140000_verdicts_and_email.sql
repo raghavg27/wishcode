@@ -541,6 +541,22 @@ as $$
   where l.id = p_link_id;
 $$;
 
+-- Which wish an email token's subscription is for, for the /e/* pages.
+-- Never returns the address.
+create or replace function public.subscription_context(p_subscription_id bigint)
+returns jsonb
+language sql
+stable
+set search_path = ''
+as $$
+  select jsonb_build_object(
+    'wish_id', s.wish_id,
+    'unsubscribed', s.unsubscribed_at is not null,
+    'suppressed', exists (select 1 from public.email_suppressions e where e.email = s.email))
+  from public.subscriptions s
+  where s.id = p_subscription_id;
+$$;
+
 -- Viewer-specific state for a wish page. Never cached by the app; never
 -- returns an email address.
 create or replace function public.viewer_wish_state(p_token_hash text, p_wish_id bigint)

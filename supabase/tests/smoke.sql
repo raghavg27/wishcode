@@ -314,6 +314,10 @@ begin
   begin perform public.subscribe(m[2], 'ipm2', w, 'M1B@example.com', 5, 100);
   exception when others then failed := sqlerrm = 'suppressed'; end;
   assert failed, 'suppression not cleared by subscribing';
+  r := public.subscription_context(sub);
+  assert (r->>'wish_id')::bigint = w and (r->>'unsubscribed')::boolean and (r->>'suppressed')::boolean
+     and r::text !~ '"email"', 'subscription context';
+  assert public.subscription_context(-1) is null, 'unknown subscription';
 
   -- Removing a me-too ends that device's subscription.
   perform public.set_metoo(m[1], 'ipm', w, false, 200, 2000);
@@ -370,6 +374,7 @@ begin
       'select public.unsubscribe(1, false)',
       'select public.link_notification(1)',
       'select public.viewer_wish_state(null, 1)',
+      'select public.subscription_context(1)',
       'select 1 from public.wishes limit 1',
       'select 1 from public.verdicts limit 1',
       'select 1 from public.subscriptions limit 1',

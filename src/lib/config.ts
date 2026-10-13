@@ -4,6 +4,7 @@ export const WISH_MIN = 20;
 export const WISH_MAX = 200;
 export const LINK_DESCRIPTION_MAX = 140;
 export const URL_MAX = 2048;
+export const EMAIL_MAX = 254;
 
 // Rate limits. Daily windows reset at midnight UTC.
 export const LIMITS = {
@@ -20,6 +21,9 @@ export const LIMITS = {
   claimsPerDeveloperPerDay: 5,
   /** Caps embedding calls (Edge Function CPU time) from one IP. */
   duplicateChecksPerIpPerHour: 60,
+  /** New email subscriptions (re-subscribing an active address is free). */
+  subscriptionsPerDevicePerDay: 20,
+  subscriptionsPerNetworkPerDay: 100,
 } as const;
 
 /**
@@ -34,6 +38,10 @@ export const DUPLICATE_LIMIT = 3;
 export const FEED_PAGE_SIZE = 20;
 
 export const DISCLAIMER = "Wishcode doesn't check or vouch for linked apps.";
+
+/** Shown above a wish's links. */
+export const LINKS_DISCLAIMER =
+  "Wishcode doesn't check linked apps. People who wanted this wish vote on whether each link works.";
 
 export const STATUS_FILTERS = ["all", "open", "being_built", "fulfilled"] as const;
 export type StatusFilter = (typeof STATUS_FILTERS)[number];

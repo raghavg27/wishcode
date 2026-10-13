@@ -5,7 +5,15 @@ import { FEED_PAGE_SIZE, type Sort, type StatusFilter } from "@/lib/config";
 import { decodeCursor, encodeCursor } from "@/lib/cursor";
 import { readDeviceHash } from "@/lib/identity";
 import { db } from "@/lib/supabase/admin";
-import type { DeveloperProfile, DirectoryEntry, FeedPage, LedgerStats, WishCard, WishDetail } from "@/lib/types";
+import type {
+  DeveloperProfile,
+  DirectoryEntry,
+  FeedPage,
+  LedgerStats,
+  ViewerWishState,
+  WishCard,
+  WishDetail,
+} from "@/lib/types";
 
 // Public reads are cached in the Next.js data cache and shared by every
 // visitor; per-viewer state (me-toos, session) is read separately per request.
@@ -105,6 +113,25 @@ export async function getLiveMetoos(wishIds: number[]): Promise<LiveMetoos> {
     if (row.mine) live.mine.push(id);
   }
   return live;
+}
+
+const NO_VIEWER_STATE: ViewerWishState = { is_wisher: false, has_metoo: false, subscribed: false, verdicts: {} };
+
+/**
+ * Whether this browser posted the wish, me-too'd it, subscribed to it, and
+ * its votes on the wish's links. Never cached; skipped without a device
+ * cookie. Falls back to "nothing" if the lookup fails.
+ */
+export async function getViewerWishState(wishId: number): Promise<ViewerWishState> {
+  await connection();
+  const hash = await readDeviceHash();
+  if (!hash) return NO_VIEWER_STATE;
+  const { data, error } = await db().rpc("viewer_wish_state", { p_token_hash: hash, p_wish_id: wishId });
+  if (error) {
+    console.error("[viewer_wish_state]", error);
+    return NO_VIEWER_STATE;
+  }
+  return (data as ViewerWishState | null) ?? NO_VIEWER_STATE;
 }
 
 /** Overlays live me-too counts onto cached wishes. */
