@@ -6,6 +6,8 @@ export type FunnelEvent =
   | "metoo"
   | "claim"
   | "link_posted"
+  | "verdict"
+  | "email_opt_in"
   | "share"
   | "github_connect_started";
 

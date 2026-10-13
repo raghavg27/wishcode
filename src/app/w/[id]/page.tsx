@@ -4,7 +4,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { DeveloperPanel, RemoveOwnLink } from "@/components/developer-panel";
+import { EmailOptIn, WisherOptInCard } from "@/components/email-opt-in";
 import { GithubIcon } from "@/components/icons";
+import { FlaggedLink, LinkVerdictPanel } from "@/components/link-verdict";
 import { MetooButton } from "@/components/metoo";
 import { PostLinkModal, PostLinkTrigger } from "@/components/post-link";
 import { CopyLinkButton, ShareIconButton, ShareTargets } from "@/components/share";
@@ -12,10 +14,11 @@ import { TimeAgo } from "@/components/time-ago";
 import { DevChip, Disclaimer, Skeleton, StatusChip, buttonStyles, statusLabel } from "@/components/ui";
 import { EXTERNAL_REL } from "@/components/wish-card";
 import { getViewer } from "@/lib/auth";
-import { getLiveMetoos, getWish, withLiveCounts } from "@/lib/data";
+import { LINKS_DISCLAIMER } from "@/lib/config";
+import { getLiveMetoos, getViewerWishState, getWish, withLiveCounts } from "@/lib/data";
 import { domainOf, durationBetween, formatDate, formatNumber, pluralize, repoLabel } from "@/lib/format";
 import { parseWishId, siteUrl, wishLabel, wishPath } from "@/lib/site";
-import type { WishDetail } from "@/lib/types";
+import type { ViewerWishState, WishDetail, WishLink } from "@/lib/types";
 
 export async function generateMetadata({ params }: PageProps<"/w/[id]">): Promise<Metadata> {
   const id = parseWishId((await params).id);
@@ -55,13 +58,16 @@ async function WishView({ params, searchParams }: PageProps<"/w/[id]">) {
   const cached = await getWish(id);
   if (!cached) notFound();
 
-  const [{ developer }, live, sp] = await Promise.all([
+  const [{ developer }, live, viewer, sp] = await Promise.all([
     getViewer().catch(() => ({ developer: null })),
     getLiveMetoos([id]),
+    getViewerWishState(id),
     searchParams,
   ]);
   const [wish] = withLiveCounts([cached], live);
   const metooActive = live.mine.includes(id);
+  const metoo = { active: metooActive, count: wish.metoo_count };
+  const askWisher = sp.posted === "1" && !wish.removed && viewer.is_wisher && !viewer.subscribed;
   const viewerLink = developer ? wish.links.find((l) => l.developer.id === developer.id) : undefined;
   const claimed = Boolean(developer && wish.claims.some((c) => c.developer.id === developer.id));
   const path = wishPath(wish.id);
@@ -79,6 +85,7 @@ async function WishView({ params, searchParams }: PageProps<"/w/[id]">) {
           <CopyLinkButton path={path} />
         </div>
       )}
+      {askWisher && <WisherOptInCard wishId={wish.id} subscribed={viewer.subscribed} />}
       {claimed && !wish.removed && (
         <div className="mb-6 flex items-center gap-2 rounded-xl bg-leaf-soft px-4 py-3 text-label font-medium text-ink">
           <CircleCheck className="size-4 text-leaf" aria-hidden />
@@ -98,7 +105,11 @@ async function WishView({ params, searchParams }: PageProps<"/w/[id]">) {
 
       <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12">
         <div className="flex flex-col gap-10 lg:col-span-8">
-          {wish.removed ? <RemovedHero wish={wish} /> : <WishHero wish={wish} metooActive={metooActive} />}
+          {wish.removed ? (
+            <RemovedHero wish={wish} />
+          ) : (
+            <WishHero wish={wish} metooActive={metooActive} viewer={viewer} showOptIn={!askWisher} />
+          )}
 
           {!wish.removed && (
             <section id="links" aria-labelledby="links-title" className="scroll-mt-24">
@@ -111,9 +122,7 @@ async function WishView({ params, searchParams }: PageProps<"/w/[id]">) {
                 </h2>
                 <span className="text-label-sm text-ink-muted">Independent developer releases</span>
               </div>
-              <Disclaimer className="mb-4">
-                Wishcode doesn&apos;t check, audit, or vouch for linked apps. Review code and install at your own discretion.
-              </Disclaimer>
+              <Disclaimer className="mb-4">{LINKS_DISCLAIMER}</Disclaimer>
 
               {wish.links.length === 0 ? (
                 <div className="card flex flex-col items-center px-6 py-12 text-center">
@@ -130,51 +139,23 @@ async function WishView({ params, searchParams }: PageProps<"/w/[id]">) {
                 </div>
               ) : (
                 <ul className="flex flex-col gap-4">
-                  {wish.links.map((link, i) => (
-                    <li key={link.id} className="card overflow-hidden">
-                      <div className="p-5">
-                        <div className="flex flex-wrap items-center justify-between gap-2">
-                          <div className="flex items-center gap-2">
-                            <DevChip dev={link.developer} />
-                            <TimeAgo iso={link.created_at} prefix="posted" className="text-label-sm text-ink-muted" />
-                          </div>
-                          {i === 0 && (
-                            <span className="inline-flex items-center gap-1 rounded-full bg-leaf-chip/50 px-2.5 py-0.5 text-label-sm font-medium text-leaf-ink">
-                              <Sprout className="size-3.5" aria-hidden /> First to ship
-                            </span>
-                          )}
-                        </div>
-                        <p className="mt-3 text-[15px] leading-6 text-ink">{link.description}</p>
-                      </div>
-                      <div className="flex flex-wrap items-center justify-between gap-3 bg-surface-low px-5 py-3">
-                        <div className="flex min-w-0 items-center gap-3">
-                          <a
-                            href={link.url}
-                            target="_blank"
-                            rel={EXTERNAL_REL}
-                            className="inline-flex shrink-0 items-center gap-2 rounded-lg bg-ink px-4 py-2 text-label font-semibold text-white transition-colors hover:bg-inverse"
-                          >
-                            Open app <ArrowUpRight className="size-4" aria-hidden />
-                          </a>
-                          <span className="truncate font-mono text-label-sm text-ink-muted">{domainOf(link.url)}</span>
-                        </div>
-                        <div className="flex items-center gap-4">
-                          {link.repo_url && (
-                            <a
-                              href={link.repo_url}
-                              target="_blank"
-                              rel={EXTERNAL_REL}
-                              title={repoLabel(link.repo_url)}
-                              className="inline-flex items-center gap-1.5 text-label font-medium text-ink hover:underline"
-                            >
-                              <GithubIcon className="size-4" /> Source <ArrowUpRight className="size-3" aria-hidden />
-                            </a>
-                          )}
-                          {viewerLink?.id === link.id && <RemoveOwnLink linkId={link.id} compact />}
-                        </div>
-                      </div>
-                    </li>
-                  ))}
+                  {wish.links.map((link) => {
+                    const card = (
+                      <LinkCard
+                        link={link}
+                        wishId={wish.id}
+                        firstToShip={link.id === wish.first_link?.id}
+                        viewer={viewer}
+                        metoo={metoo}
+                        ownLink={viewerLink?.id === link.id}
+                      />
+                    );
+                    return (
+                      <li key={link.id}>
+                        {link.verdict === "flagged" ? <FlaggedLink handle={link.developer.handle}>{card}</FlaggedLink> : card}
+                      </li>
+                    );
+                  })}
                 </ul>
               )}
             </section>
@@ -233,7 +214,90 @@ async function WishView({ params, searchParams }: PageProps<"/w/[id]">) {
   );
 }
 
-function WishHero({ wish, metooActive }: { wish: WishDetail; metooActive: boolean }) {
+function LinkCard({
+  link,
+  wishId,
+  firstToShip,
+  viewer,
+  metoo,
+  ownLink,
+}: {
+  link: WishLink;
+  wishId: number;
+  firstToShip: boolean;
+  viewer: ViewerWishState;
+  metoo: { active: boolean; count: number };
+  ownLink: boolean;
+}) {
+  return (
+    <div className="card overflow-hidden">
+      <div className="p-5">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <DevChip dev={link.developer} />
+            <TimeAgo iso={link.created_at} prefix="posted" className="text-label-sm text-ink-muted" />
+          </div>
+          {firstToShip && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-leaf-chip/50 px-2.5 py-0.5 text-label-sm font-medium text-leaf-ink">
+              <Sprout className="size-3.5" aria-hidden /> First to ship
+            </span>
+          )}
+        </div>
+        <p className="mt-3 text-[15px] leading-6 text-ink">{link.description}</p>
+      </div>
+      <LinkVerdictPanel
+        wishId={wishId}
+        linkId={link.id}
+        isWisher={viewer.is_wisher}
+        metoo={metoo}
+        verdict={link.verdict}
+        worksCount={link.works_count}
+        brokenCount={link.broken_count}
+        wisherVerdict={link.wisher_verdict}
+        mine={viewer.verdicts[String(link.id)] ?? null}
+      />
+      <div className="flex flex-wrap items-center justify-between gap-3 bg-surface-low px-5 py-3">
+        <div className="flex min-w-0 items-center gap-3">
+          <a
+            href={link.url}
+            target="_blank"
+            rel={EXTERNAL_REL}
+            className="inline-flex shrink-0 items-center gap-2 rounded-lg bg-ink px-4 py-2 text-label font-semibold text-white transition-colors hover:bg-inverse"
+          >
+            Open app <ArrowUpRight className="size-4" aria-hidden />
+          </a>
+          <span className="truncate font-mono text-label-sm text-ink-muted">{domainOf(link.url)}</span>
+        </div>
+        <div className="flex items-center gap-4">
+          {link.repo_url && (
+            <a
+              href={link.repo_url}
+              target="_blank"
+              rel={EXTERNAL_REL}
+              title={repoLabel(link.repo_url)}
+              className="inline-flex items-center gap-1.5 text-label font-medium text-ink hover:underline"
+            >
+              <GithubIcon className="size-4" /> Source <ArrowUpRight className="size-3" aria-hidden />
+            </a>
+          )}
+          {ownLink && <RemoveOwnLink linkId={link.id} compact />}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function WishHero({
+  wish,
+  metooActive,
+  viewer,
+  showOptIn,
+}: {
+  wish: WishDetail;
+  metooActive: boolean;
+  viewer: ViewerWishState;
+  showOptIn: boolean;
+}) {
   return (
     <article className="card relative overflow-hidden p-6 sm:p-8">
       <div
@@ -258,9 +322,18 @@ function WishHero({ wish, metooActive }: { wish: WishDetail; metooActive: boolea
         <ShieldCheck className="size-3.5" aria-hidden />
         Wishers are 100% anonymous. Tap to add your me-too to this wish.
       </p>
+      {showOptIn && (
+        <EmailOptIn
+          wishId={wish.id}
+          isWisher={viewer.is_wisher}
+          subscribed={viewer.subscribed}
+          metoo={{ active: metooActive, count: wish.metoo_count }}
+          className="mt-4"
+        />
+      )}
       <p className="mt-6 text-label text-ink-muted sm:hidden">
         <span className="font-semibold text-ink tabular">{pluralize(wish.metoo_count, "me-too")}</span>
-        {wish.link_count > 0 && ` · ${pluralize(wish.link_count, "ship")}`}
+        {wish.live_link_count > 0 && ` · ${pluralize(wish.live_link_count, "ship")}`}
         {wish.claim_count > 0 && ` · ${pluralize(wish.claim_count, "builder")}`}
       </p>
     </article>
@@ -294,7 +367,7 @@ function WishRecord({ wish }: { wish: WishDetail }) {
   const rows: [string, React.ReactNode][] = [
     ["First posted", formatDate(wish.created_at)],
     ["Me-toos", formatNumber(wish.metoo_count)],
-    ["Live links", formatNumber(wish.link_count)],
+    ["Live links", formatNumber(wish.live_link_count)],
     ["Builders", formatNumber(wish.claim_count)],
   ];
   if (wish.fulfilled_at) rows.splice(1, 0, ["Time to first ship", <span key="t" className="text-leaf-strong">{durationBetween(wish.created_at, wish.fulfilled_at)}</span>]);
