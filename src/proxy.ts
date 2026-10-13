@@ -5,8 +5,21 @@ import { GITHUB_HANDLE, parseWishId } from "@/lib/site";
 
 const WISH_PATH = /^\/w\/([^/]+)\/?$/;
 const DEVELOPER_PATH = /^\/d\/([^/]+)\/?$/;
+const UNSUBSCRIBE_PATH = /^\/e\/unsubscribe\/?$/;
 
 export async function proxy(request: NextRequest) {
+  // One-click unsubscribe (RFC 8058) POSTs to the page's URL. A page can't
+  // also be a route handler, so send POSTs that aren't Server Actions to one.
+  if (
+    request.method === "POST" &&
+    UNSUBSCRIBE_PATH.test(request.nextUrl.pathname) &&
+    !request.headers.has("next-action")
+  ) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/api/unsubscribe";
+    return NextResponse.rewrite(url);
+  }
+
   const missing = await missingPage(request);
   if (missing) {
     // Pages stream, so their status is committed before they can call
