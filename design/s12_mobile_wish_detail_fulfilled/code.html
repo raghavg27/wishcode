@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_stack" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{width:100%;margin:0;padding:0;background-color:#fff8f5;}body{overscroll-behavior-y:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "primary": "#835400", "on-surface-variant": "#524434", "on-secondary-fixed-variant": "#005228", "secondary-fixed-dim": "#6add8d", "background": "#fff8f5", "on-tertiary-fixed": "#2f1500", "secondary-fixed": "#86faa7", "surface-container-high": "#efe6e3", "on-surface": "#1e1b19", "surface": "#fff8f5", "on-secondary-fixed": "#00210c", "on-tertiary-container": "#6e3900", "on-secondary-container": "#00743a", "surface-variant": "#e9e1dd", "secondary": "#006d37", "inverse-surface": "#34302d", "on-error": "#ffffff", "outline-variant": "#d7c3ae", "on-primary-container": "#643f00", "error-container": "#ffdad6", "surface-container-highest": "#e9e1dd", "tertiary-container": "#ff9f49", "on-tertiary": "#ffffff", "tertiary": "#904d00", "on-error-container": "#93000a", "on-background": "#1e1b19", "error": "#ba1a1a", "surface-container-lowest": "#ffffff", "primary-fixed": "#ffddb5", "on-primary-fixed": "#2a1800", "secondary-container": "#86faa7", "surface-container-low": "#faf2ee", "inverse-primary": "#ffb957", "on-primary": "#ffffff", "surface-dim": "#e0d8d5", "on-secondary": "#ffffff", "inverse-on-surface": "#f7efeb", "on-tertiary-fixed-variant": "#6e3900", "outline": "#857462", "surface-container": "#f5ece8", "on-primary-fixed-variant": "#643f00", "primary-container": "#f5a524", "surface-bright": "#fff8f5", "surface-tint": "#835400", "primary-fixed-dim": "#ffb957", "tertiary-fixed": "#ffdcc3", "tertiary-fixed-dim": "#ffb77d" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "gutter": "1rem", "space-xl": "2rem", "space-xs": "0.25rem", "space-lg": "1.25rem", "space-sm": "0.5rem", "space-md": "0.75rem", "margin": "1rem" }, "fontFamily": { "label-counter": ["Inter"], "caption": ["Inter"], "headline-sm": ["Newsreader"], "headline-wish": ["Newsreader"], "display-lg-mobile": ["Newsreader"], "label-md": ["Inter"], "body-md": ["Inter"], "label-sm": ["Inter"], "body-lg": ["Inter"], "headline-wish-mobile": ["Newsreader"], "display-lg": ["Newsreader"] }, "fontSize": { "label-counter": ["13px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "caption": ["11px", { "lineHeight": "16px", "fontWeight": "400" }], "headline-sm": ["18px", { "lineHeight": "26px", "fontWeight": "600" }], "headline-wish": ["26px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "500" }], "display-lg-mobile": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.015em", "fontWeight": "500" }], "label-md": ["13px", { "lineHeight": "18px", "fontWeight": "500" }], "body-md": ["14px", { "lineHeight": "22px", "fontWeight": "400" }], "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }], "body-lg": ["16px", { "lineHeight": "26px", "fontWeight": "400" }], "headline-wish-mobile": ["21px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "500" }], "display-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "500" }] } } } };</script><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<title>S12 - Mobile Wish Detail (Fulfilled)</title></head><body class="bg-surface text-on-surface flex flex-col min-h-screen antialiased selection:bg-primary-fixed selection:text-on-primary-fixed"><header class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(20,17,15,0.04)] pt-safe"><div class="h-16 px-gutter flex items-center justify-between max-w-md mx-auto"><div class="flex items-center gap-space-xs"><button aria-label="Go back" class="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl text-on-surface hover:bg-surface-container transition-colors -ml-space-xs" onclick="history.back()"><span class="material-symbols-outlined text-[22px]">arrow_back</span></button><h1 class="font-headline-sm text-headline-sm tracking-tight text-on-surface line-clamp-1">Wish Detail</h1></div><div class="flex items-center gap-space-sm"></div></div></header><main class="flex-1 flex flex-col relative w-full max-w-md mx-auto px-gutter pt-16 pb-safe bg-surface"><div class="flex flex-col w-full pb-28">
+<!-- Top Auxiliary Ledger Header Bar -->
+<div class="flex items-center justify-between py-space-sm mb-space-sm">
+<button class="inline-flex items-center gap-1.5 py-1.5 px-2.5 -ml-2 rounded-xl text-on-surface hover:bg-surface-container active:bg-surface-container-high transition-colors min-h-[44px]" onclick="history.back()">
+<span class="material-symbols-outlined text-[18px]">arrow_back</span>
+<span class="font-label-md text-label-md font-medium tracking-tight">Ledger</span>
+</button>
+<div class="flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container font-label-sm text-label-sm text-on-surface-variant font-medium tracking-wide">
+<span class="material-symbols-outlined text-[14px]">tag</span>
+<span class="">WISH-8492</span>
+</div>
+</div>
+<!-- Main Wish Statement Card -->
+<article class="bg-surface-container-lowest rounded-xl p-5 shadow-[0_1px_4px_rgba(20,17,15,0.04)] mb-space-lg">
+<!-- Meta & Status Bar -->
+<div class="flex items-center justify-between gap-2 mb-3">
+<!-- Fulfilled Badge Stamp -->
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-semibold tracking-tight shadow-sm">
+<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="">Fulfilled</span>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant font-caption text-caption">
+<span class="material-symbols-outlined text-[14px]">history</span>
+<span class="">3d ago · Anon</span>
+</div>
+</div>
+<!-- Wish Headline -->
+<h2 class="font-headline-wish-mobile text-headline-wish-mobile text-on-surface tracking-tight leading-snug mb-3.5">
+      “A menu bar app that mutes my mic whenever my dog barks on video calls.”
+    </h2>
+<!-- Context Storytelling -->
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+      I work remotely in sales and my rescue beagle announces every postal delivery during critical Zoom meetings. Pushing physical mute is always two seconds too late. Looking for a zero-latency audio gate trained on canine spectrograms.
+    </p>
+<!-- Social Proof Quick Counters -->
+<div class="mt-4 pt-3.5 flex items-center justify-between bg-surface-container-low -mx-5 -mb-5 px-5 py-2.5 rounded-b-xl">
+<div class="flex items-center gap-2">
+<div class="flex -space-x-1.5 items-center">
+<div class="w-6 h-6 rounded-full bg-primary-fixed flex items-center justify-center text-[10px] font-bold text-on-primary-fixed">P</div>
+<div class="w-6 h-6 rounded-full bg-secondary-fixed flex items-center justify-center text-[10px] font-bold text-on-secondary-fixed">M</div>
+<div class="w-6 h-6 rounded-full bg-tertiary-fixed flex items-center justify-center text-[10px] font-bold text-on-tertiary-fixed">A</div>
+</div>
+<span class="font-caption text-caption text-on-surface-variant font-medium">143 people wished this</span>
+</div>
+<span class="font-caption text-caption text-secondary font-semibold">2 Ships · 2 Builders</span>
+</div>
+</article>
+<!-- Live Links Section -->
+<section class="flex flex-col gap-3 mb-space-lg">
+<div class="flex items-baseline justify-between">
+<div class="flex items-center gap-2">
+<h3 class="font-headline-sm text-headline-sm text-on-surface tracking-tight">Live links</h3>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-counter text-label-counter">2</span>
+</div>
+<span class="font-caption text-caption text-on-surface-variant">macOS, Web, Windows</span>
+</div>
+<!-- Friendly Physical Disclaimer Callout -->
+<div class="flex items-start gap-2.5 p-3 rounded-lg bg-surface-container-low text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px] text-tertiary shrink-0 mt-0.5">verified_user</span>
+<p class="font-caption text-caption leading-relaxed">
+<strong class="font-semibold text-on-surface">Community code notice:</strong> Wishcode doesn’t audit or vouch for linked software. Review source code and install at your own discretion.
+      </p>
+</div>
+<!-- Shipping Cards Stack -->
+<div class="flex flex-col gap-3.5">
+<!-- Card 1: Priya (First to ship) -->
+<div class="bg-surface-container-lowest rounded-xl p-4 shadow-[0_1px_4px_rgba(20,17,15,0.05)] relative overflow-hidden">
+<!-- Stamp of honor ribbon bar -->
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold text-caption shrink-0">
+              P
+            </div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-semibold text-on-surface leading-none">@priya</span>
+<span class="font-caption text-caption text-on-surface-variant mt-0.5">posted 14h ago</span>
+</div>
+</div>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant font-label-sm text-label-sm font-semibold tracking-tight">
+<span class="material-symbols-outlined text-[13px]">award_star</span>
+            First to ship
+          </span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4 leading-normal">
+          Lightweight macOS menu bar agent powered by CoreML on-device canine audio classifier. Zero cloud latency, completely offline.
+        </p>
+<!-- Tap Targets -->
+<div class="flex flex-col sm:flex-row gap-2">
+<a class="flex-1 min-h-[44px] px-3.5 py-2.5 rounded-lg bg-primary-container hover:bg-tertiary-container active:scale-[0.98] transition-all flex items-center justify-between text-on-primary-container" href="https://barkmute.app" rel="noopener noreferrer" target="_blank">
+<div class="flex items-center gap-1.5 font-label-md text-label-md font-semibold">
+<span class="material-symbols-outlined text-[18px]">launch</span>
+<span class="">Open app</span>
+</div>
+<span class="font-caption text-caption opacity-80 font-mono">barkmute.app</span>
+</a>
+<a class="min-h-[44px] px-3.5 py-2.5 rounded-lg bg-surface-container hover:bg-surface-container-high active:scale-[0.98] transition-all flex items-center justify-center gap-1.5 text-on-surface font-label-md text-label-md font-medium" href="https://github.com/priya/barkmute" rel="noopener noreferrer" target="_blank">
+<span class="material-symbols-outlined text-[18px]">code</span>
+<span class="">Source</span>
+</a>
+</div>
+</div>
+<!-- Card 2: Marcus (Cross-platform WebRTC) -->
+<div class="bg-surface-container-lowest rounded-xl p-4 shadow-[0_1px_4px_rgba(20,17,15,0.05)]">
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-tertiary-container text-on-tertiary-container flex items-center justify-center font-bold text-caption shrink-0">
+              M
+            </div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-semibold text-on-surface leading-none">@marcus_w</span>
+<span class="font-caption text-caption text-on-surface-variant mt-0.5">posted 6h ago</span>
+</div>
+</div>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container-highest text-on-surface-variant font-label-sm text-label-sm font-medium">
+            Cross-platform WebRTC
+          </span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4 leading-normal">
+          Open-source Electron utility that integrates directly with Zoom and Google Meet browser audio streams using an audio worklet processor.
+        </p>
+<!-- Tap Targets -->
+<div class="flex flex-col sm:flex-row gap-2">
+<a class="flex-1 min-h-[44px] px-3.5 py-2.5 rounded-lg bg-surface-container hover:bg-surface-container-high active:scale-[0.98] transition-all flex items-center justify-between text-on-surface" href="https://dogmute-desktop.vercel.app" rel="noopener noreferrer" target="_blank">
+<div class="flex items-center gap-1.5 font-label-md text-label-md font-semibold">
+<span class="material-symbols-outlined text-[18px]">launch</span>
+<span class="">Open app</span>
+</div>
+<span class="font-caption text-caption text-on-surface-variant font-mono truncate max-w-[140px]">dogmute-desktop...</span>
+</a>
+<a class="min-h-[44px] px-3.5 py-2.5 rounded-lg bg-surface-container-low hover:bg-surface-container active:scale-[0.98] transition-all flex items-center justify-center gap-1.5 text-on-surface font-label-md text-label-md font-medium" href="#">
+<span class="material-symbols-outlined text-[18px]">code</span>
+<span class="">Source</span>
+</a>
+</div>
+</div>
+</div>
+</section>
+<!-- Share Card Preview Artifact (Social Card arrival reassurance) -->
+<div class="mb-space-lg">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px]">share</span>
+        Community Share Artifact
+      </span>
+<span class="font-caption text-caption text-on-surface-variant">1200 × 630</span>
+</div>
+<!-- The physical paper card snapshot -->
+<div class="w-full bg-surface-container rounded-xl p-4 shadow-inner relative flex flex-col justify-between overflow-hidden">
+<div class="flex items-start justify-between mb-3">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="font-label-counter text-label-counter text-secondary font-bold uppercase tracking-wider">Wish Fulfilled</span>
+</div>
+<span class="font-caption text-caption text-on-surface-variant font-mono">wishcode.dev/w/8492</span>
+</div>
+<p class="font-headline-sm text-headline-sm text-on-surface italic line-clamp-2 mb-3 font-serif">
+        “A menu bar app that mutes my mic whenever my dog barks on video calls.”
+      </p>
+<div class="flex items-center justify-between pt-2">
+<div class="flex items-center gap-1 text-on-surface font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[16px] text-tertiary">front_hand</span>
+<span class="">143 me-toos</span>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant font-caption text-caption">
+<span class="">Shipped by</span>
+<span class="font-medium text-on-surface">@priya</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Collapsible Section for Developers: Build this wish -->
+<div class="bg-surface-container-low rounded-xl p-4 shadow-[0_1px_3px_rgba(20,17,15,0.03)] mb-4">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-[20px] text-tertiary">build</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold">For developers · Build this wish</h3>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-3.5 leading-normal">
+      Did you build something for this, or planning to? This wish is fulfilled, but alternative builds, platforms (Linux, Android, Windows), and forks are always welcome.
+    </p>
+<!-- Developer Actions -->
+<div class="flex flex-col gap-2 mb-4">
+<button class="w-full min-h-[44px] px-4 py-2.5 rounded-lg bg-primary-container text-on-primary-container font-label-md text-label-md font-semibold flex items-center justify-center gap-2 active:scale-[0.98] transition-all" onclick="alert('Authenticate with GitHub to submit a live link')">
+<span class="material-symbols-outlined text-[18px]">add_link</span>
+<span class="">Post a live link</span>
+</button>
+<button class="w-full min-h-[44px] px-4 py-2.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md font-medium flex items-center justify-center gap-2 active:scale-[0.98] transition-all" onclick="toggleBuildingState(this)">
+<span class="material-symbols-outlined text-[18px] text-tertiary">engineering</span>
+<span class="" id="building-btn-text">I'm building this</span>
+</button>
+</div>
+<!-- Active Builders Roster -->
+<div class="pt-3">
+<div class="font-label-sm text-label-sm text-on-surface font-semibold mb-2 flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-secondary">csv</span>
+<span class="">Currently building (2)</span>
+</div>
+<div class="flex flex-wrap gap-2">
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-highest text-on-surface font-label-sm text-label-sm">
+<div class="w-4 h-4 rounded-full bg-primary flex items-center justify-center text-[9px] text-on-primary font-bold">A</div>
+<span class="">@alex_codes</span>
+<span class="text-on-surface-variant font-caption text-caption">(Python / PyObjC)</span>
+</div>
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-highest text-on-surface font-label-sm text-label-sm">
+<div class="w-4 h-4 rounded-full bg-secondary flex items-center justify-center text-[9px] text-on-secondary font-bold">N</div>
+<span class="">@norah_t</span>
+<span class="text-on-surface-variant font-caption text-caption">(Rust / Tauri)</span>
+</div>
+</div>
+</div>
+<p class="font-caption text-caption text-on-surface-variant mt-3.5 flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[14px]">info</span>
+      Requires GitHub authentication. No deadlines, no claim limits. Anyone can ship code.
+    </p>
+</div>
+<!-- FIXED FLOATING STICKY BOTTOM ACTION BAR -->
+<div class="fixed bottom-0 left-0 right-0 z-40 bg-surface/95 backdrop-blur-md shadow-[0_-4px_16px_rgba(20,17,15,0.06)] pb-safe">
+<div class="max-w-md mx-auto px-gutter py-3 flex flex-col gap-1.5">
+<div class="flex items-center justify-between gap-3">
+<!-- Me Too Endorsement Pill (Tactile microbounce) -->
+<button class="flex-1 min-h-[44px] px-4 py-2 rounded-xl bg-surface-container-lowest hover:bg-surface-container active:scale-95 transition-all duration-150 flex items-center justify-center gap-2.5 shadow-sm" id="me-too-pill" onclick="handleMeTooClick()">
+<span class="material-symbols-outlined text-[20px] text-primary transition-transform" id="me-too-icon">front_hand</span>
+<div class="flex items-center gap-1.5 font-label-counter text-label-counter text-on-surface">
+<span class="tabular-nums font-semibold" id="me-too-count">143</span>
+<span class="font-medium" id="me-too-label">Me too</span>
+</div>
+</button>
+<!-- Share Sheet Trigger Button -->
+<button class="min-h-[44px] px-4 py-2 rounded-xl bg-surface-container-highest hover:bg-surface-container active:scale-95 transition-all text-on-surface font-label-md text-label-md font-semibold flex items-center justify-center gap-1.5 shrink-0" onclick="handleShare()">
+<span class="material-symbols-outlined text-[19px]">share</span>
+<span class="">Share</span>
+</button>
+</div>
+<!-- Anonymous Assurance Microcopy -->
+<div class="flex items-center justify-center gap-1 text-center font-caption text-caption text-on-surface-variant">
+<span class="material-symbols-outlined text-[12px]">lock</span>
+<span class="">Wishers &amp; me-toos are 100% anonymous</span>
+</div>
+</div>
+</div>
+</div>
+<script>
+  let hasEndorsed = false;
+  let count = 143;
+
+  function handleMeTooClick() {
+    const pill = document.getElementById('me-too-pill');
+    const icon = document.getElementById('me-too-icon');
+    const counter = document.getElementById('me-too-count');
+    const label = document.getElementById('me-too-label');
+
+    hasEndorsed = !hasEndorsed;
+
+    if (hasEndorsed) {
+      count += 1;
+      pill.classList.remove('bg-surface-container-lowest', 'text-on-surface');
+      pill.classList.add('bg-primary-container', 'text-on-primary-container');
+      icon.style.fontVariationSettings = "'FILL' 1";
+      icon.classList.remove('text-primary');
+      icon.classList.add('text-on-primary-container', 'rotate-12');
+      label.textContent = 'Endorsed';
+    } else {
+      count -= 1;
+      pill.classList.remove('bg-primary-container', 'text-on-primary-container');
+      pill.classList.add('bg-surface-container-lowest', 'text-on-surface');
+      icon.style.fontVariationSettings = "'FILL' 0";
+      icon.classList.remove('text-on-primary-container', 'rotate-12');
+      icon.classList.add('text-primary');
+      label.textContent = 'Me too';
+    }
+
+    counter.textContent = count;
+  }
+
+  function handleShare() {
+    if (navigator.share) {
+      navigator.share({
+        title: 'Wishcode: Canine Bark Video Call Mute',
+        text: '“A menu bar app that mutes my mic whenever my dog barks on video calls.” Shipped by @priya!',
+        url: window.location.href,
+      }).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      alert('Link copied to clipboard!');
+    }
+  }
+
+  let isBuilding = false;
+  function toggleBuildingState(button) {
+    const textSpan = document.getElementById('building-btn-text');
+    isBuilding = !isBuilding;
+    if (isBuilding) {
+      textSpan.textContent = "You're listed as building!";
+      button.classList.add('bg-secondary-container', 'text-on-secondary-container');
+    } else {
+      textSpan.textContent = "I'm building this";
+      button.classList.remove('bg-secondary-container', 'text-on-secondary-container');
+    }
+  }
+</script></main>
+</body></html>

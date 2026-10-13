@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><title>S05 - Wish Detail (Being Built)</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={"darkMode":"class","theme":{"extend":{"colors":{"outline":"#857462","on-background":"#1e1b19","surface-tint":"#835400","on-tertiary-container":"#6e3900","inverse-surface":"#34302d","tertiary-fixed-dim":"#ffb77d","secondary-fixed":"#86faa7","on-primary":"#ffffff","surface-container":"#f5ece8","tertiary-fixed":"#ffdcc3","on-secondary":"#ffffff","error":"#ba1a1a","surface-bright":"#fff8f5","surface-container-lowest":"#ffffff","inverse-on-surface":"#f7efeb","on-secondary-fixed":"#00210c","on-secondary-container":"#00743a","tertiary":"#904d00","on-error":"#ffffff","on-primary-fixed":"#2a1800","on-tertiary-fixed-variant":"#6e3900","secondary-fixed-dim":"#6add8d","surface-container-high":"#efe6e3","inverse-primary":"#ffb957","primary-fixed":"#ffddb5","background":"#fff8f5","secondary-container":"#86faa7","surface-container-low":"#faf2ee","surface-dim":"#e0d8d5","on-surface-variant":"#524434","on-tertiary-fixed":"#2f1500","surface-variant":"#e9e1dd","error-container":"#ffdad6","on-tertiary":"#ffffff","on-error-container":"#93000a","primary-container":"#f5a524","outline-variant":"#d7c3ae","surface-container-highest":"#e9e1dd","tertiary-container":"#ff9f49","surface":"#fff8f5","secondary":"#006d37","on-surface":"#1e1b19","on-primary-fixed-variant":"#643f00","primary":"#835400","on-secondary-fixed-variant":"#005228","on-primary-container":"#643f00","primary-fixed-dim":"#ffb957"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"margin":"1rem","space-md":"0.75rem","space-sm":"0.5rem","space-xs":"0.25rem","space-xl":"2rem","space-lg":"1.25rem","gutter":"1rem"},"fontFamily":{"headline-wish":["Newsreader"],"headline-wish-mobile":["Newsreader"],"caption":["Inter"],"display-lg":["Newsreader"],"body-md":["Inter"],"display-lg-mobile":["Newsreader"],"label-counter":["Inter"],"label-md":["Inter"],"headline-sm":["Newsreader"],"body-lg":["Inter"],"label-sm":["Inter"]},"fontSize":{"headline-wish":["26px",{"lineHeight":"36px","letterSpacing":"-0.01em","fontWeight":"500"}],"headline-wish-mobile":["21px",{"lineHeight":"30px","letterSpacing":"-0.01em","fontWeight":"500"}],"caption":["11px",{"lineHeight":"16px","fontWeight":"400"}],"display-lg":["40px",{"lineHeight":"48px","letterSpacing":"-0.02em","fontWeight":"500"}],"body-md":["14px",{"lineHeight":"22px","fontWeight":"400"}],"display-lg-mobile":["30px",{"lineHeight":"38px","letterSpacing":"-0.015em","fontWeight":"500"}],"label-counter":["13px",{"lineHeight":"16px","letterSpacing":"0.02em","fontWeight":"600"}],"label-md":["13px",{"lineHeight":"18px","fontWeight":"500"}],"headline-sm":["18px",{"lineHeight":"26px","fontWeight":"600"}],"body-lg":["16px",{"lineHeight":"26px","fontWeight":"400"}],"label-sm":["12px",{"lineHeight":"16px","fontWeight":"500"}]}}}}</script></head><body class="bg-surface text-on-surface font-body-md text-body-md min-h-screen flex flex-col antialiased selection:bg-primary-fixed selection:text-on-primary-fixed"><header class="fixed top-0 left-0 right-0 z-50 bg-surface/90 backdrop-blur-md shadow-[0_1px_8px_rgba(20,17,15,0.04)]"><div class="h-16 max-w-[1120px] mx-auto px-margin flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-xl"><a class="flex items-center gap-space-xs text-on-surface hover:text-primary transition-colors focus:outline-none" data-path="ledger" href="#"><span class="material-symbols-outlined text-primary text-[22px]">star</span><span class="font-headline-sm text-headline-sm tracking-tight text-on-surface font-semibold">Wishcode</span></a><nav class="hidden md:flex items-center gap-space-xs" data-active-classes="text-on-surface font-label-md text-label-md bg-surface-container rounded-lg"><a aria-current="page" class="px-space-md py-space-xs transition-colors text-on-surface font-label-md text-label-md bg-surface-container rounded-lg" data-path="ledger" href="#">Ledger</a><a class="px-space-md py-space-xs font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low rounded-lg transition-colors" data-path="fulfilled" href="#">Fulfilled</a><a class="px-space-md py-space-xs font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low rounded-lg transition-colors" data-path="principles" href="#">Principles</a></nav></div><div class="flex items-center gap-space-md"><button class="inline-flex items-center justify-center gap-space-xs px-space-lg py-space-xs bg-primary-container text-on-primary-container font-label-md text-label-md rounded-full shadow-[0_1px_3px_rgba(20,17,15,0.06)] hover:bg-tertiary-container transition-all active:scale-[0.98]" type="button"><span class="material-symbols-outlined text-[18px]">edit_note</span><span class="">Post a wish</span></button><a class="hidden sm:inline-flex items-center gap-space-xs px-space-md py-space-xs bg-surface-container-low text-on-surface font-label-sm text-label-sm rounded-full hover:bg-surface-container hover:text-on-surface transition-colors" data-path="developer-auth" href="#"><span class="material-symbols-outlined text-outline text-[16px]">terminal</span><span class="">Connect GitHub</span><span class="font-caption text-caption text-on-surface-variant">(for developers)</span></a></div></div></header><main class="w-full flex-1 pt-16 bg-surface"><div class="max-w-[1120px] mx-auto px-margin py-space-xl"><div class="flex flex-col w-full">
+<!-- Status Banner / Toast -->
+<aside aria-label="Developer status confirmation" class="mb-space-lg flex items-center justify-between gap-space-md bg-secondary-container/30 px-space-md py-space-sm rounded-xl">
+<div class="flex items-center gap-space-sm min-w-0">
+<span class="material-symbols-outlined text-secondary text-[20px] flex-shrink-0" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-label-md text-label-md text-on-secondary-fixed font-medium truncate">You’re listed as building this wish</span>
+<span class="hidden sm:inline-flex items-center px-space-xs py-0.5 rounded-full bg-secondary/10 text-secondary font-caption text-caption uppercase tracking-wider font-semibold">Active claim</span>
+</div>
+<div class="flex items-center gap-space-sm flex-shrink-0">
+<a class="font-label-sm text-label-sm text-secondary hover:underline" href="#claim-roster">Manage claim</a>
+<button aria-label="Dismiss banner" class="p-1 text-on-surface-variant hover:text-on-surface rounded-full transition-colors" onclick="this.closest('aside').remove()" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+</aside>
+<!-- Navigation / Context Bar -->
+<nav aria-label="Breadcrumb" class="flex items-center justify-between gap-space-md pb-space-lg">
+<a class="inline-flex items-center gap-space-xs font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors group" data-path="ledger" href="#">
+<span class="material-symbols-outlined text-[18px] group-hover:-translate-x-0.5 transition-transform">arrow_back</span>
+<span class="">Back to Ledger</span>
+</a>
+<div class="flex items-center gap-space-sm text-on-surface-variant font-label-sm text-label-sm">
+<span class="font-mono text-outline">#WISH-9102</span>
+<span class="">•</span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">visibility</span>
+<span class="">1,420 views</span>
+</span>
+</div>
+</nav>
+<!-- Main Asymmetric 2-Column Ledger Canvas -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-start">
+<!-- LEFT COLUMN: Wish Dossier & Links (~720px equivalent in 12 cols: 8 cols) -->
+<main class="lg:col-span-8 flex flex-col gap-space-xl min-w-0">
+<!-- Primary Wish Artifact Card -->
+<article class="bg-surface-container-lowest rounded-xl p-space-xl shadow-sm flex flex-col gap-space-lg relative overflow-hidden">
+<!-- Subtle warm accent glow -->
+<div class="absolute -top-16 -right-16 w-48 h-48 rounded-full bg-primary-fixed/20 blur-2xl pointer-events-none"></div>
+<!-- Meta Header Row -->
+<header class="flex flex-wrap items-center justify-between gap-space-sm min-w-0">
+<div class="flex items-center gap-space-xs font-label-sm text-label-sm text-on-surface-variant flex-wrap">
+<span class="material-symbols-outlined text-[16px] text-outline">history</span>
+<span class="">Posted 5 days ago by</span>
+<span class="font-medium text-on-surface">anonymous wisher</span>
+<span class="px-space-xs py-0.5 rounded bg-surface-container font-mono text-caption text-on-surface-variant">#WISH-9102</span>
+</div>
+<!-- Status Pill: Being built -->
+<div class="inline-flex items-center gap-1.5 px-space-md py-1 rounded-full bg-surface-container-high text-primary font-label-sm text-label-sm font-semibold tracking-wide shadow-sm">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="">BEING BUILT</span>
+</div>
+</header>
+<!-- Wish Quote Title -->
+<blockquote class="font-headline-wish text-headline-wish text-on-surface leading-tight font-medium tracking-tight">
+          “A dead-simple Mac tool to paste screenshot as an unlisted Imgur link straight to clipboard.”
+        </blockquote>
+<!-- Markdown / Context Body -->
+<div class="font-body-lg text-body-lg text-on-surface-variant space-y-space-md leading-relaxed">
+<p class="">
+            I do design critiques on Discord all day. macOS Cmd+Shift+4 takes a file to Desktop, then I have to drag it into a browser tab, copy the direct link, and paste.
+          </p>
+<p class="">
+            Looking for a menu bar watcher that immediately uploads and gives me the markdown link with zero extra clicks. Ideally support for custom keyboard shortcut and retina scaling preserved.
+          </p>
+</div>
+<!-- Endorsement Cluster -->
+<div class="pt-space-md flex flex-col sm:flex-row sm:items-center justify-between gap-space-md bg-surface-container-low p-space-md rounded-lg">
+<div class="flex items-center gap-space-md">
+<!-- Active Me-Too Pill -->
+<button aria-pressed="true" class="inline-flex items-center gap-space-sm px-space-lg py-space-sm rounded-full bg-primary-container text-on-primary-container font-label-counter text-label-counter shadow-sm hover:bg-tertiary-container active:scale-[0.98] transition-all" id="me-too-btn" type="button">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">front_hand</span>
+<span class="">89 people wished this</span>
+<span class="w-1 h-1 rounded-full bg-on-primary-container/40"></span>
+<span class="font-bold">Me too +1</span>
+</button>
+</div>
+<p class="font-caption text-caption text-on-surface-variant italic">
+            Wishers are 100% anonymous. Tap to add your Me-too stamp.
+          </p>
+</div>
+<!-- Visual Context Strip: Workflow Mock/Diagram -->
+<div class="grid grid-cols-3 gap-space-sm pt-space-xs">
+<div class="bg-surface-container-low p-space-md rounded-lg flex flex-col gap-1">
+<span class="font-caption text-caption text-outline uppercase tracking-wider font-semibold">Step 01</span>
+<div class="flex items-center gap-1 font-label-md text-label-md text-on-surface">
+<span class="material-symbols-outlined text-[18px] text-primary">crop</span>
+<span class="">Cmd+Shift+4</span>
+</div>
+<span class="font-caption text-caption text-on-surface-variant">Selection captured</span>
+</div>
+<div class="bg-surface-container p-space-md rounded-lg flex flex-col gap-1">
+<span class="font-caption text-caption text-primary uppercase tracking-wider font-semibold">Step 02 (Wish)</span>
+<div class="flex items-center gap-1 font-label-md text-label-md text-on-surface">
+<span class="material-symbols-outlined text-[18px] text-primary">cloud_upload</span>
+<span class="">Menu bar pipe</span>
+</div>
+<span class="font-caption text-caption text-on-surface-variant">Zero clicks upload</span>
+</div>
+<div class="bg-surface-container-low p-space-md rounded-lg flex flex-col gap-1">
+<span class="font-caption text-caption text-outline uppercase tracking-wider font-semibold">Step 03</span>
+<div class="flex items-center gap-1 font-label-md text-label-md text-on-surface">
+<span class="material-symbols-outlined text-[18px] text-secondary">content_paste</span>
+<span class="">Paste Ready</span>
+</div>
+<span class="font-caption text-caption text-on-surface-variant">`![Image](i.imgur...)`</span>
+</div>
+</div>
+</article>
+<!-- Live Links Section -->
+<section aria-labelledby="live-links-heading" class="flex flex-col gap-space-md">
+<div class="flex items-baseline justify-between gap-space-md">
+<div class="flex items-center gap-space-sm">
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-semibold" id="live-links-heading">
+              Live links <span class="font-body-md text-body-md text-outline font-normal">(0)</span>
+</h2>
+<span class="px-space-xs py-0.5 rounded-full bg-surface-container text-on-surface-variant font-caption text-caption">Awaiting first build</span>
+</div>
+</div>
+<!-- Disclaimer Callout -->
+<div class="flex items-start gap-space-xs bg-surface-container-low px-space-md py-space-sm rounded-lg text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px] text-outline flex-shrink-0 mt-0.5">info</span>
+<p class="font-label-sm text-label-sm">
+            Wishcode doesn't check or vouch for linked apps. Developers deploy and host autonomously.
+          </p>
+</div>
+<!-- Links Empty State Artifact -->
+<div class="bg-surface-container-lowest rounded-xl p-space-xl flex flex-col items-center justify-center text-center gap-space-md shadow-sm">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[26px]">terminal</span>
+</div>
+<div class="max-w-md flex flex-col gap-space-xs">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold">No live link yet</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">
+              First one to post a verifiable release fulfills this wish for the entire community.
+            </p>
+</div>
+<div class="pt-space-xs">
+<button class="inline-flex items-center gap-space-xs px-space-xl py-space-sm bg-primary-container text-on-primary-container font-label-md text-label-md font-semibold rounded-full hover:bg-tertiary-container shadow-sm transition-all active:scale-[0.98]" onclick="document.getElementById('post-link-modal').classList.remove('hidden')" type="button">
+<span class="">Post a live link</span>
+<span class="material-symbols-outlined text-[18px]">arrow_outward</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Share Dossier Strip -->
+<section aria-label="Share Wish" class="bg-surface-container-low rounded-xl p-space-lg flex flex-col sm:flex-row items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-md min-w-0">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center text-on-surface-variant flex-shrink-0">
+<span class="material-symbols-outlined text-[22px]">share</span>
+</div>
+<div class="min-w-0">
+<div class="font-label-md text-label-md font-semibold text-on-surface truncate">Share this wish</div>
+<div class="font-caption text-caption text-on-surface-variant truncate">wishcode.org/w/9102 • Invite other builders</div>
+</div>
+</div>
+<div class="flex items-center gap-space-xs flex-wrap justify-end">
+<button aria-label="Share on X" class="px-space-md py-space-xs rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface font-label-sm text-label-sm transition-colors flex items-center gap-1" type="button">
+<span class="">𝕏 Post</span>
+</button>
+<button aria-label="Share on WhatsApp" class="px-space-md py-space-xs rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface font-label-sm text-label-sm transition-colors flex items-center gap-1" type="button">
+<span class="">WhatsApp</span>
+</button>
+<button aria-label="Share on LinkedIn" class="px-space-md py-space-xs rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface font-label-sm text-label-sm transition-colors flex items-center gap-1" type="button">
+<span class="">LinkedIn</span>
+</button>
+<button class="px-space-md py-space-xs rounded-full bg-surface-container-highest hover:bg-surface-container-high text-on-surface font-label-sm text-label-sm transition-colors flex items-center gap-1" id="copy-link-btn" onclick="navigator.clipboard?.writeText(window.location.href); this.innerHTML='&lt;span class=\'material-symbols-outlined text-[16px]\'&gt;check&lt;/span&gt; Copied!'" type="button">
+<span class="material-symbols-outlined text-[16px]">link</span>
+<span class="">Copy link</span>
+</button>
+</div>
+</section>
+<!-- Visual Contextual Spec / Gallery Reference (Non-empty Richness) -->
+<section class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold">User Reference Architecture</h3>
+<span class="font-caption text-caption text-outline">Community Blueprint</span>
+</div>
+<div class="relative w-full h-44 rounded-lg overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="Minimalist technical illustration of a sleek macOS menu bar status item uploading an image to the cloud, rendered in soft warm amber and earth tones with subtle paper texture and crisp monospaced annotations." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSIsw9JzJ8T6z38uCufcz4Nq_k_pa67IlFv_uSVoD8E-Iq4DoZXVt0-xNNxm4v2oB9uGBwOGChI2Iv8KwOXPCeF7o4837rkbzXOFmizuvkKOgx_tKGMmAP0RBX7C9VQkqH6lolOMJg3wiXqAaAUfprZO1BfXFjksrOna4_hkr7KQ8JFjVdfDKMuKEfQ_przRAYSWjr3lQN4CFWnEcrG_WXU3dRuuVT41-V3Sc3pnmCWclsWGlu8kr_8g"/>
+<div class="absolute bottom-2 left-2 px-space-sm py-0.5 rounded bg-surface/90 backdrop-blur-sm text-on-surface font-caption text-caption font-mono">
+            macOS native screenshot pipeline • Imgur API v3
+          </div>
+</div>
+</section>
+</main>
+<!-- RIGHT COLUMN: Developer Station & Ledger Metrology (~340px: 4 cols) -->
+<aside aria-label="Developer controls and ledger metrics" class="lg:col-span-4 flex flex-col gap-space-lg w-full min-w-0">
+<!-- Developer Signed-In Action Card -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md relative overflow-hidden">
+<!-- Top identification header -->
+<div class="flex items-center justify-between gap-space-sm pb-space-xs">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-[20px]">construction</span>
+<span class="font-label-md text-label-md font-semibold text-on-surface uppercase tracking-wide">For Developers</span>
+</div>
+<span class="inline-flex items-center gap-1 px-space-xs py-0.5 rounded-full bg-secondary-container/40 text-on-secondary-container font-caption text-caption font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+            Verified
+          </span>
+</div>
+<!-- Signed-in Developer Presence Stamp -->
+<div class="bg-surface-container-low p-space-md rounded-lg flex items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-8 h-8 rounded-full bg-tertiary text-on-tertiary flex items-center justify-center font-label-md text-label-md font-semibold flex-shrink-0">
+              P
+            </div>
+<div class="min-w-0">
+<div class="font-label-md text-label-md font-semibold text-on-surface truncate">@priya</div>
+<div class="font-caption text-caption text-on-surface-variant flex items-center gap-1 truncate">
+<span class="material-symbols-outlined text-[14px] text-outline">code</span>
+<span class="">GitHub connected</span>
+</div>
+</div>
+</div>
+<span class="px-space-xs py-0.5 rounded bg-primary-fixed text-on-primary-fixed font-caption text-caption font-medium">You</span>
+</div>
+<!-- Primary Claim Status & Actions -->
+<div class="flex flex-col gap-space-sm pt-space-xs">
+<!-- Active claim button state -->
+<div class="w-full flex items-center justify-between px-space-md py-space-sm rounded-lg bg-surface-container text-secondary font-label-md text-label-md font-semibold">
+<span class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+<span class="">You’re building this</span>
+</span>
+<button class="font-label-sm text-label-sm text-outline hover:text-error transition-colors underline decoration-dotted" onclick="alert('Claim removed. Other developers are still actively building.')" type="button">
+              Unclaim
+            </button>
+</div>
+<!-- Direct Post Live Link CTA -->
+<button class="w-full inline-flex items-center justify-center gap-space-xs px-space-md py-space-sm bg-primary-container text-on-primary-container font-label-md text-label-md font-semibold rounded-lg hover:bg-tertiary-container shadow-sm transition-all active:scale-[0.98]" onclick="document.getElementById('post-link-modal').classList.remove('hidden')" type="button">
+<span class="material-symbols-outlined text-[18px]">publish</span>
+<span class="">Post a live link</span>
+</button>
+</div>
+<p class="font-caption text-caption text-on-surface-variant leading-relaxed">
+          Requires GitHub authentication. No deadlines, no claim limits. Anyone can ship code and submit a link.
+        </p>
+<!-- Builder Roster -->
+<div class="pt-space-sm flex flex-col gap-space-sm" id="claim-roster">
+<div class="flex items-center justify-between">
+<h4 class="font-label-sm text-label-sm font-semibold uppercase tracking-wider text-outline">
+              BUILDING IT (3)
+            </h4>
+<span class="font-caption text-caption text-on-surface-variant">Active roster</span>
+</div>
+<!-- Roster List -->
+<div class="flex flex-col gap-space-xs">
+<!-- Builder 1: You -->
+<div class="flex items-center justify-between p-space-xs bg-surface-container-low rounded-lg">
+<div class="flex items-center gap-space-xs min-w-0">
+<div class="w-6 h-6 rounded-full bg-tertiary text-on-tertiary flex items-center justify-center font-caption text-caption flex-shrink-0">
+                  P
+                </div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1 truncate">
+<span class="font-label-sm text-label-sm font-semibold text-on-surface">@priya</span>
+<span class="font-caption text-caption text-primary font-medium">(You)</span>
+</div>
+<span class="font-caption text-caption text-outline">Claimed 1h ago</span>
+</div>
+</div>
+<span class="px-space-xs py-0.5 rounded bg-surface-container text-on-surface font-caption text-caption font-mono flex-shrink-0">
+                Rust / Cocoa
+              </span>
+</div>
+<!-- Builder 2 -->
+<div class="flex items-center justify-between p-space-xs bg-surface-container-low rounded-lg">
+<div class="flex items-center gap-space-xs min-w-0">
+<div class="w-6 h-6 rounded-full bg-outline-variant text-on-surface flex items-center justify-center font-caption text-caption flex-shrink-0">
+                  A
+                </div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-sm text-label-sm font-medium text-on-surface truncate">@alex_codes</span>
+<span class="font-caption text-caption text-outline">Claimed 3d ago</span>
+</div>
+</div>
+<span class="px-space-xs py-0.5 rounded bg-surface-container text-on-surface font-caption text-caption font-mono flex-shrink-0">
+                Swift / MenuBar
+              </span>
+</div>
+<!-- Builder 3 -->
+<div class="flex items-center justify-between p-space-xs bg-surface-container-low rounded-lg">
+<div class="flex items-center gap-space-xs min-w-0">
+<div class="w-6 h-6 rounded-full bg-outline-variant text-on-surface flex items-center justify-center font-caption text-caption flex-shrink-0">
+                  D
+                </div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-sm text-label-sm font-medium text-on-surface truncate">@devlinh</span>
+<span class="font-caption text-caption text-outline">Claimed 2d ago</span>
+</div>
+</div>
+<span class="px-space-xs py-0.5 rounded bg-surface-container text-on-surface font-caption text-caption font-mono flex-shrink-0">
+                Electron / Node
+              </span>
+</div>
+</div>
+</div>
+</div>
+<!-- Wish Metrology Ledger Card -->
+<section aria-labelledby="metrology-title" class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<h3 class="font-label-md text-label-md font-semibold text-on-surface uppercase tracking-wide" id="metrology-title">
+            Wish Metrology
+          </h3>
+<span class="material-symbols-outlined text-[18px] text-outline">analytics</span>
+</div>
+<div class="grid grid-cols-2 gap-space-sm">
+<div class="bg-surface-container-low p-space-sm rounded-lg flex flex-col gap-1">
+<span class="font-caption text-caption text-outline">Status</span>
+<div class="flex items-center gap-1.5 font-label-md text-label-md text-primary font-semibold">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="">Being built</span>
+</div>
+</div>
+<div class="bg-surface-container-low p-space-sm rounded-lg flex flex-col gap-1">
+<span class="font-caption text-caption text-outline">Active Claims</span>
+<div class="font-label-md text-label-md text-on-surface font-semibold">
+              3 developers
+            </div>
+</div>
+<div class="bg-surface-container-low p-space-sm rounded-lg flex flex-col gap-1">
+<span class="font-caption text-caption text-outline">First Endorsed</span>
+<div class="font-label-md text-label-md text-on-surface font-semibold">
+              Oct 24, 2024
+            </div>
+</div>
+<div class="bg-surface-container-low p-space-sm rounded-lg flex flex-col gap-1">
+<span class="font-caption text-caption text-outline">Momentum</span>
+<div class="flex items-center gap-1 font-label-md text-label-md text-secondary font-semibold">
+<span class="material-symbols-outlined text-[16px]">trending_up</span>
+<span class="">+18 this week</span>
+</div>
+</div>
+</div>
+<!-- Inline Velocity SVG Chart -->
+<div class="bg-surface-container-low p-space-sm rounded-lg flex flex-col gap-space-xs">
+<div class="flex items-center justify-between text-on-surface-variant font-caption text-caption">
+<span class="">Endorsement Velocity (7d)</span>
+<span class="font-mono font-medium text-on-surface">89 total</span>
+</div>
+<div class="w-full h-12 flex items-end pt-1">
+<svg class="w-full h-10 overflow-visible text-primary" fill="none" viewbox="0 0 200 40">
+<!-- Gradient fill area -->
+<defs>
+<lineargradient id="area-grad" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="currentColor" stop-opacity="0.3"></stop>
+<stop offset="100%" stop-color="currentColor" stop-opacity="0.0"></stop>
+</lineargradient>
+</defs>
+<path d="M0 35 L30 31 L65 28 L100 24 L135 15 L170 12 L200 4 L200 40 L0 40 Z" fill="url(#area-grad)"></path>
+<path d="M0 35 L30 31 L65 28 L100 24 L135 15 L170 12 L200 4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+<!-- Sparkline nodes -->
+<circle class="fill-primary" cx="200" cy="4" r="3.5"></circle>
+</svg>
+</div>
+</div>
+</section>
+<!-- Protocol Ledger Rules Mini-Note -->
+<div class="bg-surface-container p-space-md rounded-xl text-on-surface-variant flex flex-col gap-space-xs">
+<div class="flex items-center gap-space-xs font-label-sm text-label-sm font-semibold text-on-surface">
+<span class="material-symbols-outlined text-[18px] text-primary">gavel</span>
+<span class="">Wishcode Ledger Rule</span>
+</div>
+<p class="font-caption text-caption leading-relaxed">
+          Wishes belong to the commons. Anyone can build, fork, or host. Submitting a verified app transitions this wish from “Being built” to “Fulfilled”.
+        </p>
+</div>
+</aside>
+</div>
+<!-- Interactive Modal Drawer for Submitting Live Link -->
+<div aria-labelledby="modal-title" aria-modal="true" class="fixed inset-0 z-50 hidden flex items-center justify-center p-margin bg-on-surface/40 backdrop-blur-sm" id="post-link-modal" role="dialog">
+<div class="bg-surface-container-lowest max-w-lg w-full rounded-xl p-space-xl shadow-xl flex flex-col gap-space-lg">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-[24px]">rocket_launch</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold" id="modal-title">Post a live link</h3>
+</div>
+<button class="p-1 text-on-surface-variant hover:text-on-surface rounded-full" onclick="document.getElementById('post-link-modal').classList.add('hidden')" type="button">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<div class="flex flex-col gap-space-md">
+<p class="font-body-md text-body-md text-on-surface-variant">
+          Submit your repository release, DMG download, or web app link for <strong class="text-on-surface">#WISH-9102</strong>.
+        </p>
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm font-medium text-on-surface" for="link-url-input">URL to application / release</label>
+<input class="px-space-md py-space-sm rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-primary-container" id="link-url-input" placeholder="https://github.com/priya/... or https://app.domain" type="url"/>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm font-medium text-on-surface" for="link-desc-input">Release description</label>
+<textarea class="px-space-md py-space-sm rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-primary-container resize-none" id="link-desc-input" placeholder="Native Cocoa menu bar app built with Rust. Listens to clipboard and provides Imgur CDN markdown link instantly." rows="3"></textarea>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container text-on-surface-variant font-caption text-caption flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-outline flex-shrink-0 mt-0.5">verified_user</span>
+<span class="">Will be publicly attributed to your verified handle <strong>@priya</strong>.</span>
+</div>
+</div>
+<div class="flex items-center justify-end gap-space-sm pt-space-xs">
+<button class="px-space-lg py-space-sm rounded-full text-on-surface-variant font-label-md text-label-md hover:bg-surface-container transition-colors" onclick="document.getElementById('post-link-modal').classList.add('hidden')" type="button">
+          Cancel
+        </button>
+<button class="px-space-xl py-space-sm rounded-full bg-primary-container text-on-primary-container font-label-md text-label-md font-semibold hover:bg-tertiary-container shadow-sm transition-all active:scale-[0.98]" onclick="document.getElementById('post-link-modal').classList.add('hidden'); alert('Submitted! Your live link is now in verification pipeline.');" type="button">
+          Publish link
+        </button>
+</div>
+</div>
+</div>
+<script>
+    // Micro-interaction for Me-Too endorsement toggle
+    const meTooBtn = document.getElementById('me-too-btn');
+    if (meTooBtn) {
+      let endorsed = true;
+      let count = 89;
+      meTooBtn.addEventListener('click', () => {
+        endorsed = !endorsed;
+        count = endorsed ? count + 1 : count - 1;
+        if (endorsed) {
+          meTooBtn.setAttribute('aria-pressed', 'true');
+          meTooBtn.className = 'inline-flex items-center gap-space-sm px-space-lg py-space-sm rounded-full bg-primary-container text-on-primary-container font-label-counter text-label-counter shadow-sm hover:bg-tertiary-container active:scale-[0.98] transition-all';
+          meTooBtn.innerHTML = `
+            <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">front_hand</span>
+            <span>${count} people wished this</span>
+            <span class="w-1 h-1 rounded-full bg-on-primary-container/40"></span>
+            <span class="font-bold">Me too +1</span>
+          `;
+        } else {
+          meTooBtn.setAttribute('aria-pressed', 'false');
+          meTooBtn.className = 'inline-flex items-center gap-space-sm px-space-lg py-space-sm rounded-full bg-surface-container text-on-surface font-label-counter text-label-counter shadow-sm hover:bg-surface-container-high active:scale-[0.98] transition-all';
+          meTooBtn.innerHTML = `
+            <span class="material-symbols-outlined text-[20px]">front_hand</span>
+            <span>${count} people wished this</span>
+            <span class="w-1 h-1 rounded-full bg-outline/40"></span>
+            <span>Me too</span>
+          `;
+        }
+      });
+    }
+  </script>
+</div></div></main><footer class="w-full bg-surface-container-low mt-auto"><div class="max-w-[1120px] mx-auto px-margin py-space-xl flex flex-col sm:flex-row items-center justify-between gap-space-lg"><div class="flex flex-col gap-space-xs text-center sm:text-left"><p class="font-label-md text-label-md text-on-surface font-medium">Wishcode</p><p class="font-caption text-caption text-on-surface-variant max-w-md">Wishcode is a public ledger of software wishes. No accounts required. Open claims for developers.</p></div><div class="flex items-center gap-space-lg text-center"><a class="font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="live-feed" href="#">Live Feed</a><a class="font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="developers" href="#">Developers</a><a class="font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="guidelines" href="#">Guidelines</a></div></div></footer>
+</body></html>

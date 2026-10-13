@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><title>S06 - Post a Live Link Modal</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={"darkMode":"class","theme":{"extend":{"colors":{"outline":"#857462","on-background":"#1e1b19","surface-tint":"#835400","on-tertiary-container":"#6e3900","inverse-surface":"#34302d","tertiary-fixed-dim":"#ffb77d","secondary-fixed":"#86faa7","on-primary":"#ffffff","surface-container":"#f5ece8","tertiary-fixed":"#ffdcc3","on-secondary":"#ffffff","error":"#ba1a1a","surface-bright":"#fff8f5","surface-container-lowest":"#ffffff","inverse-on-surface":"#f7efeb","on-secondary-fixed":"#00210c","on-secondary-container":"#00743a","tertiary":"#904d00","on-error":"#ffffff","on-primary-fixed":"#2a1800","on-tertiary-fixed-variant":"#6e3900","secondary-fixed-dim":"#6add8d","surface-container-high":"#efe6e3","inverse-primary":"#ffb957","primary-fixed":"#ffddb5","background":"#fff8f5","secondary-container":"#86faa7","surface-container-low":"#faf2ee","surface-dim":"#e0d8d5","on-surface-variant":"#524434","on-tertiary-fixed":"#2f1500","surface-variant":"#e9e1dd","error-container":"#ffdad6","on-tertiary":"#ffffff","on-error-container":"#93000a","primary-container":"#f5a524","outline-variant":"#d7c3ae","surface-container-highest":"#e9e1dd","tertiary-container":"#ff9f49","surface":"#fff8f5","secondary":"#006d37","on-surface":"#1e1b19","on-primary-fixed-variant":"#643f00","primary":"#835400","on-secondary-fixed-variant":"#005228","on-primary-container":"#643f00","primary-fixed-dim":"#ffb957"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"margin":"1rem","space-md":"0.75rem","space-sm":"0.5rem","space-xs":"0.25rem","space-xl":"2rem","space-lg":"1.25rem","gutter":"1rem"},"fontFamily":{"headline-wish":["Newsreader"],"headline-wish-mobile":["Newsreader"],"caption":["Inter"],"display-lg":["Newsreader"],"body-md":["Inter"],"display-lg-mobile":["Newsreader"],"label-counter":["Inter"],"label-md":["Inter"],"headline-sm":["Newsreader"],"body-lg":["Inter"],"label-sm":["Inter"]},"fontSize":{"headline-wish":["26px",{"lineHeight":"36px","letterSpacing":"-0.01em","fontWeight":"500"}],"headline-wish-mobile":["21px",{"lineHeight":"30px","letterSpacing":"-0.01em","fontWeight":"500"}],"caption":["11px",{"lineHeight":"16px","fontWeight":"400"}],"display-lg":["40px",{"lineHeight":"48px","letterSpacing":"-0.02em","fontWeight":"500"}],"body-md":["14px",{"lineHeight":"22px","fontWeight":"400"}],"display-lg-mobile":["30px",{"lineHeight":"38px","letterSpacing":"-0.015em","fontWeight":"500"}],"label-counter":["13px",{"lineHeight":"16px","letterSpacing":"0.02em","fontWeight":"600"}],"label-md":["13px",{"lineHeight":"18px","fontWeight":"500"}],"headline-sm":["18px",{"lineHeight":"26px","fontWeight":"600"}],"body-lg":["16px",{"lineHeight":"26px","fontWeight":"400"}],"label-sm":["12px",{"lineHeight":"16px","fontWeight":"500"}]}}}}</script></head><body class="bg-surface text-on-surface font-body-md text-body-md min-h-screen flex flex-col antialiased selection:bg-primary-fixed selection:text-on-primary-fixed"><header class="fixed top-0 left-0 right-0 z-50 bg-surface/90 backdrop-blur-md shadow-[0_1px_8px_rgba(20,17,15,0.04)]"><div class="h-16 max-w-[1120px] mx-auto px-margin flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-xl"><a class="flex items-center gap-space-xs text-on-surface hover:text-primary transition-colors focus:outline-none" data-path="ledger" href="#"><span class="material-symbols-outlined text-primary text-[22px]">star</span><span class="font-headline-sm text-headline-sm tracking-tight text-on-surface font-semibold">Wishcode</span></a><nav class="hidden md:flex items-center gap-space-xs" data-active-classes="text-on-surface font-label-md text-label-md bg-surface-container rounded-lg"><a aria-current="page" class="px-space-md py-space-xs transition-colors text-on-surface font-label-md text-label-md bg-surface-container rounded-lg" data-path="ledger" href="#">Ledger</a><a class="px-space-md py-space-xs font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low rounded-lg transition-colors" data-path="fulfilled" href="#">Fulfilled</a><a class="px-space-md py-space-xs font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low rounded-lg transition-colors" data-path="principles" href="#">Principles</a></nav></div><div class="flex items-center gap-space-md"><button class="inline-flex items-center justify-center gap-space-xs px-space-lg py-space-xs bg-primary-container text-on-primary-container font-label-md text-label-md rounded-full shadow-[0_1px_3px_rgba(20,17,15,0.06)] hover:bg-tertiary-container transition-all active:scale-[0.98]" type="button"><span class="material-symbols-outlined text-[18px]">edit_note</span><span class="">Post a wish</span></button><a class="hidden sm:inline-flex items-center gap-space-xs px-space-md py-space-xs bg-surface-container-low text-on-surface font-label-sm text-label-sm rounded-full hover:bg-surface-container hover:text-on-surface transition-colors" data-path="developer-auth" href="#"><span class="material-symbols-outlined text-outline text-[16px]">terminal</span><span class="">Connect GitHub</span><span class="font-caption text-caption text-on-surface-variant">(for developers)</span></a></div></div></header><main class="w-full flex-1 pt-16 bg-surface"><div class="max-w-[1120px] mx-auto px-margin py-space-xl"><div class="flex flex-col w-full relative">
+<!-- Underlying Context: Blurred Wish Detail Page Canvas (/w/482) -->
+<div aria-hidden="true" class="w-full pointer-events-none select-none opacity-40 blur-[3px] transition-all duration-300">
+<div class="max-w-[840px] mx-auto flex flex-col gap-space-lg">
+<!-- Breadcrumb Bar -->
+<div class="flex items-center gap-space-sm font-label-sm text-label-sm text-on-surface-variant">
+<span class="">Ledger</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-on-surface font-medium">Wish #482</span>
+</div>
+<!-- Main Wish Card in Background -->
+<div class="bg-surface-container-lowest p-space-xl rounded-xl shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface-container-low text-on-surface text-[12px] font-semibold">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+<span class="">Open wish</span>
+</div>
+<span class="font-caption text-caption text-on-surface-variant">Yesterday at 18:24</span>
+</div>
+<h1 class="font-headline-wish text-headline-wish text-on-surface">
+          A dead-simple Mac tool to paste screenshot as an unlisted Imgur link straight to clipboard without browser tabs
+        </h1>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+          I spend half my day taking quick bug screenshots on macOS, dragging them into a tab, waiting for the asset URL, and then copying it back into Slack. I just want a silent menu bar app: press shortcut, drag rectangle, ding sound, and boom, markdown image URL is in my clipboard.
+        </p>
+<div class="flex items-center justify-between pt-space-md">
+<div class="inline-flex items-center gap-space-xs px-space-md py-space-xs rounded-full bg-surface-container text-on-surface font-label-counter text-label-counter">
+<span class="material-symbols-outlined text-[18px] text-primary">front_hand</span>
+<span class="">Me too · 418</span>
+</div>
+<span class="font-caption text-caption text-on-surface-variant">4 developers tracking</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Modal Presentation Wrapper (Scrim Backdrop) -->
+<div class="fixed inset-0 z-50 bg-[#14110F]/50 backdrop-blur-[6px] flex flex-col items-center justify-start overflow-y-auto px-margin py-8 md:py-12">
+<!-- State Switcher Header -->
+<div class="w-full max-w-[640px] mb-4 flex items-center justify-between px-2 text-on-primary">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-fixed text-[18px]">toggle_on</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-primary-fixed font-semibold">Wishcode Interaction State</span>
+</div>
+<div class="inline-flex p-1 rounded-full bg-inverse-surface/80 text-inverse-on-surface backdrop-blur-md">
+<button class="px-3 py-1 rounded-full font-label-sm text-label-sm transition-all duration-200 bg-primary-container text-on-primary-container font-semibold shadow-sm" id="toggle-state-1" type="button">
+          State 1: Post Link
+        </button>
+<button class="px-3 py-1 rounded-full font-label-sm text-label-sm transition-all duration-200 text-surface-variant hover:text-surface-container-lowest" id="toggle-state-2" type="button">
+          State 2: Already Posted
+        </button>
+</div>
+</div>
+<!-- MODAL 1: POST A LIVE LINK (Default visible) -->
+<div class="w-full max-w-[620px] bg-surface-container-lowest rounded-xl shadow-xl p-6 sm:p-8 flex flex-col gap-space-lg transition-all duration-300" id="modal-post">
+<!-- Modal Header -->
+<div class="flex items-start justify-between gap-space-md">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
+<span class="font-caption text-caption text-primary tracking-wide uppercase font-semibold">Developer submission</span>
+</div>
+<h2 class="font-headline-wish text-headline-wish text-on-surface leading-tight">
+            Post a live link
+          </h2>
+</div>
+<button aria-label="Close modal" class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors focus:outline-none" type="button">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<!-- Truncated Wish Reference Quote -->
+<div class="rounded-lg bg-surface-container-low p-3 pl-4">
+<p class="font-headline-wish text-body-lg italic text-on-surface-variant line-clamp-2">
+          “A dead-simple Mac tool to paste screenshot as an unlisted Imgur link straight to clipboard…”
+        </p>
+</div>
+<!-- Developer Identity & Fulfillment Rule Banner -->
+<div class="rounded-xl bg-surface-container-low p-3.5 flex items-center gap-3">
+<div class="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-surface-container-lowest shadow-sm flex-shrink-0">
+<div class="w-5 h-5 rounded-full bg-tertiary-fixed flex items-center justify-center text-on-tertiary-fixed font-label-sm text-[11px] font-bold uppercase tracking-wider">
+            P
+          </div>
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">@priya</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant leading-snug">
+          Posted as <span class="font-semibold text-on-surface">@priya</span>. If yours is the first link, this wish becomes <span class="inline-flex items-center gap-0.5 text-secondary font-semibold"><span class="material-symbols-outlined text-[15px] align-middle">check_circle</span>Fulfilled</span>.
+        </p>
+</div>
+<!-- Submission Form -->
+<form class="flex flex-col gap-space-lg" onsubmit="event.preventDefault()">
+<!-- Field 1: App URL with Error State -->
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center justify-between">
+<label class="font-label-md text-label-md text-on-surface font-medium flex items-center gap-1" for="app-url-input">
+              App URL <span class="text-error font-bold">*</span>
+</label>
+<span class="font-caption text-caption text-on-surface-variant">Direct download or web deployment</span>
+</div>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-error">
+<span class="material-symbols-outlined text-[18px]">link_off</span>
+</div>
+<input aria-describedby="app-url-error" aria-invalid="true" class="w-full pl-9 pr-10 py-2.5 rounded-lg bg-surface-container-lowest font-body-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-error shadow-sm" id="app-url-input" type="text" value="http://imgpaste.dev"/>
+<div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-error">
+<span class="material-symbols-outlined text-[20px]">error</span>
+</div>
+</div>
+<!-- Inline Error Notice in Error Tone -->
+<div class="flex items-center gap-1.5 text-error mt-0.5" id="app-url-error" role="alert">
+<span class="material-symbols-outlined text-[16px]">priority_high</span>
+<span class="font-label-sm text-label-sm font-medium">Links must start with https://</span>
+</div>
+</div>
+<!-- Field 2: One-line Description -->
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center justify-between">
+<label class="font-label-md text-label-md text-on-surface font-medium" for="app-desc-input">
+              One-line description
+            </label>
+<span class="font-caption text-caption text-on-surface-variant">Crisp summary for ledger listing</span>
+</div>
+<div class="relative">
+<input class="w-full px-3 py-2.5 rounded-lg bg-surface-container-lowest font-body-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary shadow-sm" id="app-desc-input" maxlength="140" type="text" value="Lightweight macOS menu bar utility that watches clipboard for PNGs and copies direct unlisted URL."/>
+</div>
+<!-- Counter right-aligned -->
+<div class="flex justify-end">
+<span class="font-label-counter text-label-counter text-on-surface-variant font-medium tabular-nums" id="char-counter">
+              96 / 140
+            </span>
+</div>
+</div>
+<!-- Field 3: Repo URL (Optional) -->
+<div class="flex flex-col gap-1.5">
+<div class="flex items-baseline justify-between">
+<label class="font-label-md text-label-md text-on-surface font-medium" for="repo-url-input">
+              Repository URL
+            </label>
+<span class="font-caption text-caption text-on-surface-variant">Optional, shows a Source link</span>
+</div>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-outline">
+<span class="material-symbols-outlined text-[18px]">terminal</span>
+</div>
+<input class="w-full pl-9 pr-3 py-2.5 rounded-lg bg-surface-container-lowest font-body-md text-body-md text-on-surface placeholder:text-outline-variant focus:outline-none focus:ring-2 focus:ring-primary shadow-sm" id="repo-url-input" placeholder="https://github.com/priya/imgpaste" type="text"/>
+</div>
+</div>
+<!-- Safety Disclaimer Callout -->
+<div class="bg-surface-container-low p-2.5 rounded-lg flex items-center gap-2">
+<span class="material-symbols-outlined text-outline text-[16px]">info</span>
+<p class="font-caption text-caption text-on-surface-variant">
+            Wishcode doesn't check or vouch for linked apps. Links are attributed publicly to your GitHub identity.
+          </p>
+</div>
+<!-- Action Buttons -->
+<div class="flex items-center justify-end gap-space-sm pt-space-xs">
+<button class="px-4 py-2.5 rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors" type="button">
+            Cancel
+          </button>
+<button class="inline-flex items-center justify-center gap-space-xs px-5 py-2.5 rounded-lg bg-primary-container text-on-primary-container font-label-md text-label-md font-semibold hover:bg-tertiary-container shadow-sm active:scale-[0.98] transition-all" type="submit">
+<span class="material-symbols-outlined text-[18px]">publish</span>
+<span class="">Post link</span>
+</button>
+</div>
+</form>
+</div>
+<!-- MODAL 2: ALREADY POSTED / MANAGE LIVE LINK (Toggleable State) -->
+<div class="hidden w-full max-w-[620px] bg-surface-container-lowest rounded-xl shadow-xl p-6 sm:p-8 flex flex-col gap-space-lg transition-all duration-300" id="modal-manage">
+<!-- Modal Header -->
+<div class="flex items-start justify-between gap-space-md">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="font-caption text-caption text-secondary tracking-wide uppercase font-semibold">Active claim</span>
+</div>
+<h2 class="font-headline-wish text-headline-wish text-on-surface leading-tight">
+            Manage your live link
+          </h2>
+</div>
+<button aria-label="Close modal" class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors focus:outline-none" type="button">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<!-- Truncated Wish Context -->
+<div class="rounded-lg bg-surface-container-low p-3 pl-4">
+<p class="font-headline-wish text-body-lg italic text-on-surface-variant line-clamp-1">
+          “A dead-simple Mac tool to paste screenshot as an unlisted Imgur link…”
+        </p>
+</div>
+<!-- Notice Box -->
+<div class="rounded-xl bg-surface-container-low p-4 flex items-start gap-3">
+<span class="material-symbols-outlined text-primary text-[20px] mt-0.5 flex-shrink-0">assignment_turned_in</span>
+<div class="flex flex-col gap-1">
+<p class="font-label-md text-label-md text-on-surface font-semibold">
+            You already posted a link here
+          </p>
+<p class="font-body-md text-body-md text-on-surface-variant">
+            To prevent orphaned submissions, developers may maintain one live link per wish. Remove your current link to post a new version or different build.
+          </p>
+</div>
+</div>
+<!-- Posted Link Item Detail Box -->
+<div class="rounded-xl bg-surface-container-low p-4 flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[15px]">verified</span>
+</div>
+<a class="font-label-md text-label-md font-semibold text-on-surface hover:text-primary transition-colors flex items-center gap-1" href="https://barkmute.app" rel="noopener noreferrer" target="_blank">
+<span class="">https://barkmute.app</span>
+<span class="material-symbols-outlined text-[14px] text-outline">open_in_new</span>
+</a>
+</div>
+<span class="font-caption text-caption text-on-surface-variant tabular-nums">
+            Posted 14h ago
+          </span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant pl-8">
+          Lightweight macOS menu bar utility that watches clipboard for PNGs and copies direct unlisted URL.
+        </p>
+<div class="pl-8 pt-1 flex items-center gap-space-md text-on-surface-variant font-label-sm text-label-sm">
+<span class="inline-flex items-center gap-1 text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-outline">code</span>
+<span class="">github.com/priya/imgpaste</span>
+</span>
+<span class="">•</span>
+<span class="inline-flex items-center gap-1 text-secondary font-medium">
+<span class="material-symbols-outlined text-[16px]">trending_up</span>
+<span class="">42 clicks logged</span>
+</span>
+</div>
+</div>
+<!-- Disclaimer Callout -->
+<div class="bg-surface-container-low p-2.5 rounded-lg flex items-center gap-2">
+<span class="material-symbols-outlined text-outline text-[16px]">info</span>
+<p class="font-caption text-caption text-on-surface-variant">
+          Wishcode doesn't check or vouch for linked apps.
+        </p>
+</div>
+<!-- Modal Footer with Danger and Close Actions -->
+<div class="flex items-center justify-between pt-space-xs">
+<button class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-error hover:bg-error-container hover:text-on-error-container font-label-md text-label-md font-semibold transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+<span class="">Remove my link</span>
+</button>
+<button class="px-5 py-2.5 rounded-lg bg-surface-container text-on-surface hover:bg-surface-container-high font-label-md text-label-md font-semibold transition-colors" type="button">
+          Close
+        </button>
+</div>
+</div>
+</div>
+</div>
+<script>
+  (function() {
+    const btnState1 = document.getElementById('toggle-state-1');
+    const btnState2 = document.getElementById('toggle-state-2');
+    const modalPost = document.getElementById('modal-post');
+    const modalManage = document.getElementById('modal-manage');
+    const descInput = document.getElementById('app-desc-input');
+    const counterDisplay = document.getElementById('char-counter');
+
+    // Interactive Toggle Between Submission and Existing Posted Link State
+    function showState(isPost) {
+      if (isPost) {
+        modalPost.classList.remove('hidden');
+        modalManage.classList.add('hidden');
+        btnState1.className = 'px-3 py-1 rounded-full font-label-sm text-label-sm transition-all duration-200 bg-primary-container text-on-primary-container font-semibold shadow-sm';
+        btnState2.className = 'px-3 py-1 rounded-full font-label-sm text-label-sm transition-all duration-200 text-surface-variant hover:text-surface-container-lowest';
+      } else {
+        modalPost.classList.add('hidden');
+        modalManage.classList.remove('hidden');
+        btnState2.className = 'px-3 py-1 rounded-full font-label-sm text-label-sm transition-all duration-200 bg-primary-container text-on-primary-container font-semibold shadow-sm';
+        btnState1.className = 'px-3 py-1 rounded-full font-label-sm text-label-sm transition-all duration-200 text-surface-variant hover:text-surface-container-lowest';
+      }
+    }
+
+    if (btnState1 && btnState2) {
+      btnState1.addEventListener('click', () => showState(true));
+      btnState2.addEventListener('click', () => showState(false));
+    }
+
+    // Dynamic character count listener
+    if (descInput && counterDisplay) {
+      descInput.addEventListener('input', (e) => {
+        const len = e.target.value.length;
+        counterDisplay.textContent = `${len} / 140`;
+        if (len > 140) {
+          counterDisplay.classList.add('text-error');
+        } else {
+          counterDisplay.classList.remove('text-error');
+        }
+      });
+    }
+  })();
+</script></div></main><footer class="w-full bg-surface-container-low mt-auto"><div class="max-w-[1120px] mx-auto px-margin py-space-xl flex flex-col sm:flex-row items-center justify-between gap-space-lg"><div class="flex flex-col gap-space-xs text-center sm:text-left"><p class="font-label-md text-label-md text-on-surface font-medium">Wishcode</p><p class="font-caption text-caption text-on-surface-variant max-w-md">Wishcode is a public ledger of software wishes. No accounts required. Open claims for developers.</p></div><div class="flex items-center gap-space-lg text-center"><a class="font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="live-feed" href="#">Live Feed</a><a class="font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="developers" href="#">Developers</a><a class="font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="guidelines" href="#">Guidelines</a></div></div></footer>
+</body></html>
