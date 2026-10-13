@@ -2,16 +2,20 @@
 
 import { revalidateTag, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
+import { after } from "next/server";
 import { getViewer } from "@/lib/auth";
 import { DUPLICATE_LIMIT, DUPLICATE_THRESHOLD, LIMITS } from "@/lib/config";
 import { tags } from "@/lib/data";
+import { verifyEmailToken } from "@/lib/email-token";
 import { embed } from "@/lib/embeddings";
+import { env } from "@/lib/env";
 import { toActionError, type ActionError } from "@/lib/errors";
-import { clientIpKey, ensureDeviceHash } from "@/lib/identity";
+import { clientIpKey, ensureDeviceHash, readDeviceHash } from "@/lib/identity";
+import { notifyLinkPosted } from "@/lib/notify";
 import { db } from "@/lib/supabase/admin";
 import { createAuthClient } from "@/lib/supabase/server";
-import type { SimilarWish, WishStatus } from "@/lib/types";
-import { normalizeWishText, validateLinkInput, wishTextIssue } from "@/lib/validation";
+import type { LinkVerdict, SimilarWish, WishStatus } from "@/lib/types";
+import { emailIssue, normalizeEmail, normalizeWishText, validateLinkInput, wishTextIssue } from "@/lib/validation";
 
 // Every mutation is a Server Action: Next.js enforces same-origin POSTs, and
 // updateTag gives the author read-your-own-writes on cached pages.
@@ -194,7 +198,10 @@ export async function postLink(
 
     invalidateWish(wishId, developer.handle);
     const result = data as { id: number; status: WishStatus };
-    return { ok: true, linkId: Number(result.id), status: result.status };
+    const linkId = Number(result.id);
+    // Emails go out after the response; a failure never affects the post.
+    after(() => notifyLinkPosted(linkId).catch((err) => console.error("[notify] failed", { linkId, err })));
+    return { ok: true, linkId, status: result.status };
   } catch (err) {
     return toActionError(err, "link");
   }
@@ -216,6 +223,142 @@ export async function removeLink(linkId: number): Promise<RemoveLinkResult> {
     return { ok: true, wishId: Number(result.wish_id), status: result.status };
   } catch (err) {
     return toActionError(err, "link");
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Verdicts and email
+// ---------------------------------------------------------------------------
+
+const INVALID_TOKEN: ActionError = {
+  ok: false,
+  code: "invalid_token",
+  message: "This link has expired or is invalid.",
+};
+
+type VerdictRow = {
+  link_id: number;
+  wish_id: number;
+  works: boolean | null;
+  verdict: LinkVerdict;
+  works_count: number;
+  broken_count: number;
+  wisher_verdict: boolean | null;
+  developer_handle: string;
+  wish_status: WishStatus;
+};
+
+export type VerdictResult =
+  | {
+      ok: true;
+      wishId: number;
+      works: boolean | null;
+      verdict: LinkVerdict;
+      worksCount: number;
+      brokenCount: number;
+      wisherVerdict: boolean | null;
+    }
+  | ActionError;
+
+// A verdict can change the link's state and the wish's status and badge.
+function applyVerdict(row: VerdictRow): VerdictResult {
+  const wishId = Number(row.wish_id);
+  updateTag(tags.wish(wishId));
+  updateTag(tags.ledger);
+  updateTag(tags.developer(row.developer_handle));
+  updateTag(tags.stats);
+  return {
+    ok: true,
+    wishId,
+    works: row.works,
+    verdict: row.verdict,
+    worksCount: row.works_count,
+    brokenCount: row.broken_count,
+    wisherVerdict: row.wisher_verdict,
+  };
+}
+
+/** Sets (true/false) or clears (null) this browser's vote on a link. */
+export async function setVerdict(linkId: number, works: boolean | null): Promise<VerdictResult> {
+  if (!isWishId(linkId) || (works !== null && typeof works !== "boolean")) {
+    return { ok: false, code: "invalid", message: "Invalid request." };
+  }
+  try {
+    // A browser without a device cookie has never me-too'd or wished.
+    const deviceHash = await readDeviceHash();
+    if (!deviceHash) return toActionError({ code: "P0001", message: "not_eligible" }, "verdict");
+    const { data, error } = await db().rpc("set_verdict", {
+      p_token_hash: deviceHash,
+      p_link_id: linkId,
+      p_works: works,
+    });
+    if (error) return toActionError(error, "verdict");
+    return applyVerdict(data as VerdictRow);
+  } catch (err) {
+    return toActionError(err, "verdict");
+  }
+}
+
+export type SubscribeResult = { ok: true; subscribed: true } | ActionError;
+
+/** Emails this address when someone posts a link on the wish. */
+export async function subscribe(wishId: number, email: string): Promise<SubscribeResult> {
+  if (!isWishId(wishId)) return { ok: false, code: "invalid", message: "Invalid request." };
+  const address = normalizeEmail(String(email ?? ""));
+  if (emailIssue(address)) {
+    return toActionError({ code: "P0001", message: "invalid_email" }, "subscribe");
+  }
+  try {
+    const [deviceHash, ipKey] = await Promise.all([readDeviceHash(), clientIpKey()]);
+    if (!deviceHash) return toActionError({ code: "P0001", message: "not_eligible" }, "subscribe");
+    const { error } = await db().rpc("subscribe", {
+      p_token_hash: deviceHash,
+      p_ip_key: ipKey,
+      p_wish_id: wishId,
+      p_email: address,
+      p_device_limit: LIMITS.subscriptionsPerDevicePerDay,
+      p_ip_limit: LIMITS.subscriptionsPerNetworkPerDay,
+    });
+    if (error) return toActionError(error, "subscribe");
+    // Viewer state is read uncached, so there is nothing to invalidate.
+    return { ok: true, subscribed: true };
+  } catch (err) {
+    return toActionError(err, "subscribe");
+  }
+}
+
+/** A vote from an email link. Counts as the subscription's device. */
+export async function emailVerdict(token: string, linkId: number, works: boolean): Promise<VerdictResult> {
+  const subscriptionId = verifyEmailToken(token, env.emailTokenSecret);
+  if (!subscriptionId) return INVALID_TOKEN;
+  if (!isWishId(linkId) || typeof works !== "boolean") {
+    return { ok: false, code: "invalid", message: "Invalid request." };
+  }
+  try {
+    const { data, error } = await db().rpc("set_verdict_by_subscription", {
+      p_subscription_id: subscriptionId,
+      p_link_id: linkId,
+      p_works: works,
+    });
+    if (error) return toActionError(error, "verdict");
+    return applyVerdict(data as VerdictRow);
+  } catch (err) {
+    return toActionError(err, "verdict");
+  }
+}
+
+export type UnsubscribeResult = { ok: true; all: boolean } | ActionError;
+
+/** Stops emails for the token's wish, or (all) every Wishcode email. */
+export async function unsubscribe(token: string, all: boolean): Promise<UnsubscribeResult> {
+  const subscriptionId = verifyEmailToken(token, env.emailTokenSecret);
+  if (!subscriptionId) return INVALID_TOKEN;
+  try {
+    const { error } = await db().rpc("unsubscribe", { p_subscription_id: subscriptionId, p_all: all === true });
+    if (error) return error.message === "not_found" ? INVALID_TOKEN : toActionError(error, "unsubscribe");
+    return { ok: true, all: all === true };
+  } catch (err) {
+    return toActionError(err, "unsubscribe");
   }
 }
 
