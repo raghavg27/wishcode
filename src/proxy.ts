@@ -5,8 +5,8 @@ import { NextResponse, type NextRequest } from "next/server";
 // common anonymous request skips the auth round-trip entirely.
 export async function proxy(request: NextRequest) {
   const hasAuthCookie = request.cookies.getAll().some((c) => c.name.startsWith("sb-"));
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_PUBLISHABLE_KEY;
   if (!hasAuthCookie || !url || !key) {
     return NextResponse.next({ request });
   }

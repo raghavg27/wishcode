@@ -4,7 +4,7 @@ import type { NextConfig } from "next";
 // must be allowed as form targets.
 const supabaseOrigin = (() => {
   try {
-    return new URL(process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").origin;
+    return new URL(process.env.SUPABASE_URL ?? "").origin;
   } catch {
     return "https://*.supabase.co";
   }

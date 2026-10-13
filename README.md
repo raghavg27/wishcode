@@ -40,7 +40,7 @@ To test the database, apply the migration to a scratch Postgres that has pgvecto
 
 ### 5. Deploy (Vercel)
 
-Add the same env vars in Vercel, set `NEXT_PUBLIC_SITE_URL` to the production origin, and deploy. The build reads the database (sitemap and the ledger's static shell), so the env vars must be available at build time too.
+Add the same env vars in Vercel (none are `NEXT_PUBLIC_`, so all can be marked Sensitive) and deploy. `SITE_URL` is optional there: it defaults to the production domain, so set it only for a custom domain. The build reads the database (sitemap and the ledger's static shell), so the env vars must be available at build time too.
 
 ## Architecture
 

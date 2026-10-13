@@ -13,10 +13,10 @@ function required(name: string): string {
 
 export const env = {
   get supabaseUrl() {
-    return required("NEXT_PUBLIC_SUPABASE_URL");
+    return required("SUPABASE_URL");
   },
   get supabasePublishableKey() {
-    return required("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY");
+    return required("SUPABASE_PUBLISHABLE_KEY");
   },
   /** sb_secret_… key (or legacy service_role JWT). Server only. */
   get supabaseSecretKey() {
