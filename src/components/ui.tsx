@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
-import { Info, ShieldCheck } from "lucide-react";
+import { ArrowRight, Info, ShieldCheck } from "lucide-react";
 import { DISCLAIMER } from "@/lib/config";
 import { developerPath } from "@/lib/site";
 import type { DeveloperRef, WishStatus } from "@/lib/types";
@@ -130,6 +130,34 @@ export function LedgerNote({ className }: { className?: string }) {
         Anyone can post a wish, and any developer can post what they built. I don&apos;t check links before they go up, so the
         people who wanted each wish vote on whether it works.
       </p>
+    </div>
+  );
+}
+
+/** A doodle, one witty line and at most one useful button. */
+export function EmptyState({
+  doodle: Doodle,
+  title,
+  body,
+  action,
+  className,
+}: {
+  doodle: (props: { className?: string }) => React.ReactNode;
+  title: string;
+  body?: React.ReactNode;
+  action?: { href: string; label: string };
+  className?: string;
+}) {
+  return (
+    <div className={clsx("card flex flex-col items-center px-6 py-12 text-center", className)}>
+      <Doodle className="mb-4 size-16 text-outline" />
+      <h2 className="max-w-md font-serif text-[22px] leading-8 text-ink">{title}</h2>
+      {body && <p className="mt-1 max-w-sm text-[14px] leading-[22px] text-ink-muted">{body}</p>}
+      {action && (
+        <Link href={action.href} className={`${buttonStyles.amber} mt-6`}>
+          {action.label} <ArrowRight className="size-4" aria-hidden />
+        </Link>
+      )}
     </div>
   );
 }
