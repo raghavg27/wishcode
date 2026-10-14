@@ -152,7 +152,9 @@ async function WishView({ params, searchParams }: PageProps<"/w/[id]">) {
                     );
                     return (
                       <li key={link.id}>
-                        {link.verdict === "flagged" ? <FlaggedLink handle={link.developer.handle}>{card}</FlaggedLink> : card}
+                        <FlaggedLink handle={link.developer.handle} flagged={link.verdict === "flagged"}>
+                          {card}
+                        </FlaggedLink>
                       </li>
                     );
                   })}
@@ -198,6 +200,7 @@ async function WishView({ params, searchParams }: PageProps<"/w/[id]">) {
             developer={developer}
             hasLinks={wish.links.length > 0}
             alreadyPosted={Boolean(viewerLink)}
+            metooCount={wish.metoo_count}
           />
           <div className="fixed inset-x-0 bottom-0 z-40 border-t border-hairline bg-surface/90 px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] backdrop-blur-md sm:hidden">
             <div className="flex items-center gap-3">

@@ -165,7 +165,8 @@ export async function setClaim(wishId: number, active: boolean): Promise<ClaimRe
   }
 }
 
-export type PostLinkResult = { ok: true; linkId: number; status: WishStatus } | ActionError;
+/** `handle` builds the developer's share URL, /w/:id/by/:handle. */
+export type PostLinkResult = { ok: true; linkId: number; handle: string; status: WishStatus } | ActionError;
 
 export async function postLink(
   wishId: number,
@@ -201,7 +202,7 @@ export async function postLink(
     const linkId = Number(result.id);
     // Emails go out after the response; a failure never affects the post.
     after(() => notifyLinkPosted(linkId).catch((err) => console.error("[notify] failed", { linkId, err })));
-    return { ok: true, linkId, status: result.status };
+    return { ok: true, linkId, handle: developer.handle, status: result.status };
   } catch (err) {
     return toActionError(err, "link");
   }

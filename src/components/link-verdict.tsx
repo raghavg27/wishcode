@@ -5,8 +5,10 @@ import { CircleHelp, ThumbsDown, ThumbsUp, TriangleAlert } from "lucide-react";
 import { useState, useTransition } from "react";
 import { setVerdict } from "@/app/actions";
 import { useMetoo } from "@/components/metoo";
+import { ShareMomentModal } from "@/components/share-moment";
 import { toast } from "@/components/toaster";
 import { track } from "@/lib/analytics";
+import type { ShareMomentProps } from "@/lib/share-copy";
 import type { LinkVerdict } from "@/lib/types";
 import { computeVerdict, verdictCountsText } from "@/lib/verdict";
 
@@ -25,15 +27,18 @@ type Props = VerdictState & {
   isWisher: boolean;
   /** Seeds the shared me-too state: me-too'ing on this page makes you eligible. */
   metoo: { active: boolean; count: number };
+  /** For the wisher: "Your wish came true", shown when they vote Yes. */
+  wisherShare?: ShareMomentProps;
 };
 
 /** A link's verdict chip, plus Yes / No voting for the wisher and me-too-ers. */
-export function LinkVerdictPanel({ wishId, linkId, isWisher, metoo, ...initial }: Props) {
+export function LinkVerdictPanel({ wishId, linkId, isWisher, metoo, wisherShare, ...initial }: Props) {
   const { active } = useMetoo(wishId, metoo);
   const eligible = isWisher || active;
   const [local, setLocal] = useState<VerdictState | null>(null);
   const [pending, startTransition] = useTransition();
   const [wasActive, setWasActive] = useState(active);
+  const [sharing, setSharing] = useState(false);
   const state = local ?? initial;
 
   // Taking back a me-too deletes this viewer's votes on the server.
@@ -65,6 +70,7 @@ export function LinkVerdictPanel({ wishId, linkId, isWisher, metoo, ...initial }
             mine: result.works,
           });
           if (works !== null) track("verdict", { wish_id: wishId, link_id: linkId, works });
+          if (works === true && isWisher && result.wisherVerdict === true && wisherShare) setSharing(true);
         } else {
           toast(result.message);
         }
@@ -92,6 +98,7 @@ export function LinkVerdictPanel({ wishId, linkId, isWisher, metoo, ...initial }
       ) : (
         counts && <span className="text-label-sm text-ink-muted">{counts}</span>
       )}
+      {wisherShare && <ShareMomentModal share={wisherShare} open={sharing} onClose={() => setSharing(false)} />}
     </div>
   );
 }
@@ -156,10 +163,14 @@ function VoteButton({
   );
 }
 
-/** Flagged links start collapsed behind a muted row. */
-export function FlaggedLink({ handle, children }: { handle: string; children: React.ReactNode }) {
+/**
+ * Flagged links start collapsed behind a muted row. Wraps every link, flagged
+ * or not, so a vote that changes the verdict doesn't remount the card (and
+ * close a share moment it just opened).
+ */
+export function FlaggedLink({ handle, flagged, children }: { handle: string; flagged: boolean; children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
-  if (open) return <>{children}</>;
+  if (open || !flagged) return <>{children}</>;
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-dashed border-outline-variant bg-surface-low px-5 py-3.5">
       <p className="flex items-center gap-2 text-label text-ink-muted">
