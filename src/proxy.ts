@@ -1,9 +1,10 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
-import { MISSING_HEADER, pageExists, type MissingKind } from "@/lib/page-exists";
+import { MISSING_HEADER, pageExists, shareTargetExists, type MissingKind } from "@/lib/page-exists";
 import { GITHUB_HANDLE, parseWishId } from "@/lib/site";
 
-const WISH_PATH = /^\/w\/([^/]+)\/?$/;
+// /w/:id, and its share URLs /w/:id/by/:handle and /w/:id/came-true.
+const WISH_PATH = /^\/w\/([^/]+)(?:\/by\/([^/]+)|\/(came-true))?\/?$/;
 const DEVELOPER_PATH = /^\/d\/([^/]+)\/?$/;
 const UNSUBSCRIBE_PATH = /^\/e\/unsubscribe\/?$/;
 
@@ -32,9 +33,9 @@ export async function proxy(request: NextRequest) {
 }
 
 /**
- * For full-page loads of /w/:id and /d/:handle, which kind of page is missing,
- * if any. Client navigations (RSC requests) skip this: they render the route's
- * not-found UI and have no status code to fix.
+ * For full-page loads of /w/:id (and its share URLs) and /d/:handle, which
+ * kind of page is missing, if any. Client navigations (RSC requests) skip
+ * this: they render the route's not-found UI and have no status code to fix.
  */
 async function missingPage(request: NextRequest): Promise<MissingKind | null> {
   if (request.method !== "GET" || request.headers.has("rsc")) return null;
@@ -43,7 +44,9 @@ async function missingPage(request: NextRequest): Promise<MissingKind | null> {
   const wish = WISH_PATH.exec(path);
   if (wish) {
     const id = parseWishId(decodeSegment(wish[1]));
-    return id && (await pageExists({ wishId: id })) ? null : "wish";
+    if (!id || !(await pageExists({ wishId: id }))) return "wish";
+    const target = wish[3] ? "came-true" : wish[2] !== undefined ? { by: decodeSegment(wish[2]) } : null;
+    return target && !(await shareTargetExists(id, target)) ? "share" : null;
   }
 
   const dev = DEVELOPER_PATH.exec(path);

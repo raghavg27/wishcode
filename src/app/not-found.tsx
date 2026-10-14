@@ -6,7 +6,7 @@ import { MISSING_HEADER } from "@/lib/page-exists";
 
 export const metadata: Metadata = { title: "Not found" };
 
-// Also serves unknown /w/:id and /d/:handle page loads, which src/proxy.ts
+// Also serves unknown /w/:id, share URL and /d/:handle page loads, which src/proxy.ts
 // rewrites here (with a header naming what was missing) to get a 404 status.
 export default function NotFound() {
   return (
@@ -18,6 +18,6 @@ export default function NotFound() {
 
 async function ContextualNotFound() {
   const missing = (await headers()).get(MISSING_HEADER);
-  const kind: NotFoundKind = missing === "wish" || missing === "developer" ? missing : "page";
+  const kind: NotFoundKind = missing === "wish" || missing === "developer" || missing === "share" ? missing : "page";
   return <NotFoundView kind={kind} />;
 }
