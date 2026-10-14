@@ -1,12 +1,13 @@
 import { Flame, Hand, History, SquareTerminal, TrendingUp } from "lucide-react";
 import Link from "next/link";
 import { GithubIcon } from "@/components/icons";
-import { formatNumber } from "@/lib/format";
+import { formatNumber, weekDeltaText } from "@/lib/format";
 import { wishPath } from "@/lib/site";
 import type { LedgerStats } from "@/lib/types";
 
 export function WeekStats({ week }: { week: LedgerStats["week"] }) {
-  const delta = week.wishes_prev > 0 ? Math.round(((week.wishes - week.wishes_prev) / week.wishes_prev) * 100) : null;
+  const delta = weekDeltaText(week.wishes, week.wishes_prev);
+  const up = week.wishes > week.wishes_prev;
   return (
     <section className="card p-5" aria-labelledby="week-title">
       <div className="mb-4 flex items-center justify-between">
@@ -32,15 +33,17 @@ export function WeekStats({ week }: { week: LedgerStats["week"] }) {
           <dt className="mt-0.5 text-caption text-ink-muted">Fulfilled</dt>
         </div>
       </dl>
-      {delta !== null && (
-        <div className="mt-4 flex items-center justify-between pt-1 text-caption text-outline">
-          <span>Weekly velocity</span>
-          <span className={delta >= 0 ? "flex items-center gap-0.5 font-medium text-leaf-strong" : "font-medium text-ink-muted"}>
-            {delta >= 0 && <TrendingUp className="size-3.5" aria-hidden />}
-            {delta >= 0 ? "+" : ""}
-            {delta}% vs last week
-          </span>
-        </div>
+      {delta && (
+        <p
+          className={
+            up
+              ? "mt-4 flex items-center gap-1 pt-1 text-caption font-medium text-leaf-strong"
+              : "mt-4 pt-1 text-caption font-medium text-ink-muted"
+          }
+        >
+          {up && <TrendingUp className="size-3.5" aria-hidden />}
+          {delta}
+        </p>
       )}
     </section>
   );

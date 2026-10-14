@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { decodeCursor, encodeCursor } from "../cursor";
-import { durationBetween, relativeTime } from "../format";
+import { durationBetween, relativeTime, weekDeltaText } from "../format";
 import { safeNext } from "../redirect";
 import type { WishCard } from "../types";
 
@@ -41,5 +41,17 @@ describe("format", () => {
     expect(durationBetween("2026-10-10T00:00:00Z", "2026-10-11T10:00:00Z")).toBe("34 hours");
     expect(durationBetween("2026-10-10T00:00:00Z", "2026-10-12T10:00:00Z")).toBe("2 days");
     expect(durationBetween("2026-10-10T00:00:00Z", "2026-10-10T00:20:00Z")).toBe("20 minutes");
+  });
+});
+
+describe("weekDeltaText", () => {
+  it("says more, fewer or the same in plain words", () => {
+    expect(weekDeltaText(112, 100)).toBe("12% more wishes than last week");
+    expect(weekDeltaText(92, 100)).toBe("8% fewer wishes than last week");
+    expect(weekDeltaText(100, 100)).toBe("Same as last week");
+  });
+
+  it("is null without a previous week to compare", () => {
+    expect(weekDeltaText(5, 0)).toBeNull();
   });
 });

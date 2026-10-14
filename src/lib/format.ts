@@ -64,3 +64,11 @@ export function resetsIn(resetAt: string, now: number): string {
 export function pluralize(n: number, one: string, many = `${one}s`) {
   return `${formatNumber(n)} ${n === 1 ? one : many}`;
 }
+
+/** "12% more wishes than last week", or null with no previous week to compare. */
+export function weekDeltaText(wishes: number, wishesPrev: number): string | null {
+  if (wishesPrev <= 0) return null;
+  const delta = Math.round(((wishes - wishesPrev) / wishesPrev) * 100);
+  if (delta === 0) return "Same as last week";
+  return `${Math.abs(delta)}% ${delta > 0 ? "more" : "fewer"} wishes than last week`;
+}
