@@ -5,12 +5,14 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { RemoveOwnLink } from "@/components/developer-panel";
 import { ProfileLinkFilter } from "@/components/profile-filter";
+import { ShareMomentButton } from "@/components/share-moment";
 import { TimeAgo } from "@/components/time-ago";
 import { StickyNote } from "@/components/doodles";
 import { Avatar, EmptyState, Skeleton, StatusChip } from "@/components/ui";
 import { EXTERNAL_REL } from "@/components/wish-card";
 import { getViewer } from "@/lib/auth";
 import { getDeveloperProfile } from "@/lib/data";
+import { developerShare } from "@/lib/share-copy";
 import { domainOf, formatDate, formatNumber, repoLabel } from "@/lib/format";
 import { GITHUB_HANDLE, developerPath, wishPath } from "@/lib/site";
 import type { DeveloperProfile } from "@/lib/types";
@@ -116,7 +118,16 @@ async function Profile({ params, searchParams }: PageProps<"/d/[handle]">) {
                   </div>
                   <div className="mt-4 flex items-center justify-between">
                     <TimeAgo iso={l.created_at} prefix="Posted" className="flex items-center gap-1.5 text-label-sm text-ink-muted" />
-                    {isSelf && <RemoveOwnLink linkId={l.id} compact />}
+                    {isSelf && (
+                      <div className="flex items-center gap-4">
+                        {l.verdict !== "flagged" && l.wish.text && (
+                          <ShareMomentButton
+                            share={developerShare({ ...l.wish, text: l.wish.text }, { ...l, developer: profile })}
+                          />
+                        )}
+                        <RemoveOwnLink linkId={l.id} compact />
+                      </div>
+                    )}
                   </div>
                 </li>
               ))}
