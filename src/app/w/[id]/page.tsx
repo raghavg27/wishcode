@@ -98,7 +98,7 @@ async function WishView({ params, searchParams }: PageProps<"/w/[id]">) {
 
       <div className="mb-6 flex items-center justify-between">
         <Link href="/" className="inline-flex items-center gap-2 text-label font-medium text-ink-muted hover:text-ink">
-          <ArrowLeft className="size-4" aria-hidden /> Back to ledger
+          <ArrowLeft className="size-4" aria-hidden /> All wishes
         </Link>
         <span className="font-mono text-label-sm text-outline">{wishLabel(wish.id)}</span>
       </div>
@@ -120,7 +120,7 @@ async function WishView({ params, searchParams }: PageProps<"/w/[id]">) {
                     {wish.links.length}
                   </span>
                 </h2>
-                <span className="text-label-sm text-ink-muted">Independent developer releases</span>
+                <span className="text-label-sm text-ink-muted">What people built</span>
               </div>
               <Disclaimer className="mb-4">{LINKS_DISCLAIMER}</Disclaimer>
 
@@ -168,7 +168,7 @@ async function WishView({ params, searchParams }: PageProps<"/w/[id]">) {
                   <h2 id="share-title" className="text-label font-semibold tracking-wider text-ink uppercase">
                     Share this wish
                   </h2>
-                  <p className="text-label-sm text-ink-muted">More me-toos help developers see the demand.</p>
+                  <p className="text-label-sm text-ink-muted">Every me-too tells developers this is worth building.</p>
                 </div>
                 <ShareTargets path={path} text={shareText} />
               </div>
@@ -346,8 +346,8 @@ function RemovedHero({ wish }: { wish: WishDetail }) {
       <div className="flex items-start gap-3 rounded-xl border-l-4 border-outline bg-surface-high p-4">
         <Gavel className="mt-0.5 size-5 shrink-0 text-ink-muted" aria-hidden />
         <div>
-          <p className="text-label font-semibold text-ink">This wish was removed by a moderator.</p>
-          <p className="text-label text-ink-muted">Its text is no longer shown and actions are disabled.</p>
+          <p className="text-label font-semibold text-ink">This wish was removed.</p>
+          <p className="text-label text-ink-muted">Its text is hidden and you can&apos;t me-too it anymore.</p>
         </div>
       </div>
       <div className="mt-5 flex items-center gap-3 text-label-sm text-ink-muted">
@@ -355,9 +355,8 @@ function RemovedHero({ wish }: { wish: WishDetail }) {
         <TimeAgo iso={wish.created_at} prefix="Posted" />
         <span className="font-mono">{wishLabel(wish.id)}</span>
       </div>
-      <div className="mt-6 flex items-center gap-3 border-t border-hairline pt-5">
+      <div className="mt-6 border-t border-hairline pt-5">
         <MetooButton wishId={wish.id} active={false} count={wish.metoo_count} disabled />
-        <span className="text-label-sm text-ink-muted italic">Actions unavailable on removed wishes</span>
       </div>
     </article>
   );
@@ -370,11 +369,11 @@ function WishRecord({ wish }: { wish: WishDetail }) {
     ["Live links", formatNumber(wish.live_link_count)],
     ["Builders", formatNumber(wish.claim_count)],
   ];
-  if (wish.fulfilled_at) rows.splice(1, 0, ["Time to first ship", <span key="t" className="text-leaf-strong">{durationBetween(wish.created_at, wish.fulfilled_at)}</span>]);
+  if (wish.fulfilled_at) rows.splice(1, 0, ["Built in", <span key="t" className="text-leaf-strong">{durationBetween(wish.created_at, wish.fulfilled_at)}</span>]);
   return (
     <section className="card p-6" aria-labelledby="record-title">
       <h2 id="record-title" className="mb-4 text-label font-semibold tracking-wider text-ink uppercase">
-        Wish record
+        About this wish
       </h2>
       <dl className="space-y-3 text-label">
         {rows.map(([k, v]) => (
@@ -400,7 +399,7 @@ function ShareCardPreview({ wish }: { wish: WishDetail }) {
         <div className="flex items-center justify-between">
           <span className="flex items-center gap-2 text-label-sm font-semibold tracking-wider text-ink uppercase">
             <span className="flex size-5 items-center justify-center rounded bg-amber text-caption font-bold">W</span>
-            Wishcode public ledger
+            Wishcode
           </span>
           <StatusChip status={wish.status} verified={wish.verified} />
         </div>

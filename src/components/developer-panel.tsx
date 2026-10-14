@@ -72,8 +72,8 @@ export function DeveloperPanel({ wishId, status, removed, claims, developer, vie
         </h2>
         <p className="mt-2 text-[14px] leading-[22px] text-ink-muted">
           {status === "fulfilled"
-            ? "Built something for this, or planning to? This wish is fulfilled, but alternative builds, platforms and forks are always welcome."
-            : "Planning to build this? Claim it so others know, or post a live link when it works."}
+            ? "Built your own version? Post it. Different takes, platforms and forks are all welcome."
+            : "Building this? Claim it so others know, then post the link when it works."}
         </p>
 
         {developer && (
@@ -128,7 +128,7 @@ export function DeveloperPanel({ wishId, status, removed, claims, developer, vie
         </div>
 
         <p className="mt-3 text-center text-caption text-ink-muted">
-          {developer ? "No deadlines, no claim limits. Anyone can ship code." : "Requires GitHub. No deadlines, no claim limits. Anyone can ship code."}
+          {developer ? "No deadlines. Anyone can build it." : "You'll need GitHub. No deadlines. Anyone can build it."}
         </p>
       </div>
 

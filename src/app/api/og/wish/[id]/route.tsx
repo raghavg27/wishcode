@@ -53,7 +53,7 @@ export async function GET(_request: Request, { params }: RouteContext<"/api/og/w
             <div style={{ width: 40, height: 40, borderRadius: 10, background: "#f5a524", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, fontWeight: 700, color: "#14110f" }}>
               W
             </div>
-            <div style={{ fontSize: 22, fontWeight: 700, letterSpacing: 3, color: "#1e1b19" }}>WISHCODE PUBLIC LEDGER</div>
+            <div style={{ fontSize: 22, fontWeight: 700, letterSpacing: 3, color: "#1e1b19" }}>WISHCODE</div>
           </div>
           <div style={{ display: "flex", alignItems: "center", padding: "8px 20px", borderRadius: 999, background: status.bg, color: status.fg, border: `2px solid ${status.border}`, fontSize: 24, fontWeight: 700 }}>
             {status.label}
