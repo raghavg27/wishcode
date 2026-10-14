@@ -1,9 +1,9 @@
 "use client";
 
-import { Archive, ArrowRight, Loader2 } from "lucide-react";
-import Link from "next/link";
+import { Loader2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { buttonStyles } from "@/components/ui";
+import { Inbox, Lamp, Laptop, Tumbleweed } from "@/components/doodles";
+import { EmptyState, buttonStyles } from "@/components/ui";
 import { WishCard } from "@/components/wish-card";
 import type { Sort, StatusFilter } from "@/lib/config";
 import type { WishCard as Wish } from "@/lib/types";
@@ -16,11 +16,23 @@ type Props = {
   initialMetoos: number[];
 };
 
-const EMPTY_COPY: Record<StatusFilter, { title: string; body: string }> = {
-  all: { title: "No wishes yet.", body: "Be the first to wish for something." },
-  open: { title: "No open wishes.", body: "Every wish is being built or fulfilled." },
-  being_built: { title: "Nothing being built yet.", body: "Claim an open wish and get started." },
-  fulfilled: { title: "Nothing fulfilled yet.", body: "Be the first to ship one." },
+const EMPTY: Record<StatusFilter, Parameters<typeof EmptyState>[0]> = {
+  all: { doodle: Lamp, title: "No wishes yet. Rub the lamp.", action: { href: "/#compose", label: "Post the first wish" } },
+  open: {
+    doodle: Inbox,
+    title: "Everything's being built or done. Wild.",
+    action: { href: "/?status=fulfilled", label: "See what's been built" },
+  },
+  being_built: {
+    doodle: Laptop,
+    title: "Nobody's building yet. First one in gets bragging rights.",
+    action: { href: "/?status=open", label: "Browse open wishes" },
+  },
+  fulfilled: {
+    doodle: Tumbleweed,
+    title: "Nothing fulfilled yet. This tumbleweed is waiting for a hero.",
+    action: { href: "/?status=open", label: "Browse open wishes" },
+  },
 };
 
 export function LedgerList({ status, sort, initialItems, initialCursor, initialMetoos }: Props) {
@@ -68,27 +80,7 @@ export function LedgerList({ status, sort, initialItems, initialCursor, initialM
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cursor, error]);
 
-  if (items.length === 0) {
-    const copy = EMPTY_COPY[status];
-    return (
-      <div className="card flex flex-col items-center px-6 py-14 text-center">
-        <span className="mb-4 flex size-10 items-center justify-center rounded-full bg-surface-low text-outline">
-          <Archive className="size-5" aria-hidden />
-        </span>
-        <h2 className="font-serif text-[26px] leading-9 text-ink">{copy.title}</h2>
-        <p className="mt-1 text-[14px] text-ink-muted">{copy.body}</p>
-        {status !== "open" && status !== "all" ? (
-          <Link href="/?status=open" className={`${buttonStyles.amber} mt-6`}>
-            See open wishes <ArrowRight className="size-4" aria-hidden />
-          </Link>
-        ) : (
-          <a href="#compose" className={`${buttonStyles.amber} mt-6`}>
-            Make a wish <ArrowRight className="size-4" aria-hidden />
-          </a>
-        )}
-      </div>
-    );
-  }
+  if (items.length === 0) return <EmptyState {...EMPTY[status]} />;
 
   return (
     <div className="flex flex-col gap-4">

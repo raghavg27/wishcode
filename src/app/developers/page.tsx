@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { BuildCta } from "@/components/sidebar";
-import { Avatar, Skeleton } from "@/components/ui";
+import { Laptop } from "@/components/doodles";
+import { Avatar, EmptyState, Skeleton } from "@/components/ui";
 import { getDirectory } from "@/lib/data";
 import { formatNumber } from "@/lib/format";
 import { developerPath } from "@/lib/site";
@@ -36,7 +37,13 @@ export default function DevelopersPage() {
 async function Directory() {
   const devs = await getDirectory();
   if (devs.length === 0) {
-    return <p className="card px-6 py-12 text-center text-[15px] text-ink-muted">No builders yet. Be the first to connect GitHub.</p>;
+    return (
+      <EmptyState
+        doodle={Laptop}
+        title="No builders yet. The first one gets to be first."
+        action={{ href: "/login", label: "Connect GitHub" }}
+      />
+    );
   }
   return (
     <ul className="card divide-y divide-hairline">

@@ -6,7 +6,8 @@ import { Suspense } from "react";
 import { RemoveOwnLink } from "@/components/developer-panel";
 import { ProfileLinkFilter } from "@/components/profile-filter";
 import { TimeAgo } from "@/components/time-ago";
-import { Avatar, Skeleton, StatusChip } from "@/components/ui";
+import { StickyNote } from "@/components/doodles";
+import { Avatar, EmptyState, Skeleton, StatusChip } from "@/components/ui";
 import { EXTERNAL_REL } from "@/components/wish-card";
 import { getViewer } from "@/lib/auth";
 import { getDeveloperProfile } from "@/lib/data";
@@ -64,15 +65,11 @@ async function Profile({ params, searchParams }: PageProps<"/d/[handle]">) {
             <ProfileLinkFilter handle={profile.handle} filter={filter} total={profile.stats.links} first={profile.stats.first_to_ship} />
           </div>
           {links.length === 0 ? (
-            <div className="card px-6 py-12 text-center">
-              <p className="font-serif text-[22px] text-ink">No live links {filter === "first" ? "that were first to ship" : "yet"}.</p>
-              <p className="mt-1 text-[14px] text-ink-muted">
-                {isSelf ? "Find an open wish and ship something for it." : `@${profile.handle} hasn't posted a live link yet.`}
-              </p>
-              <Link href="/?status=open" className="mt-5 inline-block text-label font-medium text-primary underline">
-                Browse open wishes
-              </Link>
-            </div>
+            <EmptyState
+              doodle={StickyNote}
+              title={filter === "first" ? "Not first to ship on anything yet. Give it time." : "Nothing shipped yet. Give it time."}
+              action={isSelf ? { href: "/?status=open&sort=top", label: "Find a wish to build" } : undefined}
+            />
           ) : (
             <ul className="flex flex-col gap-4">
               {links.map((l) => (
