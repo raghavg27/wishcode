@@ -92,8 +92,9 @@ Browser ──(Server Actions / GET)──▶ Next.js on Vercel ──(service r
 - **Rate limits** are atomic fixed-window counters inside the same transaction as the write. Daily windows reset at midnight UTC: 2 wishes and 100 me-toos per device, 20 wishes and 1,000 me-toos per network (salted IP hash; shared IPs get a looser backstop), 5 claims and 20 links per developer, and 20 new email subscriptions per device (100 per network). Duplicate checks are capped at 60 per IP per hour. Values live in `LIMITS` in `src/lib/config.ts`. An over-limit write rolls back completely.
 - **Duplicate suggestions.** The `embed` Edge Function returns a 384-dim `gte-small` embedding (4 s timeout), matched against an HNSW index at cosine ≥ 0.89. Wishes without an embedding yet are matched by `pg_trgm`. If the function isn't configured or fails, matching falls back to `pg_trgm` entirely, and posting is never blocked. Embedding calls are capped per IP.
 - **Caching.** Public reads (feed pages, wish detail, stats, profiles) use `"use cache"` with tags. Writes call `updateTag`, so wishes, claims, links and the sidebar stats show up immediately. Me-toos don't invalidate the feed or wish caches. Instead, every page reads its wishes' current counts and the viewer's own me-toos in one uncached primary-key lookup (`live_metoos`) and overlays them, so counts are live while the cached entries stay warm. Pages are partially prerendered: the static shell is served instantly and data streams in.
-- **404s.** Because pages stream, their status is committed before they can call `notFound()`. `src/proxy.ts` checks `/w/:id` and `/d/:handle` page loads against `page_exists` (memoised per instance) and rewrites misses to an unmatched path, so they return a real 404 with the right copy.
-- **Share cards.** `/api/og/wish/:id` renders 1200×630 PNGs with bundled fonts. The page links them with a `?v=` that changes with status, link count and me-toos, so they can be CDN-cached for a day.
+- **404s.** Because pages stream, their status is committed before they can call `notFound()`. `src/proxy.ts` checks `/w/:id` and `/d/:handle` page loads against `page_exists` (memoised per instance), and the share URLs below against the wish's links, and rewrites misses to an unmatched path, so they return a real 404 with the right copy.
+- **Share cards.** Three 1200×630 PNGs drawn with bundled fonts (`src/lib/og-card.tsx`): the wish card (`/api/og/wish/:id`), the developer's "I built what 214 people wished for." card (`/api/og/link/:linkId`), and the wisher's "My wish came true." card (`/api/og/wish/:id/came-true`). Pages link them with a `?v=` that changes with everything on the card, so they can be CDN-cached for a day. Link previews come from page metadata, so each card has its own page: `/w/:id/by/:handle` and `/w/:id/came-true` render the wish page (canonical `/w/:id`) with that card as `og:image`, and 404 once the card is gone (link removed or flagged, or no link the wisher confirmed). Copy and URLs live in `src/lib/share-copy.ts`.
+- **Share moments.** Posting a link turns the modal into "You built it", and the wisher's Yes (on the page or from email) opens "Your wish came true": the card plus X, LinkedIn, WhatsApp, Copy link and Download image. Your own live links get a Share button that reopens it. PostHog gets `share_moment_shown` and `share` with `card` = `wish` | `developer` | `wisher`.
 - **Security headers:** `frame-ancestors 'none'`, nosniff, HSTS, a strict referrer policy and permissions policy. External links use `target="_blank" rel="noopener noreferrer nofollow ugc"` and are never iframed. Post-login redirects accept same-site paths only.
 
 ## API
@@ -105,7 +106,9 @@ Mutations are Server Actions (`src/app/actions.ts`): `postWish`, `setMetoo`, `se
 | `GET /api/wishes?status=&sort=&cursor=` | Cursor-paginated feed with live me-too counts (plus the viewer's me-toos) |
 | `GET /api/wishes/:id` | Wish with claims and links |
 | `GET /api/developers/:handle` | Developer profile |
-| `GET /api/og/wish/:id` | Share card PNG |
+| `GET /api/og/wish/:id` | Wish share card PNG |
+| `GET /api/og/link/:linkId` | Developer share card PNG (404 for removed or flagged links) |
+| `GET /api/og/wish/:id/came-true` | Wisher share card PNG (404 until the wisher confirms a link) |
 | `POST /e/unsubscribe?t=` | RFC 8058 one-click unsubscribe (handled by `/api/unsubscribe`) |
 
 ## Not built yet
