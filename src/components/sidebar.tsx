@@ -7,7 +7,7 @@ import type { LedgerStats } from "@/lib/types";
 
 export function WeekStats({ week }: { week: LedgerStats["week"] }) {
   const delta = weekDeltaText(week.wishes, week.wishes_prev);
-  const up = week.wishes > week.wishes_prev;
+  const up = Boolean(delta?.includes(" more "));
   return (
     <section className="card p-5" aria-labelledby="week-title">
       <div className="mb-4 flex items-center justify-between">
