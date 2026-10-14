@@ -1,11 +1,12 @@
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { Magnifier } from "@/components/doodles";
 import { buttonStyles } from "@/components/ui";
 
 type Action = { href: string; label: string };
 
 type Copy = {
-  /** Mono reference line on the empty ledger entry, e.g. "#WISH-????". */
+  /** Mono reference line under the doodle, e.g. "#WISH-????". */
   reference: string;
   title: string;
   body: string;
@@ -13,7 +14,7 @@ type Copy = {
   secondary?: Action;
 };
 
-export type NotFoundKind = "page" | "wish" | "developer";
+export type NotFoundKind = "page" | "wish" | "developer" | "share";
 
 const COPY: Record<NotFoundKind, Copy> = {
   page: {
@@ -36,24 +37,25 @@ const COPY: Record<NotFoundKind, Copy> = {
     primary: { href: "/developers", label: "See all builders" },
     secondary: { href: "/", label: "Back to all wishes" },
   },
+  share: {
+    reference: "/w/…/by",
+    title: "This share link no longer works",
+    body: "The build it pointed to was removed or flagged, or the wish hasn't been confirmed as come true yet.",
+    primary: { href: "/", label: "Browse wishes" },
+  },
 };
 
-// Shared 404 layout: an empty ledger entry where the page would have been,
-// then a way back into the ledger.
+// Shared 404 layout: a magnifier over nothing, then a way back to the wishes.
 export function NotFoundView({ kind }: { kind: NotFoundKind }) {
   const { reference, title, body, primary, secondary } = COPY[kind];
   return (
     <main className="flex flex-1 items-center justify-center px-4 py-16 sm:py-24">
       <div className="w-full max-w-[520px]">
-        <div className="rounded-xl border-[1.5px] border-dashed border-outline/40 bg-surface-low px-6 py-5" aria-hidden>
-          <div className="flex items-center justify-between font-mono text-label-sm text-outline">
-            <span>{reference}</span>
-            <span>404</span>
-          </div>
-          <div className="mt-4 space-y-2.5">
-            <div className="h-3 w-11/12 rounded-full bg-surface-container" />
-            <div className="h-3 w-2/3 rounded-full bg-surface-container" />
-          </div>
+        <div className="flex items-end gap-3 text-outline">
+          <Magnifier className="size-16" />
+          <span className="mb-1 font-mono text-label-sm" aria-hidden>
+            {reference} · 404
+          </span>
         </div>
 
         <p className="mt-8 text-label-sm font-semibold tracking-wider text-primary uppercase">Nothing here</p>
