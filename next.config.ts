@@ -28,6 +28,8 @@ const nextConfig: NextConfig = {
   },
   outputFileTracingIncludes: {
     "/api/og/wish/[id]": ["./assets/fonts/**"],
+    "/api/og/wish/[id]/came-true": ["./assets/fonts/**"],
+    "/api/og/link/[linkId]": ["./assets/fonts/**"],
   },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];

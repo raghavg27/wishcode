@@ -69,6 +69,16 @@ export async function getWish(id: number): Promise<WishDetail | null> {
   return (data as WishDetail | null) ?? null;
 }
 
+/**
+ * Which wish a link belongs to (deleted links included; callers check the
+ * wish's links). Uncached so a miss for a brand-new link never sticks.
+ */
+export async function getLinkWishId(linkId: number): Promise<number | null> {
+  const { data, error } = await db().from("links").select("wish_id").eq("id", linkId).maybeSingle();
+  if (error) throw error;
+  return data ? Number(data.wish_id) : null;
+}
+
 export async function getDeveloperProfile(handle: string): Promise<DeveloperProfile | null> {
   "use cache";
   cacheLife({ stale: 60, revalidate: 60, expire: 3600 });
