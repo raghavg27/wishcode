@@ -18,23 +18,23 @@ export type NotFoundKind = "page" | "wish" | "developer";
 const COPY: Record<NotFoundKind, Copy> = {
   page: {
     reference: "/????",
-    title: "This page isn't here",
-    body: "The link may be mistyped, or the page never existed. Everything on Wishcode starts from the ledger.",
-    primary: { href: "/", label: "Go to the ledger" },
+    title: "I looked everywhere. Nothing here.",
+    body: "The link might have a typo, or the page never existed.",
+    primary: { href: "/", label: "Back to all wishes" },
   },
   wish: {
     reference: "#WISH-????",
     title: "No wish at this address",
     body: "Check the link for a typo. If nobody has wished for it yet, you can be the first. It takes one sentence and no account.",
     primary: { href: "/#compose", label: "Make a wish" },
-    secondary: { href: "/", label: "Browse the ledger" },
+    secondary: { href: "/", label: "Browse wishes" },
   },
   developer: {
     reference: "@????",
     title: "No developer by that handle",
     body: "Profiles appear once a developer connects GitHub. If they changed their GitHub handle, their profile moved with it.",
     primary: { href: "/developers", label: "See all builders" },
-    secondary: { href: "/", label: "Back to the ledger" },
+    secondary: { href: "/", label: "Back to all wishes" },
   },
 };
 
@@ -56,7 +56,7 @@ export function NotFoundView({ kind }: { kind: NotFoundKind }) {
           </div>
         </div>
 
-        <p className="mt-8 text-label-sm font-semibold tracking-wider text-primary uppercase">Not on the ledger</p>
+        <p className="mt-8 text-label-sm font-semibold tracking-wider text-primary uppercase">Nothing here</p>
         <h1 className="mt-2 font-serif text-display-sm text-ink">{title}</h1>
         <p className="mt-3 text-[15px] leading-6 text-ink-muted">{body}</p>
 

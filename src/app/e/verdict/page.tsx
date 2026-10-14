@@ -39,11 +39,11 @@ async function VerdictView({ searchParams }: Pick<PageProps<"/e/verdict">, "sear
   const wish = await getWish(context.wish_id);
   const href = wishPath(context.wish_id);
   if (!wish || wish.removed || !wish.text) {
-    return <EmailNotice title="This wish was removed" body="A moderator removed it, so there's nothing to vote on." />;
+    return <EmailNotice title="This wish was removed" body="It was taken down, so there's nothing to vote on." />;
   }
   const link = wish.links.find((l) => l.id === linkId);
   if (!link) {
-    return <EmailNotice title="This link was removed" body="Its developer or a moderator took it down." href={href} cta="See the wish" />;
+    return <EmailNotice title="This link was removed" body="Its developer or I took it down." href={href} cta="See the wish" />;
   }
 
   return (

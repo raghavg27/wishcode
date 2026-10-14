@@ -19,7 +19,7 @@ export function EmailNotice({
   title,
   body,
   href = "/",
-  cta = "Go to the ledger",
+  cta = "Back to all wishes",
 }: {
   eyebrow?: string;
   title: string;
