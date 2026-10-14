@@ -72,10 +72,48 @@
   --shadow-card: 0 1px 3px rgba(20, 17, 15, 0.04), 0 1px 2px rgba(20, 17, 15, 0.02);
   --shadow-card-hover: 0 4px 12px rgba(20, 17, 15, 0.06);
 
-  --animate-pop: pop 180ms ease-out;
-  @keyframes pop {
-    0% { transform: scale(0.97); }
+  /* Me-too tap. Squish alternates between two identical keyframes so each
+     tap restarts it without remounting the button (which would drop focus). */
+  --animate-squish-a: squish-a 180ms ease-out;
+  --animate-squish-b: squish-b 180ms ease-out;
+  @keyframes squish-a {
+    0% { transform: scale(0.94); }
     100% { transform: scale(1); }
+  }
+  @keyframes squish-b {
+    0% { transform: scale(0.94); }
+    100% { transform: scale(1); }
+  }
+  --animate-wave: wave 420ms ease-in-out;
+  @keyframes wave {
+    0%, 100% { transform: rotate(0); }
+    35% { transform: rotate(-15deg); }
+    70% { transform: rotate(10deg); }
+  }
+  --animate-roll-in-up: roll-in-up 220ms ease-out both;
+  --animate-roll-out-up: roll-out-up 220ms ease-out both;
+  --animate-roll-in-down: roll-in-down 220ms ease-out both;
+  --animate-roll-out-down: roll-out-down 220ms ease-out both;
+  @keyframes roll-in-up {
+    from { transform: translateY(100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  @keyframes roll-out-up {
+    from { transform: translateY(0); opacity: 1; }
+    to { transform: translateY(-100%); opacity: 0; }
+  }
+  @keyframes roll-in-down {
+    from { transform: translateY(-100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  @keyframes roll-out-down {
+    from { transform: translateY(0); opacity: 1; }
+    to { transform: translateY(100%); opacity: 0; }
+  }
+  --animate-float-up: float-up 600ms ease-out both;
+  @keyframes float-up {
+    from { transform: translateY(0); opacity: 1; }
+    to { transform: translateY(-16px); opacity: 0; }
   }
 }
 

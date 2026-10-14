@@ -2,7 +2,7 @@
 
 import clsx from "clsx";
 import { Hand } from "lucide-react";
-import { useCallback, useSyncExternalStore } from "react";
+import { useCallback, useState, useSyncExternalStore } from "react";
 import { setMetoo } from "@/app/actions";
 import { toast } from "@/components/toaster";
 import { track } from "@/lib/analytics";
@@ -69,21 +69,40 @@ type Props = {
   className?: string;
 };
 
+/** One tap of the button. Animations key off this, never off count changes. */
+type Tap = { n: number; dir: "up" | "down"; from: number };
+
 export function MetooButton({ wishId, active: initialActive, count: initialCount, variant = "pill", disabled, className }: Props) {
   const { active, count, pending, toggle } = useMetoo(wishId, { active: initialActive, count: initialCount });
+  const [tap, setTap] = useState<Tap | null>(null);
+
+  function onClick() {
+    if (pending) return;
+    setTap((t) => ({ n: (t?.n ?? 0) + 1, dir: active ? "down" : "up", from: count }));
+    void toggle();
+  }
 
   const common = clsx(
-    "group/metoo inline-flex items-center justify-center gap-2 rounded-full font-semibold transition-[background-color,border-color,transform] duration-150 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-50",
-    active && "animate-pop",
+    "group/metoo relative inline-flex items-center justify-center gap-2 rounded-full font-semibold transition-[background-color,border-color,transform] duration-150 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-50",
+    tap && (tap.n % 2 ? "motion-safe:animate-squish-a" : "motion-safe:animate-squish-b"),
     className,
   );
   const label = active ? "Remove your me-too" : "Me too";
+  const plusOne = tap?.dir === "up" && (
+    <span
+      key={tap.n}
+      className="pointer-events-none absolute -top-3 right-2 text-label-sm font-bold text-primary animate-float-up motion-reduce:hidden"
+      aria-hidden
+    >
+      +1
+    </span>
+  );
 
   if (variant === "hero") {
     return (
       <button
         type="button"
-        onClick={toggle}
+        onClick={onClick}
         disabled={disabled}
         aria-pressed={active}
         aria-busy={pending}
@@ -93,14 +112,15 @@ export function MetooButton({ wishId, active: initialActive, count: initialCount
           active ? "bg-amber text-on-amber" : "bg-amber/90 text-on-amber hover:bg-amber",
         )}
       >
-        <Hand className="size-5" aria-hidden />
+        <WaveHand tap={tap} className="size-5" />
         <span className="tabular">
-          {formatNumber(count)} {count === 1 ? "me-too" : "me-toos"}
+          <RollingCount value={count} tap={tap} /> {count === 1 ? "me-too" : "me-toos"}
         </span>
         <span className="text-label font-medium opacity-70" aria-hidden>
           ·
         </span>
         <span className="text-label font-medium">{active ? "You too ✓" : "Me too +1"}</span>
+        {plusOne}
       </button>
     );
   }
@@ -109,7 +129,7 @@ export function MetooButton({ wishId, active: initialActive, count: initialCount
     return (
       <button
         type="button"
-        onClick={toggle}
+        onClick={onClick}
         disabled={disabled}
         aria-pressed={active}
         aria-label={label}
@@ -119,8 +139,12 @@ export function MetooButton({ wishId, active: initialActive, count: initialCount
           active ? "border-amber bg-amber text-on-amber" : "border-hairline bg-surface-lowest text-ink",
         )}
       >
-        <Hand className="size-[18px]" aria-hidden />
-        <span className="tabular">{formatNumber(count)}</span> Me too
+        <WaveHand tap={tap} className="size-[18px]" />
+        <span className="tabular">
+          <RollingCount value={count} tap={tap} />
+        </span>{" "}
+        Me too
+        {plusOne}
       </button>
     );
   }
@@ -128,7 +152,7 @@ export function MetooButton({ wishId, active: initialActive, count: initialCount
   return (
     <button
       type="button"
-      onClick={toggle}
+      onClick={onClick}
       disabled={disabled}
       aria-pressed={active}
       aria-label={`${label} (${formatNumber(count)})`}
@@ -140,15 +164,58 @@ export function MetooButton({ wishId, active: initialActive, count: initialCount
           : "border-transparent bg-surface-container text-ink hover:border-amber/60 hover:bg-amber/15",
       )}
     >
-      <Hand
+      <WaveHand
+        tap={tap}
         className={clsx("size-[18px] transition-transform group-hover/metoo:-translate-y-0.5", active ? "" : "text-primary")}
-        aria-hidden
       />
       <span>Me too</span>
       <span className="opacity-50" aria-hidden>
         ·
       </span>
-      <span className="tabular">{formatNumber(count)}</span>
+      <span className="tabular">
+        <RollingCount value={count} tap={tap} />
+      </span>
+      {plusOne}
     </button>
+  );
+}
+
+/** The hand waves on a me-too (not on undo). Remounting restarts the wave. */
+function WaveHand({ tap, className }: { tap: Tap | null; className?: string }) {
+  const waving = tap?.dir === "up";
+  return (
+    <span key={waving ? tap.n : 0} className={clsx("inline-flex origin-bottom", waving && "motion-safe:animate-wave")}>
+      <Hand className={className} aria-hidden />
+    </span>
+  );
+}
+
+/**
+ * The old number slides out and the new one slides in: up on a me-too, down
+ * on undo. Visual only; screen readers get the plain number once.
+ */
+function RollingCount({ value, tap }: { value: number; tap: Tap | null }) {
+  const text = formatNumber(value);
+  const up = tap?.dir === "up";
+  return (
+    <>
+      <span className="relative inline-block overflow-hidden align-top" aria-hidden>
+        {tap && (
+          <span
+            key={`out-${tap.n}`}
+            className={clsx("absolute inset-0 motion-reduce:hidden", up ? "animate-roll-out-up" : "animate-roll-out-down")}
+          >
+            {formatNumber(tap.from)}
+          </span>
+        )}
+        <span
+          key={`in-${tap?.n ?? 0}`}
+          className={clsx("block", tap && (up ? "motion-safe:animate-roll-in-up" : "motion-safe:animate-roll-in-down"))}
+        >
+          {text}
+        </span>
+      </span>
+      <span className="sr-only">{text}</span>
+    </>
   );
 }
