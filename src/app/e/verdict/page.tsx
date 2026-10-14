@@ -4,8 +4,9 @@ import { emailVerdict } from "@/app/actions";
 import { EmailVerdictForm } from "@/components/email-forms";
 import { EmailNotice, EmailShell, EmailSkeleton, InvalidEmailLink, LinkSummary, WishQuote } from "@/components/email-landing";
 import { verifyEmailToken } from "@/lib/email-token";
-import { getSubscriptionContext, getWish } from "@/lib/data";
+import { getSubscriptionContext, getWish, isWisherSubscription } from "@/lib/data";
 import { env } from "@/lib/env";
+import { wisherCardLink, wisherShare } from "@/lib/share-copy";
 import { parseWishId, wishPath } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -46,6 +47,10 @@ async function VerdictView({ searchParams }: Pick<PageProps<"/e/verdict">, "sear
     return <EmailNotice title="This link was removed" body="Its developer or I took it down." href={href} cta="See the wish" />;
   }
 
+  // A wisher's Yes gets the "Your wish came true" card once the vote lands.
+  const isWisher = works && (await isWisherSubscription(subscriptionId).catch(() => false));
+  const share = isWisher ? wisherShare({ ...wish, text: wish.text }, wisherCardLink(wish.links, link.id)!) : undefined;
+
   return (
     <>
       <p className="mb-4 text-label-sm font-semibold tracking-wider text-primary uppercase">Does it work?</p>
@@ -57,7 +62,7 @@ async function VerdictView({ searchParams }: Pick<PageProps<"/e/verdict">, "sear
           : "Tell others this app doesn't do what the wish asked for."}{" "}
         You can change your vote on the wish page.
       </p>
-      <EmailVerdictForm action={emailVerdict.bind(null, token, linkId, works)} works={works} wishHref={href} />
+      <EmailVerdictForm action={emailVerdict.bind(null, token, linkId, works)} works={works} wishHref={href} wisherShare={share} />
     </>
   );
 }

@@ -2,9 +2,11 @@
 
 import { Check, X } from "lucide-react";
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import type { UnsubscribeResult, VerdictResult } from "@/app/actions";
+import { ShareMoment } from "@/components/share-moment";
 import { buttonStyles } from "@/components/ui";
+import type { ShareMomentProps } from "@/lib/share-copy";
 
 // The single POST button on each /e/* page. The pages bind the token and
 // arguments into the Server Action, so these only submit and show the result.
@@ -13,12 +15,16 @@ export function EmailVerdictForm({
   action,
   works,
   wishHref,
+  wisherShare,
 }: {
   action: () => Promise<VerdictResult>;
   works: boolean;
   wishHref: string;
+  /** Set when the wisher votes Yes: "Your wish came true" follows the thanks. */
+  wisherShare?: ShareMomentProps;
 }) {
   const [result, submit, pending] = useActionState<VerdictResult | null>(action, null);
+  const [shareDone, setShareDone] = useState(false);
 
   if (result?.ok) {
     const state =
@@ -28,7 +34,14 @@ export function EmailVerdictForm({
           ? "This link now shows as not working."
           : "Once enough people vote, the link shows whether it works.";
     return (
-      <Outcome title="Thanks, your vote counts." body={state} wishHref={wishHref} />
+      <>
+        <Outcome title="Thanks, your vote counts." body={state} wishHref={wishHref} />
+        {wisherShare && result.wisherVerdict === true && !shareDone && (
+          <div className="card mt-6 p-6">
+            <ShareMoment share={wisherShare} onDone={() => setShareDone(true)} />
+          </div>
+        )}
+      </>
     );
   }
   if (result && !result.ok) {

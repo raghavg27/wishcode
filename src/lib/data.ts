@@ -154,6 +154,19 @@ export async function getSubscriptionContext(subscriptionId: number): Promise<Su
   return (data as SubscriptionContext | null) ?? null;
 }
 
+/** Whether an email subscription belongs to the device that posted its wish. */
+export async function isWisherSubscription(subscriptionId: number): Promise<boolean> {
+  const { data, error } = await db()
+    .from("subscriptions")
+    .select("device_id, wish:wishes!inner(device_id)")
+    .eq("id", subscriptionId)
+    .maybeSingle();
+  if (error) throw error;
+  const wish = data?.wish as { device_id: number } | { device_id: number }[] | undefined;
+  const wishDevice = Array.isArray(wish) ? wish[0]?.device_id : wish?.device_id;
+  return data != null && wishDevice === data.device_id;
+}
+
 /** Overlays live me-too counts onto cached wishes. */
 export function withLiveCounts<T extends { id: number; metoo_count: number }>(wishes: T[], live: LiveMetoos): T[] {
   return wishes.map((w) => {
