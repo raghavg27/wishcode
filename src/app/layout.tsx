@@ -18,11 +18,11 @@ const newsreader = Newsreader({
 });
 
 const description =
-  "A public ledger of software wishes. Post a one-sentence wish without signing up; developers claim it or post a live link.";
+  "Post an app you wish existed. No signup. Developers build them and share the link.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl()),
-  title: { default: "Wishcode — a public ledger of software wishes", template: "%s · Wishcode" },
+  title: { default: "Wishcode — apps people wish existed", template: "%s · Wishcode" },
   description,
   applicationName: "Wishcode",
   openGraph: { type: "website", siteName: "Wishcode", description },

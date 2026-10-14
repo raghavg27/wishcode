@@ -10,7 +10,7 @@ import { getLedgerPage, getLiveMetoos, getStats, withLiveCounts } from "@/lib/da
 export default function LedgerPage({ searchParams }: PageProps<"/">) {
   return (
     <main className="mx-auto w-full max-w-[1120px] px-4 py-6 sm:py-8">
-      <h1 className="sr-only">Wishcode: the public ledger of software wishes</h1>
+      <h1 className="sr-only">Wishcode: post an app you wish existed</h1>
       <Composer />
       <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12">
         <section className="flex flex-col gap-4 lg:col-span-8" aria-label="Wishes">

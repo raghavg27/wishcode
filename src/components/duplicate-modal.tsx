@@ -44,8 +44,8 @@ export function DuplicateModal({ open, typed, similar, busy, onClose, onMetoo, o
       </div>
 
       <div className="mt-6 flex items-center justify-between">
-        <h3 className="text-label-sm font-semibold tracking-wider text-ink-muted uppercase">Similar wishes on the ledger</h3>
-        <span className="text-caption text-outline">Sorted by similarity</span>
+        <h3 className="text-label-sm font-semibold tracking-wider text-ink-muted uppercase">Someone may have wished this already</h3>
+        <span className="text-caption text-outline">Closest match first</span>
       </div>
       <ul className="mt-2 divide-y divide-hairline">
         {similar.map((w) => (

@@ -56,7 +56,7 @@ export function MostWanted({ items }: { items: LedgerStats["most_wanted"] }) {
           Most wanted, still open
         </h2>
       </div>
-      <p className="mb-4 text-caption text-ink-muted">Developer shortlist · High intent</p>
+      <p className="mb-4 text-caption text-ink-muted">Lots of people want these. Nobody&apos;s built them yet.</p>
       <ul className="space-y-1">
         {items.map((w) => (
           <li key={w.id}>
@@ -84,7 +84,7 @@ export function BuildCta() {
       </span>
       <h2 className="mb-1 font-serif text-headline font-semibold text-ink">Want to build one?</h2>
       <p className="mb-5 text-[14px] leading-[22px] text-ink-muted">
-        Connect GitHub to claim a wish or post a live link. No deadlines, no approval rituals.
+        Connect GitHub to claim a wish or share what you built. No deadlines, nobody to ask permission.
       </p>
       <Link
         href="/login"
@@ -101,7 +101,7 @@ export function SidebarFootnote() {
   return (
     <div className="flex items-center justify-between px-3 py-2 text-caption text-outline">
       <span className="flex items-center gap-1">
-        <History className="size-3.5" aria-hidden /> Public ledger
+        <History className="size-3.5" aria-hidden /> Every wish is public
       </span>
       <Link href="/principles" className="underline hover:text-ink">
         Principles
