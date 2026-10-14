@@ -128,8 +128,8 @@ async function Profile({ params, searchParams }: PageProps<"/d/[handle]">) {
           <div className="mt-8 flex items-start gap-3 rounded-xl bg-surface-low p-4 text-label-sm text-ink-muted">
             <Info className="mt-0.5 size-4 shrink-0" aria-hidden />
             <p>
-              <span className="block font-medium text-ink">Public community ledger</span>
-              Wishcode doesn&apos;t check or vouch for linked apps. Links are posted directly by developers.
+              <span className="block font-medium text-ink">Public profile</span>
+              I don&apos;t check links before they go up. Developers post them directly.
             </p>
           </div>
         </section>
@@ -143,7 +143,7 @@ async function Profile({ params, searchParams }: PageProps<"/d/[handle]">) {
               </span>
               <Hammer className="size-5 text-outline" aria-hidden />
             </h2>
-            <p className="mt-1 text-label-sm text-ink-muted">No deadlines, no claim limits. Claims stay until unclaimed or shipped.</p>
+            <p className="mt-1 text-label-sm text-ink-muted">No deadlines. A claim stays until they ship it or drop it.</p>
           </div>
           {profile.claims.length === 0 ? (
             <p className="card px-4 py-6 text-center text-label text-ink-muted">Not building anything right now.</p>

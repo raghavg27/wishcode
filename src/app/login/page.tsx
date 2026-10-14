@@ -27,9 +27,8 @@ export default function LoginPage({ searchParams }: PageProps<"/login">) {
       <div className="w-full max-w-[560px]">
         <div className="mb-4 flex items-center justify-between">
           <Link href="/" className="inline-flex items-center gap-2 text-label font-medium text-ink-muted hover:text-ink">
-            <ArrowLeft className="size-4" aria-hidden /> Back to ledger
+            <ArrowLeft className="size-4" aria-hidden /> All wishes
           </Link>
-          <span className="text-label-sm tracking-wider text-outline uppercase">Auth · Step 1 of 1</span>
         </div>
         <div className="card relative overflow-hidden px-6 py-10 text-center sm:px-12">
           <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-amber/20 via-amber/70 to-amber/20" aria-hidden />
@@ -43,17 +42,17 @@ export default function LoginPage({ searchParams }: PageProps<"/login">) {
           <Suspense fallback={<Skeleton className="mx-auto mt-8 h-14 w-full rounded-xl" />}>
             <LoginAction searchParams={searchParams} />
           </Suspense>
-          <p className="mt-3 text-label text-ink-muted">We use your GitHub handle and avatar. Nothing else.</p>
+          <p className="mt-3 text-label text-ink-muted">I only use your GitHub handle and avatar. Nothing else.</p>
 
           <div className="my-8 flex items-center gap-4 text-label-sm tracking-wider text-ink-muted uppercase">
-            <span className="h-px flex-1 bg-hairline" /> Community etiquette <span className="h-px flex-1 bg-hairline" />
+            <span className="h-px flex-1 bg-hairline" /> Good to know <span className="h-px flex-1 bg-hairline" />
           </div>
           <p className="flex items-start gap-3 rounded-xl bg-surface-low p-4 text-left text-[15px] leading-6 text-ink">
             <Heart className="mt-1 size-5 shrink-0 text-primary" aria-hidden />
             <span>
               Just here to wish? Posting and me-too never need an account.{" "}
               <Link href="/" className="font-medium text-primary underline underline-offset-2">
-                Return to the ledger →
+                Back to the wishes →
               </Link>
             </span>
           </p>

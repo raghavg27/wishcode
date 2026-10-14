@@ -4,47 +4,42 @@ import { DISCLAIMER, LIMITS, WISH_MAX, WISH_MIN } from "@/lib/config";
 
 export const metadata: Metadata = {
   title: "Principles",
-  description: "How the Wishcode ledger works: anonymous wishes, open claims, and live links.",
+  description: "How Wishcode works: anyone can wish, developers build, and the people who wanted it decide if it works.",
 };
 
 const PRINCIPLES = [
   {
-    title: "Anyone can wish",
-    body: `Post a one-sentence wish (${WISH_MIN}–${WISH_MAX} characters) without an account or email. Wishes are anonymous and permanent; only moderators remove spam.`,
+    title: "Anyone can wish.",
+    body: `Post one sentence (${WISH_MIN}–${WISH_MAX} characters). No account. Leave an email if you want, and I'll tell you when someone builds it. I only use it for that, and every email has an unsubscribe link. Wishes stay up unless they're spam.`,
   },
   {
-    title: "Demand is public",
-    body: "Every wish shows its me-too count, who is building it, and every live link posted against it. One me-too per device per wish, and you can take it back.",
+    title: "Everyone can see the demand.",
+    body: "Every wish shows how many people want it, who's building it and what they've built. One me-too per device per wish, and you can take it back.",
   },
   {
-    title: "Claims are a signal, not a lock",
-    body: "Developers who connect GitHub can say “I'm building this”. Claims never expire, and many developers can claim the same wish. Claiming is never required before shipping.",
+    title: "Claiming is a heads-up, not a lock.",
+    body: "Developers who connect GitHub can say “I'm building this.” Claims never expire, lots of people can claim the same wish, and nobody has to claim before shipping.",
   },
   {
-    title: "Fulfilled means a live link exists",
-    body: "The first live link marks a wish Fulfilled. Nothing is checked or reviewed first. Other developers can still add their own builds, and all of them show.",
+    title: "The people who wanted it decide if it works.",
+    body: "When a developer posts a link, the wish shows Fulfilled · unverified. If the wisher says it works, or 3 people who me-too'd it do, it becomes Fulfilled ✓. If enough of them say it doesn't work, the link gets folded away with a warning.",
   },
   {
-    title: "The people who wanted it decide if it works",
-    body: "The wisher and everyone who me-too'd can vote on whether each link works. The wisher's vote, or 3 votes, turn a link Works ✓ or collapse it as not working. Leave an email if you like, and we'll write once each time someone posts a link, with an unsubscribe in every email.",
+    title: "Open links with care.",
+    body: `${DISCLAIMER} They open in a new tab, show who posted them, and the developer or I can take them down.`,
   },
   {
-    title: "Links open at your own discretion",
-    body: `${DISCLAIMER} Links always open in a new tab, carry the developer's GitHub identity, and can be removed by their author or a moderator.`,
-  },
-  {
-    title: "Fair use",
-    body: `To keep the ledger useful: ${LIMITS.wishesPerDevicePerDay} wishes and ${LIMITS.metoosPerDevicePerDay} me-toos per device per day (${LIMITS.wishesPerNetworkPerDay} wishes and ${LIMITS.metoosPerNetworkPerDay} me-toos per shared network), ${LIMITS.claimsPerDeveloperPerDay} claims and ${LIMITS.linksPerDeveloperPerDay} links per developer per day, and ${LIMITS.subscriptionsPerDevicePerDay} email sign-ups per device per day. Limits reset at midnight UTC.`,
+    title: "Fair use.",
+    body: `To keep things fair: ${LIMITS.wishesPerDevicePerDay} wishes and ${LIMITS.metoosPerDevicePerDay} me-toos per device per day (${LIMITS.wishesPerNetworkPerDay} wishes and ${LIMITS.metoosPerNetworkPerDay} me-toos per shared network), ${LIMITS.claimsPerDeveloperPerDay} claims and ${LIMITS.linksPerDeveloperPerDay} links per developer per day, and ${LIMITS.subscriptionsPerDevicePerDay} email sign-ups per device per day (${LIMITS.subscriptionsPerNetworkPerDay} per shared network). Limits reset at midnight UTC.`,
   },
 ];
 
 export default function PrinciplesPage() {
   return (
     <main className="mx-auto w-full max-w-[760px] px-4 py-10 sm:py-16">
-      <p className="text-label-sm font-semibold tracking-wider text-primary uppercase">Charter</p>
-      <h1 className="mt-2 font-serif text-display-sm text-ink sm:text-display">How the ledger works</h1>
+      <h1 className="font-serif text-display-sm text-ink sm:text-display">How it works</h1>
       <p className="mt-4 font-serif text-[20px] leading-8 text-ink-muted italic">
-        Wishcode is a public ledger of software wishes. People wish for everyday tools; independent builders make them real.
+        Wishcode is where people post apps they wish existed, and developers build them. Here&apos;s how I run it.
       </p>
       <ol className="mt-10 space-y-4">
         {PRINCIPLES.map((p, i) => (
