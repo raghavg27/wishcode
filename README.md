@@ -1,6 +1,6 @@
 # Wishcode
 
-A public ledger of software wishes. Anyone posts a one-sentence wish without signing up; developers connect GitHub to claim a wish or post a live link that fulfils it. Spec: `Wishcode — v1 PRD, TRD & App Flow.md`. Design: `design/`.
+Where people post apps they wish existed, and developers build them. Anyone posts a one-sentence wish without signing up; developers connect GitHub to claim a wish or post a live link that fulfils it. Spec: `Wishcode — v1 PRD, TRD & App Flow.md`. Design: `design/`.
 
 **Stack:** Next.js 16 (App Router, Cache Components, Server Actions) · TypeScript · Tailwind v4 · Supabase (Postgres + pgvector + GitHub auth) · Vercel.
 
