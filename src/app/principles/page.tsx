@@ -52,6 +52,24 @@ export default function PrinciplesPage() {
           </li>
         ))}
       </ol>
+      <section className="mt-12 border-l-2 border-amber pl-6">
+        <h2 className="font-serif text-headline font-semibold text-ink">Why I built this</h2>
+        <div className="mt-3 space-y-4 font-serif text-[18px] leading-8 text-ink">
+          <p>
+            I built this because I believe my countrymen are the brightest people in the world, shining in every field. I
+            don&apos;t want a single brilliant idea of theirs to go unbuilt just because of a technical gap or a lack of
+            time.
+          </p>
+          <p>
+            Building and shipping have become very fast. But great ideas haven&apos;t. They still sit and wait. But not
+            anymore. Wishcode is here.
+          </p>
+          <p>
+            It&apos;s simple: post an idea, see how many people in the world want the same thing, and wait until a
+            developer brings it to life.
+          </p>
+        </div>
+      </section>
       <div className="mt-10 flex flex-wrap gap-3">
         <Link href="/#compose" className="rounded-lg bg-amber px-5 py-2.5 text-label font-semibold text-on-amber hover:bg-amber-hover">
           Make a wish
