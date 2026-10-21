@@ -1,7 +1,7 @@
 // Confetti for the three "it came true" moments. canvas-confetti is imported
 // on demand so it never ships in a page's initial bundle.
 
-const COLORS = ["#f5a524", "#1f9d55", "#1e1b19"]; // amber, leaf, ink
+const COLORS = ["#f4b740", "#1a7d52", "#1d1b45"]; // gold, leaf, night
 
 export async function celebrate(): Promise<void> {
   if (typeof window === "undefined") return;
