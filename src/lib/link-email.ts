@@ -68,15 +68,15 @@ export function buildLinkEmail(input: LinkEmailInput): LinkEmail {
   const e = escapeHtml;
   const button = (href: string, label: string, primary: boolean) =>
     `<a href="${e(href)}" style="display:inline-block;padding:10px 20px;margin-right:8px;border-radius:8px;font-weight:600;text-decoration:none;${
-      primary ? "background:#f5a524;color:#14110f;" : "background:#f5ece8;color:#1e1b19;"
+      primary ? "background:#f4b740;color:#1d1b45;" : "background:#eeecf6;color:#1d1b45;"
     }">${label}</a>`;
 
   const html = `<!doctype html>
 <html>
-<body style="margin:0;padding:24px;background:#fff8f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#1e1b19;">
-<div style="max-width:560px;margin:0 auto;background:#ffffff;border:1px solid #eae4da;border-radius:12px;padding:28px;">
-<p style="margin:0 0 8px;font-size:14px;color:#524434;">${intro}</p>
-<blockquote style="margin:0 0 24px;padding:0 0 0 16px;border-left:3px solid #f5a524;font-family:Georgia,serif;font-size:20px;line-height:28px;">“${e(wishText)}”</blockquote>
+<body style="margin:0;padding:24px;background:#fbf8f1;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#1d1b45;">
+<div style="max-width:560px;margin:0 auto;background:#ffffff;border:1px solid #e6e3ec;border-radius:12px;padding:28px;">
+<p style="margin:0 0 8px;font-size:14px;color:#57557a;">${intro}</p>
+<blockquote style="margin:0 0 24px;padding:0 0 0 16px;border-left:3px solid #f4b740;font-family:Georgia,serif;font-size:20px;line-height:28px;">“${e(wishText)}”</blockquote>
 <p style="margin:0 0 4px;font-size:15px;"><strong>@${e(handle)}</strong> built it:</p>
 <p style="margin:0 0 8px;font-size:15px;line-height:22px;">${e(description)}</p>
 <p style="margin:0 0 24px;font-size:14px;"><a href="${e(linkUrl)}" style="color:#835400;word-break:break-all;">${e(linkUrl)}</a></p>
@@ -84,8 +84,8 @@ export function buildLinkEmail(input: LinkEmailInput): LinkEmail {
 <p style="margin:0 0 24px;">${button(urls.yes, "Yes", true)}${button(urls.no, "No", false)}</p>
 <p style="margin:0;font-size:14px;"><a href="${e(wishUrl)}" style="color:#835400;">See the wish on Wishcode</a></p>
 </div>
-<p style="max-width:560px;margin:16px auto 0;font-size:12px;color:#857462;text-align:center;">
-<a href="${e(urls.unsubscribe)}" style="color:#857462;">Stop emails for this wish</a> · <a href="${e(urls.unsubscribeAll)}" style="color:#857462;">Stop all Wishcode emails</a>
+<p style="max-width:560px;margin:16px auto 0;font-size:12px;color:#6e6b93;text-align:center;">
+<a href="${e(urls.unsubscribe)}" style="color:#6e6b93;">Stop emails for this wish</a> · <a href="${e(urls.unsubscribeAll)}" style="color:#6e6b93;">Stop all Wishcode emails</a>
 </p>
 </body>
 </html>`;
