@@ -26,15 +26,15 @@ export function LinkedinIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-/** The Wishcode sparkle. */
+/** The Wishcode mark: a gold shooting star on night blue. */
 export function LogoMark(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg viewBox="0 0 32 32" aria-hidden="true" {...props}>
-      <path
-        d="M14 3c.6 5.9 3.1 8.4 9 9-5.9.6-8.4 3.1-9 9-.6-5.9-3.1-8.4-9-9 5.9-.6 8.4-3.1 9-9Z"
-        fill="#f5a524"
-      />
-      <path d="M25 2.5c.3 2.6 1.4 3.7 4 4-2.6.3-3.7 1.4-4 4-.3-2.6-1.4-3.7-4-4 2.6-.3 3.7-1.4 4-4Z" fill="#f5a524" />
+    <svg viewBox="0 0 64 64" aria-hidden="true" {...props}>
+      <rect width="64" height="64" rx="15" fill="#1d1b45" />
+      <path d="M40 10C41 20 44 23 54 24C44 25 41 28 40 38C39 28 36 25 26 24C36 23 39 20 40 10Z" fill="#f4b740" />
+      <path d="M30 34L24 40" stroke="#f4b740" strokeWidth="4" strokeLinecap="round" />
+      <path d="M20 44L17 47" stroke="#f4b740" strokeWidth="4" strokeLinecap="round" opacity=".7" />
+      <circle cx="13" cy="51" r="2" fill="#f4b740" opacity=".45" />
     </svg>
   );
 }
