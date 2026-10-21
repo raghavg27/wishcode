@@ -48,7 +48,7 @@ async function HeaderAuth() {
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-50 bg-surface-lowest/80 shadow-[0_1px_8px_rgba(20,17,15,0.04)] backdrop-blur-md">
+    <header className="sticky top-0 z-50 bg-surface-lowest/80 shadow-[0_1px_8px_rgba(29,27,69,0.04)] backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-[1120px] items-center justify-between px-4">
         <div className="flex items-center">
           <Link href="/" className="flex items-center gap-2" aria-label="Wishcode home">
@@ -65,7 +65,7 @@ export function SiteHeader() {
           </Suspense>
           <Link
             href="/#compose"
-            className="inline-flex items-center gap-1 rounded-lg bg-amber px-3.5 py-2 text-label font-semibold text-on-amber shadow-[0_1px_2px_rgba(20,17,15,0.08)] transition-colors hover:bg-amber-hover sm:px-4"
+            className="inline-flex items-center gap-1 rounded-lg bg-amber px-3.5 py-2 text-label font-semibold text-on-amber shadow-[0_1px_2px_rgba(29,27,69,0.08)] transition-colors hover:bg-amber-hover sm:px-4"
           >
             <Plus className="size-[18px]" aria-hidden />
             <span className="sm:hidden">Post</span>

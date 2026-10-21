@@ -8,7 +8,7 @@ import type { DeveloperRef, WishStatus } from "@/lib/types";
 
 export const buttonStyles = {
   amber:
-    "inline-flex items-center justify-center gap-1.5 rounded-lg bg-amber px-4 py-2 text-label font-semibold text-on-amber shadow-[0_1px_2px_rgba(20,17,15,0.08)] transition-colors hover:bg-amber-hover active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50",
+    "inline-flex items-center justify-center gap-1.5 rounded-lg bg-amber px-4 py-2 text-label font-semibold text-on-amber shadow-[0_1px_2px_rgba(29,27,69,0.08)] transition-colors hover:bg-amber-hover active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50",
   dark: "inline-flex items-center justify-center gap-2 rounded-lg bg-inverse px-4 py-2.5 text-label font-medium text-inverse-ink transition-colors hover:bg-ink active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50",
   quiet:
     "inline-flex items-center justify-center gap-1.5 rounded-lg bg-surface-low px-4 py-2 text-label font-medium text-ink transition-colors hover:bg-surface-container disabled:cursor-not-allowed disabled:opacity-50",
