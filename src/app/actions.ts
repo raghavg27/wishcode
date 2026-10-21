@@ -11,7 +11,7 @@ import { embed } from "@/lib/embeddings";
 import { env } from "@/lib/env";
 import { toActionError, type ActionError } from "@/lib/errors";
 import { clientIpKey, ensureDeviceHash, readDeviceHash } from "@/lib/identity";
-import { notifyLinkPosted } from "@/lib/notify";
+import { notifyLinkPosted, notifyLinkVerified } from "@/lib/notify";
 import { db } from "@/lib/supabase/admin";
 import { createAuthClient } from "@/lib/supabase/server";
 import type { LinkVerdict, SimilarWish, WishStatus } from "@/lib/types";
@@ -262,8 +262,13 @@ export type VerdictResult =
   | ActionError;
 
 // A verdict can change the link's state and the wish's status and badge.
+// A verified link may owe its developer an email; the RPC sends it once.
 function applyVerdict(row: VerdictRow): VerdictResult {
   const wishId = Number(row.wish_id);
+  if (row.verdict === "verified") {
+    const linkId = Number(row.link_id);
+    after(() => notifyLinkVerified(linkId).catch((err) => console.error("[notify] failed", { linkId, err })));
+  }
   updateTag(tags.wish(wishId));
   updateTag(tags.ledger);
   updateTag(tags.developer(row.developer_handle));
