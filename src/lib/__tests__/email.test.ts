@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { signEmailToken, verifyEmailToken } from "../email-token";
+import { signEmailToken, signLinkToken, verifyEmailToken, verifyLinkToken } from "../email-token";
 import { buildLinkEmail } from "../link-email";
 import { emailIssue, normalizeEmail } from "../validation";
 
@@ -42,7 +42,21 @@ describe("email tokens", () => {
   it("rejects malformed input", () => {
     for (const bad of [undefined, null, 42, "", "42", "42.", ".abc", "0.abc", "-1.abc", "42.short", "x.y"]) {
       expect(verifyEmailToken(bad, SECRET)).toBeNull();
+      expect(verifyLinkToken(bad, SECRET)).toBeNull();
     }
+  });
+});
+
+describe("developer email tokens", () => {
+  it("round-trips the link id", () => {
+    const token = signLinkToken(99, SECRET);
+    expect(token).toMatch(/^99\.[A-Za-z0-9_-]{43}$/);
+    expect(verifyLinkToken(token, SECRET)).toBe(99);
+  });
+
+  it("can't be swapped with a subscription token", () => {
+    expect(verifyLinkToken(signEmailToken(99, SECRET), SECRET)).toBeNull();
+    expect(verifyEmailToken(signLinkToken(99, SECRET), SECRET)).toBeNull();
   });
 });
 
