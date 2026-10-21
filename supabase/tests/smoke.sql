@@ -352,6 +352,95 @@ begin
 end;
 $$;
 
+-- Emailing developers when their link becomes verified.
+do $$
+declare
+  dev_e   uuid := '00000000-0000-0000-0000-00000000000e';
+  dev_f   uuid := '00000000-0000-0000-0000-00000000000f';
+  wisher  text := repeat('f', 64);
+  m       text[] := array[repeat('8', 64), repeat('9', 64), repeat('0', 64)];
+  w       bigint;
+  w2      bigint;
+  l1      bigint;
+  l2      bigint;
+  l3      bigint;
+  r       jsonb;
+  failed  boolean;
+  i       integer;
+begin
+  -- Supabase Auth owns auth.users; the app only reads it.
+  reset role;
+  insert into auth.users (id, email) values (dev_e, 'Erin@Example.com'), (dev_f, null);
+  set local role service_role;
+
+  perform public.upsert_developer(dev_e, 20, 'erin', null, false);
+  perform public.upsert_developer(dev_f, 21, 'frank', null, false);
+  w := (public.create_wish(wisher, 'ipx', 'An app that tells me when my train is about to leave', null, 5, 50)->>'id')::bigint;
+  w2 := (public.create_wish(wisher, 'ipx', 'A widget that shows how long my coffee has been sitting out', null, 5, 50)->>'id')::bigint;
+  for i in 1..3 loop perform public.set_metoo(m[i], 'ipn', w, true, 200, 2000); end loop;
+
+  perform public.set_claim(dev_e, w, true, 200);
+  l1 := (public.create_link(dev_e, w, 'https://train.example', 'Train alerts', null, 20)->>'id')::bigint;
+  perform public.set_claim(dev_f, w, true, 200);
+  l2 := (public.create_link(dev_f, w, 'https://train2.example', 'More train alerts', null, 20)->>'id')::bigint;
+
+  -- Nothing to send until the link is verified.
+  assert public.claim_verified_notification(l1) is null, 'unverified: nothing';
+  assert (select verified_notified_at from public.links where id = l1) is null, 'unverified: not claimed';
+
+  -- The wisher verifies: one email, to the developer's GitHub address.
+  perform public.set_verdict(wisher, l1, true);
+  r := public.claim_verified_notification(l1);
+  assert r->>'email' = 'erin@example.com' and r->>'handle' = 'erin' and (r->>'wish_id')::bigint = w
+     and r->>'wish_text' = 'An app that tells me when my train is about to leave'
+     and r->>'link_url' = 'https://train.example' and (r->>'wisher_verdict')::boolean
+     and (r->>'link_id')::bigint = l1, 'verified: notification';
+  assert public.claim_verified_notification(l1) is null, 'claimed once';
+
+  -- Losing and regaining verified status sends nothing more.
+  perform public.set_verdict(wisher, l1, null);
+  assert (select verdict from public.links where id = l1) = 'unverified', 'back to unverified';
+  perform public.set_verdict(wisher, l1, true);
+  assert public.claim_verified_notification(l1) is null, 'no second email';
+
+  -- Crowd-verified, but GitHub gave no address: claimed, nothing to send.
+  for i in 1..3 loop perform public.set_verdict(m[i], l2, true); end loop;
+  assert (select verdict from public.links where id = l2) = 'verified', 'crowd verifies';
+  r := public.claim_verified_notification(l2);
+  assert r is null, 'no address: nothing';
+  assert (select verified_notified_at from public.links where id = l2) is not null, 'no address: claimed';
+
+  -- The email's stop link suppresses the developer's address.
+  r := public.developer_email_context(l1);
+  assert (r->>'wish_id')::bigint = w and not (r->>'suppressed')::boolean and r::text !~ '"email"', 'context';
+  assert public.developer_email_context(l2) is null, 'context: no address';
+  assert public.developer_email_context(-1) is null, 'context: unknown link';
+  r := public.suppress_developer_email(l1);
+  assert (r->>'wish_id')::bigint = w and r::text !~ '"email"', 'suppress';
+  perform public.suppress_developer_email(l1);
+  assert exists (select 1 from public.email_suppressions where email = 'erin@example.com'), 'suppressed lowercased';
+  assert (public.developer_email_context(l1)->>'suppressed')::boolean, 'context: suppressed';
+  failed := false;
+  begin perform public.suppress_developer_email(l2);
+  exception when others then failed := sqlerrm = 'not_found'; end;
+  assert failed, 'suppress: no address';
+
+  -- A suppressed address gets nothing, even for a newly verified link.
+  perform public.set_claim(dev_e, w2, true, 200);
+  l3 := (public.create_link(dev_e, w2, 'https://coffee.example', 'Coffee timer', null, 20)->>'id')::bigint;
+  perform public.set_verdict(wisher, l3, true);
+  assert public.claim_verified_notification(l3) is null, 'suppressed: nothing';
+
+  -- Deleted links send nothing.
+  delete from public.email_suppressions where email = 'erin@example.com';
+  update public.links set verified_notified_at = null where id = l3;
+  perform public.remove_link(dev_e, l3);
+  assert public.claim_verified_notification(l3) is null, 'deleted link: nothing';
+
+  raise notice 'developer verified emails: all assertions passed';
+end;
+$$;
+
 reset role;
 
 -- Privileges: anon and authenticated can touch nothing.
@@ -375,6 +464,9 @@ begin
       'select public.link_notification(1)',
       'select public.viewer_wish_state(null, 1)',
       'select public.subscription_context(1)',
+      'select public.claim_verified_notification(1)',
+      'select public.developer_email_context(1)',
+      'select public.suppress_developer_email(1)',
       'select 1 from public.wishes limit 1',
       'select 1 from public.verdicts limit 1',
       'select 1 from public.subscriptions limit 1',
