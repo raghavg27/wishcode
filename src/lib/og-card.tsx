@@ -13,11 +13,14 @@ const fonts = Promise.all([
   readFile(join(process.cwd(), "assets/fonts/Inter-Bold.ttf")),
 ]);
 
-export const INK = "#1e1b19";
-export const MUTED = "#524434";
-export const SUBTLE = "#857462";
-export const CRAFT = "#835400";
-export const DOT = "#d7c3ae";
+// Cards are night blue, so these are the colours for text on night.
+export const NIGHT = "#1d1b45";
+export const GOLD = "#f4b740";
+export const INK = "#fbf8f1";
+export const MUTED = "#c9c6e6";
+export const SUBTLE = "#9d9ac0";
+export const CRAFT = GOLD;
+export const DOT = "#4a4878";
 
 export function notFound() {
   return new Response("Not found", { status: 404 });
@@ -59,25 +62,29 @@ export async function cardResponse(element: React.ReactElement) {
 
 export function Frame({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", background: "#fff8f5", padding: 64, fontFamily: "Inter" }}>
+    <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", background: NIGHT, padding: 64, fontFamily: "Inter" }}>
       {children}
     </div>
   );
 }
 
+/** The shooting star, without its square (the card is already night). */
 export function Mark({ size = 40 }: { size?: number }) {
   return (
-    <div style={{ width: size, height: size, borderRadius: size / 4, background: "#f5a524", display: "flex", alignItems: "center", justifyContent: "center", fontSize: size * 0.6, fontWeight: 700, color: "#14110f" }}>
-      W
-    </div>
+    <svg width={size} height={size} viewBox="0 0 64 64">
+      <path d="M40 10C41 20 44 23 54 24C44 25 41 28 40 38C39 28 36 25 26 24C36 23 39 20 40 10Z" fill={GOLD} />
+      <path d="M30 34L24 40" stroke={GOLD} strokeWidth="4" strokeLinecap="round" />
+      <path d="M20 44L17 47" stroke={GOLD} strokeWidth="4" strokeLinecap="round" opacity="0.7" />
+      <circle cx="13" cy="51" r="2" fill={GOLD} opacity="0.45" />
+    </svg>
   );
 }
 
 export function Wordmark() {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-      <Mark />
-      <div style={{ fontSize: 28, fontWeight: 700, color: INK, letterSpacing: -0.5 }}>Wishcode</div>
+      <Mark size={60} />
+      <div style={{ fontFamily: "Newsreader", fontSize: 34, color: INK, letterSpacing: -0.5 }}>Wishcode</div>
     </div>
   );
 }
@@ -93,7 +100,7 @@ export function Chip({ label, bg, fg, border }: { label: string; bg: string; fg:
 /** "✓ Confirmed by …", or nothing. */
 export function Stamp({ text }: { text: string | null }) {
   if (!text) return null;
-  return <Chip label={text} bg="#f0fdf4" fg="#00743a" border="#bbf7d0" />;
+  return <Chip label={text} bg="#1f3b45" fg="#9be3bb" border="#2c6b5a" />;
 }
 
 export function Avatar({ src, size }: { src: string | null; size: number }) {
@@ -110,7 +117,7 @@ export function Dot() {
 export function Footer({ wishId, children }: { wishId: number; children?: React.ReactNode }) {
   const host = new URL(siteUrl()).host;
   return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderTop: "2px solid #eae4da", paddingTop: 28, fontSize: 26, color: MUTED }}>
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderTop: "2px solid #3a3870", paddingTop: 28, fontSize: 26, color: MUTED }}>
       <div style={{ display: "flex", alignItems: "center", gap: 14 }}>{children}</div>
       <div style={{ display: "flex", alignItems: "center", gap: 12, color: SUBTLE }}>
         <Mark size={30} />

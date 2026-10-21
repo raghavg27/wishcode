@@ -8,10 +8,10 @@ import { parseWishId } from "@/lib/site";
 // links it with a ?v= that changes with everything shown, so CDN caching is safe.
 
 const STATUS = {
-  open: { label: "Open", bg: "#f5ece8", fg: "#1e1b19", border: "#e0d8d5" },
-  being_built: { label: "Being built", bg: "#fffbeb", fg: "#904d00", border: "#fde68a" },
-  fulfilled: { label: "Fulfilled ✓", bg: "#f0fdf4", fg: "#00743a", border: "#bbf7d0" },
-  fulfilled_unverified: { label: "Fulfilled · unverified", bg: "#fff3e0", fg: "#835400", border: "#f5c97a" },
+  open: { label: "Open", bg: "#2a2856", fg: "#e0deec", border: "#3a3870" },
+  being_built: { label: "Being built", bg: "#3b2a35", fg: "#fbd9c4", border: "#6b3f2f" },
+  fulfilled: { label: "Fulfilled ✓", bg: "#1f3b45", fg: "#9be3bb", border: "#2c6b5a" },
+  fulfilled_unverified: { label: "Fulfilled · unverified", bg: "#353145", fg: "#f4b740", border: "#6a5a3a" },
 } as const;
 
 export async function GET(_request: Request, { params }: RouteContext<"/api/og/wish/[id]">) {
