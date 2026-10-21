@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { unsubscribe } from "@/app/actions";
+import { stopDeveloperEmails, unsubscribe } from "@/app/actions";
 import { UnsubscribeForm } from "@/components/email-forms";
 import { EmailNotice, EmailShell, EmailSkeleton, InvalidEmailLink, WishQuote } from "@/components/email-landing";
-import { verifyEmailToken } from "@/lib/email-token";
-import { getSubscriptionContext, getWish } from "@/lib/data";
+import { verifyEmailToken, verifyLinkToken } from "@/lib/email-token";
+import { getDeveloperEmailContext, getSubscriptionContext, getWish } from "@/lib/data";
 import { env } from "@/lib/env";
 import { wishPath } from "@/lib/site";
 
@@ -15,6 +15,8 @@ export const metadata: Metadata = {
 
 // Opened from an email footer. Showing the page changes nothing; the button
 // unsubscribes. Mail clients' one-click POSTs go to /api/unsubscribe.
+// Subscriber emails carry ?t= (a subscription); developer emails carry ?d=
+// (a link), and their only option is stopping all Wishcode email.
 export default function UnsubscribePage({ searchParams }: PageProps<"/e/unsubscribe">) {
   return (
     <EmailShell>
@@ -27,6 +29,7 @@ export default function UnsubscribePage({ searchParams }: PageProps<"/e/unsubscr
 
 async function UnsubscribeView({ searchParams }: Pick<PageProps<"/e/unsubscribe">, "searchParams">) {
   const sp = await searchParams;
+  if (typeof sp.d === "string") return <DeveloperStopView token={sp.d} />;
   const token = typeof sp.t === "string" ? sp.t : "";
   const all = sp.all === "1";
 
@@ -58,6 +61,27 @@ async function UnsubscribeView({ searchParams }: Pick<PageProps<"/e/unsubscribe"
       </p>
       {wish?.text && !wish.removed && <WishQuote text={wish.text} />}
       <UnsubscribeForm action={unsubscribe.bind(null, token, all)} all={all} wishHref={href} />
+    </>
+  );
+}
+
+async function DeveloperStopView({ token }: { token: string }) {
+  const linkId = verifyLinkToken(token, env.emailTokenSecret);
+  if (!linkId) return <InvalidEmailLink />;
+  const context = await getDeveloperEmailContext(linkId);
+  if (!context) return <InvalidEmailLink />;
+
+  const href = wishPath(context.wish_id);
+  if (context.suppressed) {
+    return <EmailNotice title="Wishcode emails are already off" body="Nothing else to do here." href={href} cta="See the wish" />;
+  }
+  return (
+    <>
+      <h1 className="font-serif text-display-sm text-ink">Stop all Wishcode emails?</h1>
+      <p className="mt-3 mb-6 text-[15px] leading-6 text-ink-muted">
+        You won&apos;t hear when your builds are verified, or about any wish you subscribe to.
+      </p>
+      <UnsubscribeForm action={stopDeveloperEmails.bind(null, token)} all wishHref={href} />
     </>
   );
 }

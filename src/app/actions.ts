@@ -6,7 +6,7 @@ import { after } from "next/server";
 import { getViewer } from "@/lib/auth";
 import { DUPLICATE_LIMIT, DUPLICATE_THRESHOLD, LIMITS } from "@/lib/config";
 import { tags } from "@/lib/data";
-import { verifyEmailToken } from "@/lib/email-token";
+import { verifyEmailToken, verifyLinkToken } from "@/lib/email-token";
 import { embed } from "@/lib/embeddings";
 import { env } from "@/lib/env";
 import { toActionError, type ActionError } from "@/lib/errors";
@@ -363,6 +363,19 @@ export async function unsubscribe(token: string, all: boolean): Promise<Unsubscr
     const { error } = await db().rpc("unsubscribe", { p_subscription_id: subscriptionId, p_all: all === true });
     if (error) return error.message === "not_found" ? INVALID_TOKEN : toActionError(error, "unsubscribe");
     return { ok: true, all: all === true };
+  } catch (err) {
+    return toActionError(err, "unsubscribe");
+  }
+}
+
+/** The developer email's stop link: turns off every Wishcode email. */
+export async function stopDeveloperEmails(token: string): Promise<UnsubscribeResult> {
+  const linkId = verifyLinkToken(token, env.emailTokenSecret);
+  if (!linkId) return INVALID_TOKEN;
+  try {
+    const { error } = await db().rpc("suppress_developer_email", { p_link_id: linkId });
+    if (error) return error.message === "not_found" ? INVALID_TOKEN : toActionError(error, "unsubscribe");
+    return { ok: true, all: true };
   } catch (err) {
     return toActionError(err, "unsubscribe");
   }

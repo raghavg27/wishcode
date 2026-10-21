@@ -154,6 +154,16 @@ export async function getSubscriptionContext(subscriptionId: number): Promise<Su
   return (data as SubscriptionContext | null) ?? null;
 }
 
+export type DeveloperEmailContext = { wish_id: number; suppressed: boolean };
+
+/** The wish a developer email's link token points at, for /e/unsubscribe. */
+export async function getDeveloperEmailContext(linkId: number): Promise<DeveloperEmailContext | null> {
+  await connection();
+  const { data, error } = await db().rpc("developer_email_context", { p_link_id: linkId });
+  if (error) throw error;
+  return (data as DeveloperEmailContext | null) ?? null;
+}
+
 /** Whether an email subscription belongs to the device that posted its wish. */
 export async function isWisherSubscription(subscriptionId: number): Promise<boolean> {
   const { data, error } = await db()
