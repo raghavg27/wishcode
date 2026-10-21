@@ -49,7 +49,7 @@ Wishes posted while the function was cold or down are saved without an embedding
 
 ### 3c. Email notifications (optional, Gmail)
 
-The wisher and people who me-too'd can leave an email to hear when someone posts a live link. Emails go out over Gmail SMTP. Without credentials nothing is sent (the server logs that once), so dev and previews work as is.
+The wisher and people who me-too'd can leave an email to hear when someone posts a live link. Developers are emailed once per link when it becomes verified, at the address on their GitHub account (from Supabase Auth); links verified before migration `20261021000000` are skipped. Emails go out over Gmail SMTP. Without credentials nothing is sent (the server logs that once), so dev and previews work as is.
 
 1. Use a Google account for Wishcode's mail and turn on **2-Step Verification** (Google Account → Security).
 2. Google Account → Security → **App passwords** → create one named "Wishcode". Copy the 16-character password.
