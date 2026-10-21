@@ -1,52 +1,53 @@
 @import "tailwindcss";
 
-/* Design tokens from design/public_ledger_of_wishes/DESIGN.md (the "paper and
-   ink" palette used by the screens). Light only, as designed. */
+/* Design tokens: the "wishing star" palette (night, gold, paper), see
+   docs/superpowers/specs/2026-10-21-wishing-star-brand-design.md. Token names
+   are kept from the original paper-and-ink design. Light only. */
 @theme {
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-newsreader), ui-serif, Georgia, serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  --color-surface: #fff8f5;
+  --color-surface: #fbf8f1;
   --color-surface-lowest: #ffffff;
-  --color-surface-low: #faf2ee;
-  --color-surface-container: #f5ece8;
-  --color-surface-high: #efe6e3;
-  --color-surface-highest: #e9e1dd;
-  --color-surface-dim: #e0d8d5;
-  --color-ink: #1e1b19;
-  --color-ink-muted: #524434;
-  --color-outline: #857462;
-  --color-outline-variant: #d7c3ae;
-  --color-hairline: #eae4da;
-  --color-inverse: #34302d;
-  --color-inverse-ink: #f7efeb;
+  --color-surface-low: #f6f4f3;
+  --color-surface-container: #eeecf6;
+  --color-surface-high: #e7e5f0;
+  --color-surface-highest: #e0deec;
+  --color-surface-dim: #d8d5e6;
+  --color-ink: #1d1b45;
+  --color-ink-muted: #57557a;
+  --color-outline: #6e6b93;
+  --color-outline-variant: #cfcbe0;
+  --color-hairline: #e6e3ec;
+  --color-inverse: #2a2856;
+  --color-inverse-ink: #f4f2fa;
 
   --color-primary: #835400;
-  --color-amber: #f5a524;
-  --color-amber-hover: #e0941c;
-  --color-on-amber: #14110f;
-  --color-amber-soft: #ffddb5;
+  --color-amber: #f4b740;
+  --color-amber-hover: #e5a52c;
+  --color-on-amber: #1d1b45;
+  --color-amber-soft: #fdeccb;
 
-  --color-leaf: #1f9d55;
-  --color-leaf-ink: #00743a;
-  --color-leaf-strong: #006d37;
-  --color-leaf-soft: #f0fdf4;
-  --color-leaf-border: #bbf7d0;
-  --color-leaf-chip: #86faa7;
+  --color-leaf: #1a7d52;
+  --color-leaf-ink: #17704a;
+  --color-leaf-strong: #126040;
+  --color-leaf-soft: #eef8f2;
+  --color-leaf-border: #bfe6cf;
+  --color-leaf-chip: #9be3bb;
 
-  --color-craft: #d97706;
-  --color-craft-ink: #904d00;
-  --color-craft-soft: #fffbeb;
-  --color-craft-border: #fde68a;
-  --color-craft-chip: #ffdcc3;
+  --color-craft: #c4561f;
+  --color-craft-ink: #8f3a10;
+  --color-craft-soft: #fdf1ea;
+  --color-craft-border: #f6cdb4;
+  --color-craft-chip: #fbd9c4;
 
   --color-stone: #9ca3af;
   --color-stone-soft: #f3f4f6;
   --color-stone-border: #e5e7eb;
 
-  --color-danger: #ba1a1a;
-  --color-danger-soft: #ffdad6;
+  --color-danger: #c0362c;
+  --color-danger-soft: #fde2df;
 
   --text-display: 40px;
   --text-display--line-height: 48px;
@@ -69,8 +70,8 @@
   --text-caption: 11px;
   --text-caption--line-height: 16px;
 
-  --shadow-card: 0 1px 3px rgba(20, 17, 15, 0.04), 0 1px 2px rgba(20, 17, 15, 0.02);
-  --shadow-card-hover: 0 4px 12px rgba(20, 17, 15, 0.06);
+  --shadow-card: 0 1px 3px rgba(29, 27, 69, 0.04), 0 1px 2px rgba(29, 27, 69, 0.02);
+  --shadow-card-hover: 0 4px 12px rgba(29, 27, 69, 0.06);
 
   /* Me-too tap. Squish alternates between two identical keyframes so each
      tap restarts it without remounting the button (which would drop focus). */
@@ -132,14 +133,14 @@
   }
   ::selection {
     background: var(--color-amber-soft);
-    color: #2a1800;
+    color: #1d1b45;
   }
   :focus-visible {
     outline: 2px solid var(--color-amber);
     outline-offset: 2px;
   }
   dialog::backdrop {
-    background: rgba(20, 17, 15, 0.4);
+    background: rgba(29, 27, 69, 0.4);
   }
 }
 

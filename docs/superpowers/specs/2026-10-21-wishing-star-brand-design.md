@@ -23,7 +23,7 @@ The logo is the mark plus "Wishcode" in Newsreader semibold. Lowercase or code-s
 | Paper | `#FBF8F1` | Page |
 | Haze | `#EEECF6` | Surfaces, secondary buttons |
 | Dusk | `#57557A` | Muted text |
-| Leaf | `#1F8A5B` | Fulfilled |
+| Leaf | `#1A7D52` | Fulfilled |
 | Ember | `#C4561F` | Being built |
 | Flag | `#C0362C` | Errors |
 
