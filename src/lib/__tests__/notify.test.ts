@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { verifyEmailToken } from "../email-token";
+import { verifyEmailToken, verifyLinkToken } from "../email-token";
 
 vi.mock("server-only", () => ({}));
 const rpc = vi.fn();
@@ -60,5 +60,66 @@ describe("notifyLinkPosted", () => {
     const { notifyLinkPosted } = await import("../notify");
     await notifyLinkPosted(99);
     expect(sendMail).not.toHaveBeenCalled();
+  });
+});
+
+const verified = {
+  wish_id: 12,
+  wish_text: "An app that mutes my mic when my dog barks",
+  link_id: 99,
+  link_url: "https://barkmute.app",
+  description: "Mutes the mic",
+  handle: "alice",
+  wisher_verdict: false,
+  works_count: 3,
+  email: "alice@example.com",
+};
+
+describe("notifyLinkVerified", () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.restoreAllMocks();
+    rpc.mockReset();
+    sendMail.mockReset();
+  });
+
+  it("emails the developer once the link's email is claimed", async () => {
+    vi.stubEnv("SITE_URL", "https://wishcode.example");
+    vi.stubEnv("EMAIL_TOKEN_SECRET", "secret");
+    rpc.mockResolvedValue({ data: verified, error: null });
+
+    const { notifyLinkVerified } = await import("../notify");
+    await notifyLinkVerified(99);
+
+    expect(rpc).toHaveBeenCalledWith("claim_verified_notification", { p_link_id: 99 });
+    expect(sendMail).toHaveBeenCalledTimes(1);
+    const mail = sendMail.mock.calls[0][0];
+    expect(mail.to).toBe("alice@example.com");
+    expect(mail.subject).toBe("Your build was verified");
+    expect(mail.text).toContain("✓ Confirmed by 3 people");
+    expect(mail.text).toContain("https://wishcode.example/w/12/by/alice");
+    const token = new URL(mail.headers["List-Unsubscribe"].slice(1, -1)).searchParams.get("d");
+    expect(verifyLinkToken(token, "secret")).toBe(99);
+  });
+
+  it("sends nothing when there's nothing to claim", async () => {
+    rpc.mockResolvedValue({ data: null, error: null });
+    const { notifyLinkVerified } = await import("../notify");
+    await notifyLinkVerified(99);
+    expect(sendMail).not.toHaveBeenCalled();
+  });
+
+  it("logs send failures by link id, never the address", async () => {
+    vi.stubEnv("EMAIL_TOKEN_SECRET", "secret");
+    rpc.mockResolvedValue({ data: verified, error: null });
+    sendMail.mockRejectedValue(Object.assign(new Error("550 alice@example.com rejected"), { code: "EENVELOPE", responseCode: 550 }));
+    const error = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    const { notifyLinkVerified } = await import("../notify");
+    await notifyLinkVerified(99);
+
+    expect(error).toHaveBeenCalledTimes(1);
+    expect(JSON.stringify(error.mock.calls)).not.toContain("alice@example.com");
+    expect(error.mock.calls[0][1]).toMatchObject({ linkId: 99, code: "EENVELOPE", responseCode: 550 });
   });
 });
