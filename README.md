@@ -1,89 +1,306 @@
+<div align="center">
+
+<img src="src/app/icon.svg" alt="Wishcode logo" width="72" height="72">
+
 # Wishcode
 
-Where people post apps they wish existed, and developers build them. Anyone posts a one-sentence wish without signing up; developers connect GitHub to claim a wish or post a live link that fulfils it. Spec: `Wishcode — v1 PRD, TRD & App Flow.md`. Design: `design/`.
+**People post the apps that they want. Developers build them.**
 
-**Stack:** Next.js 16 (App Router, Cache Components, Server Actions) · TypeScript · Tailwind v4 · Supabase (Postgres + pgvector + GitHub auth) · Vercel.
+[![Next.js 16](https://img.shields.io/badge/Next.js-16-000000?logo=nextdotjs&logoColor=white)](https://nextjs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Tailwind CSS v4](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
+[![Supabase](https://img.shields.io/badge/Supabase-Postgres_+_pgvector-3FCF8E?logo=supabase&logoColor=white)](https://supabase.com)
+[![Vercel](https://img.shields.io/badge/Deploy-Vercel-000000?logo=vercel&logoColor=white)](https://vercel.com)
 
-## Setup
+[Overview](#overview) · [Features](#features) · [Quick start](#quick-start) · [Configuration](#configuration) · [Architecture](#architecture) · [API](#api)
 
-### 1. Database
+</div>
 
-The Supabase project starts empty. Apply the migrations in `supabase/migrations/` in filename order:
+---
 
-- **SQL editor:** paste each file into Supabase → SQL Editor and run it, oldest first, **or**
-- **CLI:** `supabase link --project-ref <ref> && supabase db push`.
+## Overview
 
-They enable `vector` and `pg_trgm`, creates the tables, triggers and functions, and revokes all access from `anon`/`authenticated`.
+Wishcode is a public list of app wishes. A wish is one sentence about an app that does not exist.
 
-### 2. GitHub sign-in (developers only)
+- **Wishers** post wishes. They do not have to make an account.
+- **Other visitors** add a *me-too* to a wish. This shows that they want the same app.
+- **Developers** connect a GitHub account. Then they claim a wish, or they post a live link to an app that does what the wish asks.
+- **The wisher and the me-too visitors** vote on each link. Their votes show if the app does what the wish asks.
 
-1. GitHub → Settings → Developer settings → OAuth Apps → New. Callback URL: `https://<project-ref>.supabase.co/auth/v1/callback`.
-2. Supabase → Authentication → Sign In / Providers → GitHub: enable it and paste the client ID and secret.
-3. Supabase → Authentication → URL Configuration: set **Site URL** to your production URL and add `https://<your-domain>/auth/callback**` and `http://localhost:*/auth/callback**` to **Redirect URLs**. The trailing `**` is required: the callback carries `?next=…`, and Supabase matches the whole URL, query included. A redirect that doesn't match is silently replaced with the Site URL, so sign-in lands on `/?code=…` there instead of signing you in.
-4. Optional: disable the Email provider. Nothing in the app uses it.
+Each wish has one of three statuses. The database sets the status automatically.
 
-### 3. Environment
-
-Copy `.env.example` to `.env.local` and fill it in. You need **`SUPABASE_SECRET_KEY`** (Project Settings → API Keys → Secret key). The server uses it for every database call, because the browser never gets database access.
-
-### 3b. Duplicate-suggestion embeddings (optional, free)
-
-Duplicate suggestions work without this, using Postgres trigram matching. For matching on meaning ("mute my mic when the dog barks" ≈ "silence my microphone on barking"), deploy the `embed` Edge Function. It runs Supabase's built-in `gte-small` model, which has no model fee; it only uses the function's normal CPU time.
-
-```bash
-supabase link --project-ref <ref>
-supabase functions deploy embed --no-verify-jwt   # the function checks the secret key itself
+```
+open  ──▶  being built  ──▶  fulfilled
 ```
 
-In the dashboard instead: Edge Functions → Deploy a new function → name it `embed`, paste `supabase/functions/embed/index.ts`, and turn off **Verify JWT**.
+| Status | Condition |
+| --- | --- |
+| **Open** | The wish has no claims and no live links. |
+| **Being built** | One or more developers claim the wish. The wish has no live links. |
+| **Fulfilled** | The wish has one or more live links. The badge shows **Fulfilled ✓** after the votes verify a link. Before that, it shows **Fulfilled · unverified**. |
 
-Then set `EMBEDDINGS_FUNCTION=embed` (locally and in Vercel) and embed the existing wishes. Repeat until `"remaining": false`:
+If a developer removes a link or a claim, or if the votes flag a link, the status goes back to the correct value.
 
-```bash
-curl -X POST "https://<project-ref>.supabase.co/functions/v1/embed" \
-  -H "apikey: $SUPABASE_SECRET_KEY" -H "Content-Type: application/json" \
-  -d '{"backfill": true, "limit": 50}'
-```
+## Features
 
-Wishes posted while the function was cold or down are saved without an embedding. Duplicate checks still find them by trigram matching, and the same backfill call embeds them later.
+- **Post without an account.** A wish has 20 to 200 characters. An invisible bot check protects the composer.
+- **Duplicate suggestions.** Before you post, Wishcode shows wishes with the same meaning. Then you can add a me-too to that wish, or post your wish anyway.
+- **Claims and live links.** Developers sign in with GitHub. They show what they build and what they finish.
+- **Community verification.** The people who want the app vote on each link. The wisher's vote decides.
+- **Email notifications.** Wishers and me-too visitors can receive an email when a developer posts a live link. Developers receive an email when the votes verify their link.
+- **Share cards.** Each wish, each developer link and each fulfilled wish has its own 1200×630 image for social media.
+- **Moderation.** Visitors can report a wish or a link. Admins examine the reports in a queue at `/admin`.
+- **Abuse protection.** Rate limits apply to each device, each network and each developer.
 
-### 3c. Email notifications (optional, Gmail)
+## Technology stack
 
-The wisher and people who me-too'd can leave an email to hear when someone posts a live link. Developers are emailed once per link when it becomes verified, at the address on their GitHub account (from Supabase Auth); links verified before migration `20261021000000` are skipped. Emails go out over Gmail SMTP. Without credentials nothing is sent (the server logs that once), so dev and previews work as is.
+| Layer | Technology |
+| --- | --- |
+| Framework | [Next.js 16](https://nextjs.org) (App Router, Cache Components, Server Actions), React 19 |
+| Language | TypeScript 5 |
+| Styles | Tailwind CSS v4 |
+| Database | [Supabase](https://supabase.com) Postgres with `pgvector` and `pg_trgm` |
+| Authentication | Supabase Auth with GitHub OAuth (developers only) |
+| Embeddings | Supabase Edge Function with the built-in `gte-small` model |
+| Email | Gmail SMTP through Nodemailer |
+| Bot check | [Cloudflare Turnstile](https://developers.cloudflare.com/turnstile/) |
+| Analytics | [PostHog](https://posthog.com) |
+| Landing page | three.js, GSAP and Lenis |
+| Tests | Vitest and an SQL smoke test |
+| Hosting | [Vercel](https://vercel.com) |
 
-1. Use a Google account for Wishcode's mail and turn on **2-Step Verification** (Google Account → Security).
-2. Google Account → Security → **App passwords** → create one named "Wishcode". Copy the 16-character password.
-3. Set `GMAIL_USER` (the address) and `GMAIL_APP_PASSWORD` locally and in Vercel. Emails come from `"Wishcode" <GMAIL_USER>`.
-4. Optional: set `EMAIL_TOKEN_SECRET` to a long random string. It signs the vote and unsubscribe links in emails and defaults to `SUPABASE_SECRET_KEY`. Changing it invalidates links in emails already sent.
+## Quick start
 
-Gmail allows about 500 recipients a day (about 2,000 on Workspace). Sends past that fail and are logged as `[notify] send failed` with the subscription id; there are no retries.
+### Prerequisites
 
-Email links land on `/e/verdict` (confirm a Yes / No vote) and `/e/unsubscribe` (stop emails for one wish, or `&all=1` for all). Opening them changes nothing, since mail scanners open every link; the button on the page does. Mail clients' one-click unsubscribe (`List-Unsubscribe-Post`) POSTs to `/e/unsubscribe`, which `src/proxy.ts` routes to `/api/unsubscribe`.
+You must have these items:
 
-### 3d. Bot check on wishes (recommended, free)
+- Node.js 20.9 or a later version
+- pnpm 10
+- A [Supabase](https://supabase.com) project
+- A GitHub account (for the OAuth app)
 
-Posting a wish needs no account, so a [Cloudflare Turnstile](https://developers.cloudflare.com/turnstile/) check runs on the composer. It is invisible unless Cloudflare wants the visitor to tick a box.
+The [Supabase CLI](https://supabase.com/docs/guides/cli) is not necessary, but it makes steps 2 and 6 faster.
 
-1. Cloudflare dashboard → Turnstile → Add widget. Add your production domain (and `localhost` if you want it locally), and choose **Invisible** or **Managed** mode.
-2. Set `NEXT_PUBLIC_TURNSTILE_SITE_KEY` and `TURNSTILE_SECRET_KEY` in Vercel and redeploy. The site key is inlined at build time, so a redeploy is needed.
+### Step 1: Clone the repository
 
-Set both or neither: with only the secret, every post is rejected. Without them posting has no bot check, so dev and previews work as is. The token is checked right before the wish is created, so the "Post mine anyway" retry reuses it. If Cloudflare can't be reached the check passes (logged as `[turnstile] siteverify`), so an outage there never stops posting. For local testing Cloudflare publishes [test keys](https://developers.cloudflare.com/turnstile/troubleshooting/testing/) that always pass or always fail.
+1. Clone the repository:
 
-### 4. Run
+   ```bash
+   git clone https://github.com/raghavg27/wishcode.git
+   cd wishcode
+   ```
 
-```bash
-pnpm install
-pnpm dev            # http://localhost:3000
-pnpm test           # unit tests (vitest)
-pnpm lint && pnpm typecheck
-pnpm build          # production build (needs the env vars; prerenders public data)
-```
+2. Install the dependencies:
 
-To test the database, apply the migration to a scratch Postgres that has pgvector, then run `SCRATCH_DB_URL=postgres://… pnpm db:test`. It runs `supabase/tests/smoke.sql`, which checks state transitions, counters, rate limits and privileges inside a rolled-back transaction.
+   ```bash
+   pnpm install
+   ```
 
-### 5. Deploy (Vercel)
+### Step 2: Set up the database
 
-Add the same env vars in Vercel and deploy. All but the `NEXT_PUBLIC_` ones (PostHog and the Turnstile site key, which are public) can be marked Sensitive. `SITE_URL` is optional there: it defaults to the production domain, so set it only for a custom domain. The build reads the database (sitemap and the ledger's static shell), so the env vars must be available at build time too.
+A new Supabase project has no tables. The migrations in `supabase/migrations/` make the full schema.
+
+1. Apply the migrations in filename order, from the oldest to the newest. Use one of these two methods:
+   - **SQL editor:** In Supabase, open **SQL Editor**. Paste each file and run it.
+   - **CLI:** Run this command:
+
+     ```bash
+     supabase link --project-ref <project-ref>
+     supabase db push
+     ```
+
+The migrations do these tasks:
+
+- They add the `vector` and `pg_trgm` extensions.
+- They make the tables, triggers and functions.
+- They remove all access from the `anon` and `authenticated` roles.
+
+### Step 3: Set up GitHub sign-in
+
+Only developers sign in. Wishers and me-too visitors do not sign in.
+
+1. In GitHub, go to **Settings → Developer settings → OAuth Apps**. Click **New OAuth App**.
+2. Set the callback URL to `https://<project-ref>.supabase.co/auth/v1/callback`.
+3. In Supabase, go to **Authentication → Sign In / Providers → GitHub**. Click **Enable**.
+4. Paste the client ID and the client secret from GitHub.
+5. In Supabase, go to **Authentication → URL Configuration**.
+6. Set **Site URL** to your production URL.
+7. Add these two entries to **Redirect URLs**:
+
+   ```
+   https://<your-domain>/auth/callback**
+   http://localhost:*/auth/callback**
+   ```
+
+> [!IMPORTANT]
+> Keep the `**` at the end of each redirect URL. The callback has a `?next=…` query, and Supabase compares the full URL. If the URL does not agree with an entry, Supabase sends the user to the Site URL. Then the user lands on `/?code=…` and is not signed in.
+
+8. Disable the Email provider. The app does not use it. This step is not necessary.
+
+### Step 4: Set the environment variables
+
+1. Copy the example file:
+
+   ```bash
+   cp .env.example .env.local
+   ```
+
+2. Open `.env.local`. Write the values for `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY` and `SUPABASE_SECRET_KEY`.
+
+   You find the keys in Supabase, at **Project Settings → API Keys**.
+
+> [!CAUTION]
+> Do not commit `SUPABASE_SECRET_KEY` and do not send it to the browser. This key has full access to the database.
+
+For a full list of the variables, see [Configuration](#configuration).
+
+### Step 5: Start the app
+
+1. Start the development server:
+
+   ```bash
+   pnpm dev
+   ```
+
+2. Open <http://localhost:3000> in your browser.
+
+The app is now ready for use. Steps 6, 7 and 8 add more services. You can do them later.
+
+### Step 6: Add meaning-based duplicate suggestions (not necessary)
+
+Without this step, duplicate suggestions use Postgres trigram matching. Trigram matching finds wishes with similar words. Embeddings also find wishes with the same meaning. For example, "mute my mic when the dog barks" and "silence my microphone on barking" agree.
+
+The `embed` Edge Function uses the `gte-small` model that is built into Supabase. The model is free. The function uses only its usual CPU time.
+
+1. Deploy the function:
+
+   ```bash
+   supabase link --project-ref <project-ref>
+   supabase functions deploy embed --no-verify-jwt
+   ```
+
+   The function examines the secret key itself. Thus, JWT verification is not necessary.
+
+   To use the dashboard instead, go to **Edge Functions → Deploy a new function**. Set the name to `embed`. Paste `supabase/functions/embed/index.ts`. Turn off **Verify JWT**.
+
+2. Set `EMBEDDINGS_FUNCTION=embed` in `.env.local` and in Vercel.
+3. Add embeddings to the wishes that you have now:
+
+   ```bash
+   curl -X POST "https://<project-ref>.supabase.co/functions/v1/embed" \
+     -H "apikey: $SUPABASE_SECRET_KEY" -H "Content-Type: application/json" \
+     -d '{"backfill": true, "limit": 50}'
+   ```
+
+4. Do step 3 again until the response shows `"remaining": false`.
+
+> [!NOTE]
+> If the function is cold or does not operate, Wishcode saves the wish without an embedding. Trigram matching still finds that wish. The backfill command in step 3 adds the embedding later.
+
+### Step 7: Add email notifications (not necessary)
+
+Wishcode sends emails through Gmail SMTP. If you do not set the Gmail values, the server sends no email. It writes one log message about this. Development and preview deployments operate correctly without email.
+
+1. Select a Google account for Wishcode email.
+2. In that account, go to **Google Account → Security**. Turn on **2-Step Verification**.
+3. Go to **Security → App passwords**. Make a new app password with the name "Wishcode".
+4. Copy the 16-character password.
+5. Set `GMAIL_USER` to the email address. Do this in `.env.local` and in Vercel.
+6. Set `GMAIL_APP_PASSWORD` to the app password. Do this in `.env.local` and in Vercel.
+7. Set `EMAIL_TOKEN_SECRET` to a long random string. This step is not necessary. The default value is `SUPABASE_SECRET_KEY`.
+
+> [!WARNING]
+> If you change `EMAIL_TOKEN_SECRET`, the vote links and unsubscribe links in all sent emails stop working.
+
+Who receives emails:
+
+- **Wishers and me-too visitors** can give an email address. They receive an email when a developer posts a live link.
+- **Developers** receive one email for each link when the votes verify it. The email goes to the address on their GitHub account. Links that the votes verified before migration `20261021000000` do not cause an email.
+
+Limits and behavior:
+
+- Gmail sends to approximately 500 recipients each day. Google Workspace sends to approximately 2,000. If a send fails, the server writes `[notify] send failed` with the subscription ID to the log. The server does not try again.
+- Email links open `/e/verdict` (to confirm a Yes or No vote) and `/e/unsubscribe` (to stop emails for one wish, or for all wishes with `&all=1`).
+- A link alone changes nothing, because mail scanners open all links. The user must click the button on the page.
+- One-click unsubscribe from mail clients (`List-Unsubscribe-Post`) sends a POST to `/e/unsubscribe`. Then `src/proxy.ts` sends it to `/api/unsubscribe`.
+
+### Step 8: Add a bot check (recommended)
+
+Visitors post wishes without an account. Thus, the composer uses [Cloudflare Turnstile](https://developers.cloudflare.com/turnstile/) to stop bots. Most visitors do not see the check. Cloudflare shows a checkbox only when it has doubts about a visitor.
+
+> [!CAUTION]
+> Set the two Turnstile keys, or set no key. If you set only the secret key, the server rejects all wishes.
+
+1. In the Cloudflare dashboard, go to **Turnstile → Add widget**.
+2. Add your production domain. To test locally, also add `localhost`.
+3. Select the **Invisible** mode or the **Managed** mode.
+4. Set `NEXT_PUBLIC_TURNSTILE_SITE_KEY` and `TURNSTILE_SECRET_KEY` in Vercel.
+5. Deploy again. The build puts the site key into the page code, so a new build is necessary.
+
+Behavior:
+
+- Without the keys, posting has no bot check. Development and preview deployments operate correctly without it.
+- The server examines the token immediately before it makes the wish. Thus, the "Post mine anyway" retry uses the same token.
+- If the server cannot connect to Cloudflare, the check passes. The server writes `[turnstile] siteverify` to the log. A Cloudflare outage does not stop posting.
+- For local tests, Cloudflare gives [test keys](https://developers.cloudflare.com/turnstile/troubleshooting/testing/) that always pass or always fail.
+
+## Configuration
+
+Set these variables in `.env.local` for local development, and in Vercel for deployment. The template is [`.env.example`](.env.example).
+
+| Variable | Necessary | Description |
+| --- | :---: | --- |
+| `SUPABASE_URL` | Yes | The URL of your Supabase project. |
+| `SUPABASE_PUBLISHABLE_KEY` | Yes | The publishable key. Wishcode uses it only for Supabase Auth. |
+| `SUPABASE_SECRET_KEY` | Yes | The secret key. The server uses it for all database calls. Keep it on the server. |
+| `SITE_URL` | No | The canonical URL for share links, share cards and the OAuth redirect. On Vercel, the default is the production domain. Set it for a custom domain. |
+| `EMBEDDINGS_FUNCTION` | No | The name of the embeddings Edge Function. Set it to `embed` after you deploy the function. |
+| `GMAIL_USER` | No | The Gmail address that sends the emails. |
+| `GMAIL_APP_PASSWORD` | No | The Google app password for `GMAIL_USER`. |
+| `EMAIL_TOKEN_SECRET` | No | The key that signs the links in emails. The default is `SUPABASE_SECRET_KEY`. |
+| `RATE_LIMIT_SALT` | No | The pepper for the hash of client IP addresses. The default is `SUPABASE_SECRET_KEY`. |
+| `ADMIN_GITHUB_HANDLES` | No | A comma-separated list of GitHub handles. These developers receive admin rights when they sign in. |
+| `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | No | The public Cloudflare Turnstile site key. |
+| `TURNSTILE_SECRET_KEY` | No | The Cloudflare Turnstile secret key. |
+| `NEXT_PUBLIC_POSTHOG_KEY` | No | The PostHog project key for product analytics. |
+| `NEXT_PUBLIC_POSTHOG_HOST` | No | The PostHog host. The default is `https://us.i.posthog.com`. |
+
+## Commands
+
+| Command | Description |
+| --- | --- |
+| `pnpm dev` | Starts the development server at <http://localhost:3000>. |
+| `pnpm build` | Makes a production build. The build reads the database, so it must have the environment variables. |
+| `pnpm start` | Starts the production server after a build. |
+| `pnpm test` | Runs the unit tests with Vitest. |
+| `pnpm lint` | Runs ESLint. |
+| `pnpm typecheck` | Makes the route types and runs the TypeScript compiler. |
+| `pnpm db:test` | Runs the SQL smoke test on a scratch database. |
+
+### Database tests
+
+The SQL smoke test examines state transitions, counters, rate limits and privileges. It runs in a transaction and then rolls it back. Thus, it does not change the data.
+
+1. Make a scratch Postgres database that has `pgvector`.
+2. Apply the migrations to that database.
+3. Run the test:
+
+   ```bash
+   SCRATCH_DB_URL=postgres://… pnpm db:test
+   ```
+
+## Deployment
+
+Wishcode is made for [Vercel](https://vercel.com).
+
+1. Import the repository into Vercel.
+2. Add the same environment variables that you use in `.env.local`.
+3. Mark all variables as **Sensitive**, but not the `NEXT_PUBLIC_` variables. The `NEXT_PUBLIC_` variables are public.
+4. Make the variables available at build time. The build reads the database for the sitemap and for the static shell of the list.
+5. Deploy.
+
+You do not have to set `SITE_URL` on Vercel. The default is the production domain. Set it only for a custom domain.
 
 ## Architecture
 
@@ -93,31 +310,159 @@ Browser ──(Server Actions / GET)──▶ Next.js on Vercel ──(service r
    └── Supabase Auth (GitHub OAuth) ◀────┘ session cookie verified with getClaims()    anon has no grants)
 ```
 
-- **No direct DB access from browsers.** Every table has RLS enabled with no policies, and `anon`/`authenticated` hold no privileges. All reads and writes go through SQL functions that only `service_role` may execute. The Next.js server calls them after it verifies the device cookie or the GitHub session. The publishable key is used only for Supabase Auth.
-- **Anonymous identity.** A random 256-bit token sits in an httpOnly `wc_device` cookie and is minted lazily on the first write, so read-only visits stay cacheable. Only its SHA-256 is stored.
-- **Integrity in the database.** Status (`open` → `being_built` → `fulfilled`, and back when links or claims are removed or links are flagged), `verified`, `metoo_count`, `claim_count`, `link_count` and `live_link_count` are maintained by triggers with row locks. They stay correct under concurrency and for any write path. Partial unique indexes enforce one me-too per device per wish and one live link per developer per wish.
-- **Verdicts.** The wisher and devices that me-too'd a wish vote on whether each link works (`verdicts`). A trigger recomputes the link's `verdict`: the wisher's vote decides, otherwise 3 votes verify or flag it (a tie flags). Status counts only live (not flagged) links; `wishes.verified` drives the **Fulfilled ✓** vs **Fulfilled · unverified** badge. Taking back a me-too deletes that device's votes and ends its email subscription.
-- **Emails.** `postLink` schedules `notifyLinkPosted` with `after()`, so it runs once the response is sent. It reads recipients from `link_notification` (the only function that returns addresses), builds each email with `buildLinkEmail` and sends them one by one through `src/lib/mailer.ts`. Links in emails carry `<subscriptionId>.<HMAC>`; nothing is stored for them.
-- **Rate limits** are atomic fixed-window counters inside the same transaction as the write. Daily windows reset at midnight UTC: 2 wishes and 100 me-toos per device, 20 wishes and 1,000 me-toos per network (salted IP hash; shared IPs get a looser backstop), 5 claims and 20 links per developer, and 20 new email subscriptions per device (100 per network). Duplicate checks are capped at 60 per IP per hour. Values live in `LIMITS` in `src/lib/config.ts`. An over-limit write rolls back completely.
-- **Reports and moderation.** Anyone can report a wish or a live link (one report per device per target, 20 per device and 200 per network a day). Nothing is hidden automatically: reports queue on `/admin`, most reported first, where an admin removes the wish or link or dismisses its reports. Admins also get a remove control on every wish and link. Admin rights come from `ADMIN_GITHUB_HANDLES` on sign-in, and every admin RPC checks `developers.is_admin` itself; `/admin` is a 404 for everyone else.
-- **Duplicate suggestions.** The `embed` Edge Function returns a 384-dim `gte-small` embedding (4 s timeout), matched against an HNSW index at cosine ≥ 0.89. Wishes without an embedding yet are matched by `pg_trgm`. If the function isn't configured or fails, matching falls back to `pg_trgm` entirely, and posting is never blocked. Embedding calls are capped per IP.
-- **Caching.** Public reads (feed pages, wish detail, stats, profiles) use `"use cache"` with tags. Writes call `updateTag`, so wishes, claims, links and the sidebar stats show up immediately. Me-toos don't invalidate the feed or wish caches. Instead, every page reads its wishes' current counts and the viewer's own me-toos in one uncached primary-key lookup (`live_metoos`) and overlays them, so counts are live while the cached entries stay warm. Pages are partially prerendered: the static shell is served instantly and data streams in.
-- **404s.** Because pages stream, their status is committed before they can call `notFound()`. `src/proxy.ts` checks `/w/:id` and `/d/:handle` page loads against `page_exists` (memoised per instance), and the share URLs below against the wish's links, and rewrites misses to an unmatched path, so they return a real 404 with the right copy.
-- **Share cards.** Three 1200×630 PNGs drawn with bundled fonts (`src/lib/og-card.tsx`): the wish card (`/api/og/wish/:id`), the developer's "I built what 214 people wished for." card (`/api/og/link/:linkId`), and the wisher's "My wish came true." card (`/api/og/wish/:id/came-true`). Pages link them with a `?v=` that changes with everything on the card, so they can be CDN-cached for a day. Link previews come from page metadata, so each card has its own page: `/w/:id/by/:handle` and `/w/:id/came-true` render the wish page (canonical `/w/:id`) with that card as `og:image`, and 404 once the card is gone (link removed or flagged, or no link the wisher confirmed). Copy and URLs live in `src/lib/share-copy.ts`.
-- **Share moments.** Posting a link turns the modal into "You built it", and the wisher's Yes (on the page or from email) opens "Your wish came true": the card plus X, LinkedIn, WhatsApp, Copy link and Download image. Your own live links get a Share button that reopens it. PostHog gets `share_moment_shown` and `share` with `card` = `wish` | `developer` | `wisher`.
-- **Security headers:** `frame-ancestors 'none'`, nosniff, HSTS, a strict referrer policy and permissions policy. External links use `target="_blank" rel="noopener noreferrer nofollow ugc"` and are never iframed. Post-login redirects accept same-site paths only.
+### Data access
+
+- **The browser has no database access.** All tables have row-level security (RLS) on, with no policies. The `anon` and `authenticated` roles have no privileges.
+- **All reads and writes go through SQL functions.** Only `service_role` can run them. The Next.js server calls them after it verifies the device cookie or the GitHub session.
+- **The publishable key is only for Supabase Auth.**
+
+### Anonymous identity
+
+Each device receives a random 256-bit token in an httpOnly `wc_device` cookie. The server makes the token at the first write. Thus, visits that only read stay in the cache. The database keeps only the SHA-256 hash of the token.
+
+### Data integrity
+
+- **Triggers keep the counters and the status correct.** They use row locks. Thus, the values stay correct during concurrent writes and for all write paths. The triggers control `status`, `verified`, `metoo_count`, `claim_count`, `link_count` and `live_link_count`.
+- **Partial unique indexes** let each device add only one me-too to a wish. They also let each developer post only one live link to a wish.
+
+### Verdicts
+
+The wisher and the me-too visitors vote on each link. A trigger calculates the link's `verdict` after each vote:
+
+1. If the wisher votes, the wisher's vote decides.
+2. If the wisher does not vote, 3 votes verify or flag the link. A tie flags the link.
+
+Only live links (links that are not flagged) count for the status. The `wishes.verified` column controls the badge: **Fulfilled ✓** or **Fulfilled · unverified**. If a visitor removes a me-too, the database deletes the votes from that device and stops its emails.
+
+### Rate limits
+
+Each limit is an atomic fixed-window counter. It is in the same transaction as the write. If a write goes over a limit, the full transaction rolls back. Daily windows start again at midnight UTC.
+
+| Action | Device | Network | Developer |
+| --- | ---: | ---: | ---: |
+| Wishes each day | 2 | 20 | — |
+| Me-toos each day | 100 | 1,000 | — |
+| Claims each day | — | — | 5 |
+| Links each day | — | — | 20 |
+| Email subscriptions each day | 20 | 100 | — |
+| Reports each day | 20 | 200 | — |
+| Duplicate checks each hour (each IP) | — | 60 | — |
+
+A network is a salted hash of the IP address. Offices, schools and mobile networks put many people on one IP address. Thus, the network limits are higher. All values are in `LIMITS` in [`src/lib/config.ts`](src/lib/config.ts).
+
+### Duplicate suggestions
+
+- The `embed` Edge Function returns a 384-dimension `gte-small` embedding. The timeout is 4 seconds.
+- An HNSW index finds wishes with a cosine similarity of 0.89 or more.
+- Wishes without an embedding use `pg_trgm` matching.
+- If the function is not configured or fails, all matching uses `pg_trgm`. Duplicate suggestions never stop a post.
+
+### Moderation
+
+- Each device can report a wish or a live link one time.
+- Reports do not hide content automatically. They go into a queue at `/admin`. The most reported items are at the top.
+- An admin removes the wish or the link, or dismisses its reports. Admins also see a remove control on each wish and each link.
+- Admin rights come from `ADMIN_GITHUB_HANDLES` at sign-in. Each admin function examines `developers.is_admin` again. For all other users, `/admin` returns 404.
+
+### Email delivery
+
+`postLink` schedules `notifyLinkPosted` with `after()`. The function runs after the server sends the response. It reads the recipients from `link_notification`. This is the only database function that returns email addresses. Then it makes each email with `buildLinkEmail` and sends the emails one at a time through [`src/lib/mailer.ts`](src/lib/mailer.ts). Each email link contains `<subscriptionId>.<HMAC>`. The database keeps no data for these links.
+
+### Caching
+
+- Public reads (list pages, wish pages, statistics and profiles) use `"use cache"` with tags.
+- Writes call `updateTag`. Thus, new wishes, claims, links and statistics show immediately.
+- Me-toos do not clear the cache. Each page reads the current counts and the viewer's me-toos in one primary-key lookup (`live_metoos`), out of the cache. Then the page puts these values on the cached data. Thus, the counts are live and the cache stays warm.
+- Pages use partial prerendering. The server sends the static shell immediately. Then the data comes in a stream.
+
+### Correct 404 responses
+
+A page that streams sends its status code before it can call `notFound()`. Thus, [`src/proxy.ts`](src/proxy.ts) examines each request for `/w/:id` and `/d/:handle` against `page_exists`. It also examines the share URLs against the wish's links. If the page does not exist, the proxy sends the request to a path that has no route. Thus, the response is a real 404 with the correct text.
+
+### Share cards
+
+[`src/lib/og-card.tsx`](src/lib/og-card.tsx) draws three 1200×630 PNG images with bundled fonts:
+
+| Card | Route | Page |
+| --- | --- | --- |
+| The wish | `/api/og/wish/:id` | `/w/:id` |
+| "I built what 214 people wished for." (developer) | `/api/og/link/:linkId` | `/w/:id/by/:handle` |
+| "My wish came true." (wisher) | `/api/og/wish/:id/came-true` | `/w/:id/came-true` |
+
+- Each image URL has a `?v=` value. This value changes when the content of the card changes. Thus, the CDN keeps each card for one day.
+- Link previews use page metadata. Thus, each card has its own page. Each page shows the wish (the canonical URL is `/w/:id`) with its card as `og:image`.
+- A card page returns 404 when its card is not available. For example, a developer removes the link, the votes flag it, or the wisher does not confirm a link.
+- The text and the URLs for sharing are in [`src/lib/share-copy.ts`](src/lib/share-copy.ts).
+
+After a developer posts a link, the modal shows "You built it". After the wisher votes Yes, the page shows "Your wish came true". Each moment shows the card and buttons for X, LinkedIn, WhatsApp, Copy link and Download image. PostHog receives `share_moment_shown` and `share` events, with `card` set to `wish`, `developer` or `wisher`.
+
+### Security
+
+- The response headers include `frame-ancestors 'none'`, `nosniff`, HSTS, a strict referrer policy and a permissions policy.
+- External links use `target="_blank" rel="noopener noreferrer nofollow ugc"`. Wishcode never shows them in an iframe.
+- After sign-in, redirects go only to paths on the same site.
 
 ## API
 
-Mutations are Server Actions (`src/app/actions.ts`): `postWish`, `setMetoo`, `setClaim`, `postLink`, `removeLink`, `setVerdict`, `subscribe`, `report`, the admin-only `moderate`, and, from email links, `emailVerdict` and `unsubscribe`. Next.js enforces same-origin requests for them. Public JSON endpoints:
+### Server Actions
 
-| Route | Purpose |
+All changes to data use Server Actions in [`src/app/actions.ts`](src/app/actions.ts). Next.js accepts them only from the same origin.
+
+| Action | Description |
 | --- | --- |
-| `GET /api/wishes?status=&sort=&cursor=` | Cursor-paginated feed with live me-too counts (plus the viewer's me-toos) |
-| `GET /api/wishes/:id` | Wish with claims and links |
-| `GET /api/developers/:handle` | Developer profile |
-| `GET /api/og/wish/:id` | Wish share card PNG |
-| `GET /api/og/link/:linkId` | Developer share card PNG (404 for removed or flagged links) |
-| `GET /api/og/wish/:id/came-true` | Wisher share card PNG (404 until the wisher confirms a link) |
-| `POST /e/unsubscribe?t=` | RFC 8058 one-click unsubscribe (handled by `/api/unsubscribe`) |
+| `postWish` | Posts a new wish. |
+| `setMetoo` | Adds or removes a me-too. |
+| `setClaim` | Adds or removes a developer claim. |
+| `postLink` | Posts a live link. |
+| `removeLink` | Removes a live link. |
+| `setVerdict` | Records a Yes or No vote on a link. |
+| `subscribe` | Adds an email subscription to a wish. |
+| `report` | Reports a wish or a link. |
+| `moderate` | Removes content or dismisses reports (admins only). |
+| `emailVerdict` | Records a vote from an email link. |
+| `unsubscribe` | Stops emails from an email link. |
 
+### Public endpoints
+
+| Route | Description |
+| --- | --- |
+| `GET /api/wishes?status=&sort=&cursor=` | The list of wishes, with cursor pagination. It includes live me-too counts and the viewer's me-toos. |
+| `GET /api/wishes/:id` | One wish with its claims and links. |
+| `GET /api/developers/:handle` | One developer profile. |
+| `GET /api/og/wish/:id` | The wish share card (PNG). |
+| `GET /api/og/link/:linkId` | The developer share card (PNG). It returns 404 for removed or flagged links. |
+| `GET /api/og/wish/:id/came-true` | The wisher share card (PNG). It returns 404 until the wisher confirms a link. |
+| `POST /e/unsubscribe?t=` | One-click unsubscribe (RFC 8058). `/api/unsubscribe` processes it. |
+
+## Project structure
+
+```
+wishcode/
+├── src/
+│   ├── app/            # Routes, pages, API routes and Server Actions
+│   ├── components/     # React components
+│   ├── lib/            # Data access, email, share cards, configuration and tests
+│   └── proxy.ts        # Request proxy (404 checks and unsubscribe routing)
+├── supabase/
+│   ├── migrations/     # Database schema, triggers and functions
+│   ├── functions/embed # Embeddings Edge Function (gte-small)
+│   └── tests/smoke.sql # SQL smoke test
+├── assets/fonts/       # Fonts for the share cards
+├── design/             # Screen designs and the interactive prototype
+└── docs/               # Design specifications
+```
+
+## Documentation
+
+- [Product and technical specification (v1)](Wishcode%20%E2%80%94%20v1%20PRD%2C%20TRD%20%26%20App%20Flow.md): the PRD, the TRD and the app flow.
+- [Supabase integration](supabase.md): how the app connects to Supabase.
+- [Design files](design/): the screen designs and the interactive prototype.
+- [Design specifications](docs/superpowers/specs/): the design decisions for each feature.
+
+## Support
+
+To report a problem or to suggest a change, [open an issue](https://github.com/raghavg27/wishcode/issues).
+
+---
+
+<sub>This README uses [ASD-STE100 Simplified Technical English](https://www.asd-ste100.org).</sub>
