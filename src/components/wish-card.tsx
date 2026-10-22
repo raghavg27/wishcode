@@ -56,8 +56,8 @@ export function WishCard({ wish, metooActive }: { wish: Wish; metooActive: boole
             rel={EXTERNAL_REL}
             className="inline-flex max-w-full items-center gap-1.5 rounded-full bg-surface-lowest px-3 py-1 text-label-sm font-medium text-ink shadow-card transition-colors hover:bg-surface"
           >
-            Open app
-            <ArrowUpRight className="size-3.5" aria-hidden />
+            <span className="whitespace-nowrap">Open app</span>
+            <ArrowUpRight className="size-3.5 shrink-0" aria-hidden />
             <span className="truncate text-caption text-outline">{domainOf(wish.first_link.url)}</span>
           </a>
         </div>

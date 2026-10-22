@@ -100,9 +100,10 @@ async function Profile({ params, searchParams }: PageProps<"/d/[handle]">) {
                       href={l.url}
                       target="_blank"
                       rel={EXTERNAL_REL}
-                      className="inline-flex items-center gap-1.5 rounded-full bg-surface-low px-3 py-1.5 text-label font-medium text-ink hover:bg-surface-container"
+                      className="inline-flex max-w-full items-center gap-1.5 rounded-full bg-surface-low px-3 py-1.5 text-label font-medium text-ink hover:bg-surface-container"
                     >
-                      <ExternalLink className="size-4" aria-hidden /> Open app <span className="text-label-sm text-ink-muted">{domainOf(l.url)}</span>
+                      <ExternalLink className="size-4 shrink-0" aria-hidden /> <span className="whitespace-nowrap">Open app</span>{" "}
+                      <span className="truncate text-label-sm text-ink-muted">{domainOf(l.url)}</span>
                     </a>
                     {l.repo_url && (
                       <a
@@ -111,7 +112,7 @@ async function Profile({ params, searchParams }: PageProps<"/d/[handle]">) {
                         rel={EXTERNAL_REL}
                         className="inline-flex max-w-full items-center gap-1.5 rounded-full bg-surface-low px-3 py-1.5 text-label font-medium text-ink hover:bg-surface-container"
                       >
-                        <Code className="size-4" aria-hidden /> Source{" "}
+                        <Code className="size-4 shrink-0" aria-hidden /> Source{" "}
                         <span className="truncate text-label-sm text-ink-muted">{repoLabel(l.repo_url)}</span>
                       </a>
                     )}
