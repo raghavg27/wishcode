@@ -12,13 +12,13 @@ export function SiteFooter() {
         </div>
         <nav aria-label="Footer" className="flex flex-wrap items-center gap-x-5 gap-y-2 text-label-sm text-ink-muted">
           <Link href="/wishes" className="hover:text-ink">
-            Live feed
+            Wishes
           </Link>
           <Link href="/developers" className="hover:text-ink">
-            Developers
+            Builders
           </Link>
           <Link href="/principles" className="hover:text-ink">
-            Guidelines
+            Principles
           </Link>
           <Link href="/about" className="hover:text-ink">
             About
