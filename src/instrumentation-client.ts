@@ -13,6 +13,8 @@ export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
 
 // Product analytics (TRD 2.2): PostHog, only when a key is configured. Loaded
 // lazily so it never blocks interactivity. Funnel events are sent via track().
+// Cookieless: PostHog counts visitors with a daily-salted hash on its servers,
+// and the browser stores nothing. Errors go to Sentry, not PostHog.
 const key = process.env.NEXT_PUBLIC_POSTHOG_KEY;
 
 if (key) {
@@ -20,8 +22,10 @@ if (key) {
     posthog.init(key, {
       api_host: POSTHOG_RELAY,
       ui_host: posthogUiHost(),
+      cookieless_mode: "always",
       capture_pageview: "history_change",
-      persistence: "memory",
+      capture_performance: { web_vitals: true },
+      capture_exceptions: false,
       disable_session_recording: true,
     });
     (window as unknown as { posthog?: typeof posthog }).posthog = posthog;
