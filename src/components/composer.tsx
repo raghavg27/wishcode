@@ -10,28 +10,11 @@ import { primeMetoo } from "@/components/metoo";
 import { toast } from "@/components/toaster";
 import { track } from "@/lib/analytics";
 import { WISH_MAX, WISH_MIN } from "@/lib/config";
+import { readDraft, writeDraft } from "@/lib/draft";
 import { resetsIn } from "@/lib/format";
 import { wishPath } from "@/lib/site";
 import type { SimilarWish } from "@/lib/types";
 import { charLength, normalizeWishText, wishTextIssue } from "@/lib/validation";
-
-const DRAFT_KEY = "wishcode:draft";
-
-function readDraft() {
-  try {
-    return localStorage.getItem(DRAFT_KEY) ?? "";
-  } catch {
-    return "";
-  }
-}
-function writeDraft(value: string) {
-  try {
-    if (value) localStorage.setItem(DRAFT_KEY, value);
-    else localStorage.removeItem(DRAFT_KEY);
-  } catch {
-    // Private mode or storage disabled: drafts just don't persist.
-  }
-}
 
 export function Composer() {
   const router = useRouter();
