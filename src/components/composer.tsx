@@ -118,7 +118,7 @@ export function Composer() {
   }
 
   return (
-    <section id="compose" className="card mb-8 scroll-mt-24 p-4 transition-shadow focus-within:shadow-card-hover sm:p-5">
+    <section id="compose" className="card mb-8 scroll-mt-24 p-4 transition-shadow focus-within:shadow-card-hover focus-within:ring-2 focus-within:ring-amber/60 sm:p-5">
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -151,7 +151,7 @@ export function Composer() {
           placeholder="I wish there was an app that…"
           aria-invalid={Boolean(showIssue) || undefined}
           aria-describedby={`${id}-hint`}
-          className="field-sizing-content max-h-72 min-h-[4.5rem] w-full resize-none bg-transparent font-serif text-wish-sm text-ink placeholder:text-outline-variant focus:outline-none sm:text-wish"
+          className="field-sizing-content max-h-72 min-h-[4.5rem] w-full resize-none bg-transparent font-serif text-wish-sm text-ink placeholder:text-outline/80 focus:outline-none sm:text-wish"
         />
 
         <div id={`${id}-hint`} aria-live="polite">
@@ -192,11 +192,11 @@ export function Composer() {
           </p>
           <div className="flex items-center justify-between gap-4 sm:justify-end">
             <span
-              className={clsx("text-label tabular", length > WISH_MAX ? "text-danger" : "text-outline")}
+              className={clsx("text-label tabular", length > WISH_MAX ? "text-danger" : "text-ink-muted")}
               aria-label={`${length} of ${WISH_MAX} characters`}
             >
               {length}
-              <span className="text-outline-variant">/{WISH_MAX}</span>
+              <span className="text-outline">/{WISH_MAX}</span>
               <span className="ml-1 text-caption text-ink-muted">(min {WISH_MIN})</span>
             </span>
             <button
