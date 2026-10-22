@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { ArrowLeft, ArrowUpRight, CircleCheck, Gavel, History, ShieldCheck, Sparkles, SquareTerminal, Sprout } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, CircleCheck, Flag, Gavel, History, ShieldCheck, Sparkles, SquareTerminal, Sprout } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -10,6 +10,7 @@ import { GithubIcon } from "@/components/icons";
 import { FlaggedLink, LinkVerdictPanel } from "@/components/link-verdict";
 import { MetooButton } from "@/components/metoo";
 import { PostLinkModal, PostLinkTrigger } from "@/components/post-link";
+import { ModerationActions, ReportButton } from "@/components/report";
 import { ScrollIntoView } from "@/components/scroll-into-view";
 import { CopyLinkButton, DownloadImageButton, ShareIconButton, ShareTargets } from "@/components/share";
 import { ShareMomentButton } from "@/components/share-moment";
@@ -236,6 +237,7 @@ async function WishView({
                         metoo={metoo}
                         ownLink={viewerLink?.id === link.id}
                         highlight={link.id === highlighted?.id}
+                        isAdmin={Boolean(developer?.is_admin)}
                         share={viewerLink?.id === link.id ? developerShare(wishShare, link) : undefined}
                         wisherShare={viewer.is_wisher ? wisherShare(wishShare, wisherCardLink(wish.links, link.id)!) : undefined}
                       />
@@ -288,6 +290,15 @@ async function WishView({
             viewerLinkId={viewerLink?.id ?? null}
           />
           <WishRecord wish={wish} />
+          {developer?.is_admin && !wish.removed && (
+            <section className="card p-6" aria-labelledby="admin-title">
+              <h2 id="admin-title" className="mb-1 text-label font-semibold tracking-wider text-ink uppercase">
+                Admin
+              </h2>
+              <p className="mb-4 text-label-sm text-ink-muted">Hides the text for everyone and resolves its reports.</p>
+              <ModerationActions wishId={wish.id} />
+            </section>
+          )}
         </aside>
       </div>
 
@@ -324,6 +335,7 @@ function LinkCard({
   metoo,
   ownLink,
   highlight,
+  isAdmin,
   share,
   wisherShare,
 }: {
@@ -335,6 +347,7 @@ function LinkCard({
   ownLink: boolean;
   /** Opened from this developer's share URL. */
   highlight: boolean;
+  isAdmin: boolean;
   /** Set on the viewer's own link. */
   share?: ShareMomentProps;
   wisherShare?: ShareMomentProps;
@@ -396,9 +409,14 @@ function LinkCard({
             </a>
           )}
           {share && link.verdict !== "flagged" && <ShareMomentButton share={share} />}
-          {ownLink && <RemoveOwnLink linkId={link.id} compact />}
+          {ownLink ? <RemoveOwnLink linkId={link.id} compact /> : <ReportButton wishId={wishId} linkId={link.id} />}
         </div>
       </div>
+      {isAdmin && !ownLink && (
+        <div className="border-t border-hairline px-5 py-3">
+          <ModerationActions wishId={wishId} linkId={link.id} />
+        </div>
+      )}
     </div>
   );
 }
@@ -503,6 +521,13 @@ function WishRecord({ wish }: { wish: WishDetail }) {
           <dd>{wish.removed ? <StatusChip status={wish.status} verified={wish.verified} removed /> : <StatusChip status={wish.status} verified={wish.verified} />}</dd>
         </div>
       </dl>
+      {!wish.removed && (
+        <div className="mt-5 border-t border-hairline pt-4">
+          <ReportButton wishId={wish.id}>
+            <Flag className="size-3.5" aria-hidden /> Report this wish
+          </ReportButton>
+        </div>
+      )}
     </section>
   );
 }

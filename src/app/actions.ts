@@ -12,6 +12,7 @@ import { env } from "@/lib/env";
 import { toActionError, type ActionError } from "@/lib/errors";
 import { clientIpKey, ensureDeviceHash, readDeviceHash } from "@/lib/identity";
 import { notifyLinkPosted, notifyLinkVerified } from "@/lib/notify";
+import { isReportReason, type ReportReason } from "@/lib/reports";
 import { db } from "@/lib/supabase/admin";
 import { createAuthClient } from "@/lib/supabase/server";
 import type { LinkVerdict, SimilarWish, WishStatus } from "@/lib/types";
@@ -378,6 +379,77 @@ export async function stopDeveloperEmails(token: string): Promise<UnsubscribeRes
     return { ok: true, all: true };
   } catch (err) {
     return toActionError(err, "unsubscribe");
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Reports and moderation
+// ---------------------------------------------------------------------------
+
+export type ReportResult = { ok: true } | ActionError;
+
+/** Flags a wish, or one of its links (linkId), for an admin to review. */
+export async function report(wishId: number, linkId: number | null, reason: ReportReason): Promise<ReportResult> {
+  if (
+    !isWishId(wishId) ||
+    (linkId !== null && !isWishId(linkId)) ||
+    !isReportReason(reason) ||
+    (reason === "malicious_link" && linkId === null)
+  ) {
+    return { ok: false, code: "invalid", message: "Invalid request." };
+  }
+  try {
+    const [deviceHash, ipKey] = await Promise.all([ensureDeviceHash(), clientIpKey()]);
+    const { error } = await db().rpc("report", {
+      p_token_hash: deviceHash,
+      p_ip_key: ipKey,
+      p_wish_id: wishId,
+      p_link_id: linkId,
+      p_reason: reason,
+      p_device_limit: LIMITS.reportsPerDevicePerDay,
+      p_ip_limit: LIMITS.reportsPerNetworkPerDay,
+    });
+    if (error) return toActionError(error, linkId === null ? "report" : "reportLink");
+    // Reports only show on /admin, which is never cached.
+    return { ok: true };
+  } catch (err) {
+    return toActionError(err, linkId === null ? "report" : "reportLink");
+  }
+}
+
+export type ModerateResult = { ok: true } | ActionError;
+
+/**
+ * Admins only: removes a wish, or one of its links (linkId), and resolves
+ * its reports; with remove false, just dismisses the reports.
+ */
+export async function moderate(wishId: number, linkId: number | null, remove: boolean): Promise<ModerateResult> {
+  if (!isWishId(wishId) || (linkId !== null && !isWishId(linkId)) || typeof remove !== "boolean") {
+    return { ok: false, code: "invalid", message: "Invalid request." };
+  }
+  try {
+    const { developer } = await getViewer();
+    if (!developer) return UNAUTHENTICATED;
+    if (!developer.is_admin) return toActionError({ code: "P0001", message: "forbidden" }, "moderate");
+
+    const { data, error } = await db().rpc("admin_resolve_reports", {
+      p_developer_id: developer.id,
+      p_wish_id: wishId,
+      p_link_id: linkId,
+      p_remove: remove,
+    });
+    if (error) return toActionError(error, "moderate");
+
+    if (remove) {
+      updateTag(tags.wish(wishId));
+      updateTag(tags.ledger);
+      updateTag(tags.stats);
+      revalidateTag(tags.directory, "max");
+      for (const handle of (data as { handles: string[] }).handles) updateTag(tags.developer(handle));
+    }
+    return { ok: true };
+  } catch (err) {
+    return toActionError(err, "moderate");
   }
 }
 

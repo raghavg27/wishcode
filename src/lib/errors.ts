@@ -45,6 +45,15 @@ const RATE_LIMIT_MESSAGES: Record<string, Record<string, string>> = {
     ip: `Your network has turned on emails for ${LIMITS.subscriptionsPerNetworkPerDay} wishes today. ${RESETS}`,
   },
   unsubscribe: {},
+  report: {
+    device: `You've sent ${LIMITS.reportsPerDevicePerDay} reports today. ${RESETS}`,
+    ip: `Your network has sent ${LIMITS.reportsPerNetworkPerDay} reports today. ${RESETS}`,
+  },
+  reportLink: {
+    device: `You've sent ${LIMITS.reportsPerDevicePerDay} reports today. ${RESETS}`,
+    ip: `Your network has sent ${LIMITS.reportsPerNetworkPerDay} reports today. ${RESETS}`,
+  },
+  moderate: {},
 };
 
 export function toActionError(err: unknown, action: keyof typeof RATE_LIMIT_MESSAGES): ActionError {
@@ -64,7 +73,7 @@ export function toActionError(err: unknown, action: keyof typeof RATE_LIMIT_MESS
         return {
           ok: false,
           code: "not_found",
-          message: action === "verdict" ? "That link was removed." : "That wish doesn't exist.",
+          message: action === "verdict" || action === "reportLink" ? "That link was removed." : "That wish doesn't exist.",
         };
       case "wish_removed":
         return { ok: false, code: "wish_removed", message: "This wish was removed." };

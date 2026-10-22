@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 const PRINCIPLES = [
   {
     title: "Anyone can wish.",
-    body: `Post one sentence (${WISH_MIN}–${WISH_MAX} characters). No account. Leave an email if you want, and I'll tell you when someone builds it. I only use it for that, and every email has an unsubscribe link. Wishes stay up unless they're spam.`,
+    body: `Post one sentence (${WISH_MIN}–${WISH_MAX} characters). No account. Leave an email if you want, and I'll tell you when someone builds it. I only use it for that, and every email has an unsubscribe link. Wishes stay up unless they're spam, abusive or share someone's private information.`,
   },
   {
     title: "Everyone can see the demand.",
@@ -26,7 +26,7 @@ const PRINCIPLES = [
   },
   {
     title: "Open links with care.",
-    body: `${DISCLAIMER} They open in a new tab, show who posted them, and the developer or I can take them down.`,
+    body: `${DISCLAIMER} They open in a new tab, show who posted them, and the developer or I can take them down. If a wish or link is spam, abusive, shares someone's private information or looks like a scam, tap Report and I'll review it.`,
   },
   {
     title: "Fair use.",

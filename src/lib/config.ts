@@ -24,7 +24,13 @@ export const LIMITS = {
   /** New email subscriptions (re-subscribing an active address is free). */
   subscriptionsPerDevicePerDay: 20,
   subscriptionsPerNetworkPerDay: 100,
+  /** New reports (reporting the same wish or link again is free). */
+  reportsPerDevicePerDay: 20,
+  reportsPerNetworkPerDay: 200,
 } as const;
+
+/** Most reported targets shown on /admin at once. */
+export const REPORT_QUEUE_SIZE = 100;
 
 /**
  * Cosine similarity (gte-small) at or above this counts as a likely duplicate.
