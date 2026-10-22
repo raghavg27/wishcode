@@ -441,6 +441,98 @@ begin
 end;
 $$;
 
+-- Reports and the admin queue.
+do $$
+declare
+  dev_g   uuid := '00000000-0000-0000-0000-000000000010';
+  mod     uuid := '00000000-0000-0000-0000-000000000011';
+  wisher  text := repeat('1', 64);
+  rep     text[] := array[repeat('2', 64), repeat('3', 64), repeat('4', 64)];
+  w       bigint;
+  w2      bigint;
+  l       bigint;
+  q       jsonb;
+  r       jsonb;
+  failed  boolean;
+begin
+  perform public.upsert_developer(dev_g, 30, 'gina', null, false);
+  perform public.upsert_developer(mod, 31, 'mod', null, true);
+  w := (public.create_wish(wisher, 'ipr', 'An app that reminds me to water each of my plants', null, 5, 50)->>'id')::bigint;
+  w2 := (public.create_wish(wisher, 'ipr', 'A keyboard shortcut that mutes every open browser tab', null, 5, 50)->>'id')::bigint;
+  l := (public.create_link(dev_g, w, 'https://plants.app', 'Plant reminders', null, 20)->>'id')::bigint;
+  perform public.set_claim(dev_g, w2, true, 5);
+
+  -- One report per device per target; repeats are free.
+  perform public.report(rep[1], 'ipq', w, null, 'spam', 2, 50);
+  perform public.report(rep[1], 'ipq', w, null, 'abuse', 2, 50);
+  perform public.report(rep[2], 'ipq', w, null, 'abuse', 2, 50);
+  perform public.report(rep[1], 'ipq', w, l, 'malicious_link', 2, 50);
+  assert (select count(*) from public.reports where wish_id = w) = 3, 'one report per device per target';
+
+  -- Device limit (2 here) rolls back the over-limit report.
+  failed := false;
+  begin perform public.report(rep[1], 'ipq', w2, null, 'spam', 2, 50);
+  exception when others then failed := sqlerrm = 'rate_limited'; end;
+  assert failed, 'report rate limit';
+  assert (select count(*) from public.reports where wish_id = w2) = 0, 'over-limit report rolled back';
+
+  -- Bad targets.
+  failed := false;
+  begin perform public.report(rep[3], 'ipq', w2, l, 'spam', 2, 50);
+  exception when others then failed := sqlerrm = 'not_found'; end;
+  assert failed, 'link must belong to the wish';
+  failed := false;
+  begin perform public.report(rep[3], 'ipq', w2, null, 'malicious_link', 2, 50);
+  exception when check_violation then failed := true; end;
+  assert failed, 'malicious_link needs a link';
+  perform public.report(rep[3], 'ipq', w2, null, 'personal_info', 2, 50);
+
+  -- Only admins see the queue; the most reported target comes first.
+  failed := false;
+  begin perform public.admin_report_queue(dev_g, 50);
+  exception when others then failed := sqlerrm = 'forbidden'; end;
+  assert failed, 'non-admin queue';
+  q := public.admin_report_queue(mod, 50);
+  assert jsonb_array_length(q) = 3, 'three targets';
+  assert (q->0->>'wish_id')::bigint = w and q->0->'link' = 'null'::jsonb and (q->0->>'report_count')::int = 2, 'wish first';
+  assert (q->0->'reasons'->>'abuse')::int = 1 and (q->0->'reasons'->>'spam')::int = 1, 'reasons counted';
+
+  -- Dismissing the link's reports leaves the wish's.
+  failed := false;
+  begin perform public.admin_resolve_reports(dev_g, w, l, false);
+  exception when others then failed := sqlerrm = 'forbidden'; end;
+  assert failed, 'non-admin resolve';
+  failed := false;
+  begin perform public.admin_resolve_reports(mod, w2, l, true);
+  exception when others then failed := sqlerrm = 'not_found'; end;
+  assert failed, 'link must belong to the wish when resolving';
+  perform public.admin_resolve_reports(mod, w, l, false);
+  assert (select deleted_at from public.links where id = l) is null, 'dismiss keeps the link';
+  assert jsonb_array_length(public.admin_report_queue(mod, 50)) = 2, 'link reports resolved';
+
+  -- Removing a wish resolves all its reports and returns its developers.
+  r := public.admin_resolve_reports(mod, w, null, true);
+  assert (public.get_wish(w)->>'removed')::boolean, 'wish removed';
+  assert r->'handles' = '["gina"]'::jsonb, 'handles to refresh';
+  assert not exists (select 1 from public.reports where wish_id = w and resolved_at is null), 'all resolved';
+  failed := false;
+  begin perform public.report(rep[3], 'ipq', w, null, 'spam', 2, 50);
+  exception when others then failed := sqlerrm = 'wish_removed'; end;
+  assert failed, 'cannot report a removed wish';
+
+  -- Removing a link from the queue.
+  l := (public.create_link(dev_g, w2, 'https://mute.app', 'Mute tabs', null, 20)->>'id')::bigint;
+  perform public.report(rep[2], 'ipq', w2, l, 'malicious_link', 2, 50);
+  r := public.admin_resolve_reports(mod, w2, l, true);
+  assert (select deleted_at from public.links where id = l) is not null, 'link removed';
+  assert r->'handles' = '["gina"]'::jsonb;
+  q := public.admin_report_queue(mod, 50);
+  assert jsonb_array_length(q) = 1 and q->0->'link' = 'null'::jsonb, 'only the wish report on w2 is left';
+
+  raise notice 'reports: all assertions passed';
+end;
+$$;
+
 reset role;
 
 -- Privileges: anon and authenticated can touch nothing.
@@ -467,6 +559,10 @@ begin
       'select public.claim_verified_notification(1)',
       'select public.developer_email_context(1)',
       'select public.suppress_developer_email(1)',
+      'select public.report(null, null, 1, null, ''spam'', 1, 1)',
+      'select public.admin_report_queue(null, 1)',
+      'select public.admin_resolve_reports(null, 1, null, false)',
+      'select 1 from public.reports limit 1',
       'select 1 from public.wishes limit 1',
       'select 1 from public.verdicts limit 1',
       'select 1 from public.subscriptions limit 1',
