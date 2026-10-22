@@ -9,6 +9,7 @@ const LINKS = [
   { href: "/wishes", label: "Wishes", match: (p: string) => p === "/wishes" },
   { href: "/wishes?status=fulfilled", label: "Fulfilled", match: () => false },
   { href: "/principles", label: "Principles", match: (p: string) => p.startsWith("/principles") },
+  { href: "/about", label: "About", match: (p: string) => p.startsWith("/about") },
 ];
 
 export function NavLinks() {

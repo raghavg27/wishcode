@@ -20,6 +20,9 @@ export function SiteFooter() {
           <Link href="/principles" className="hover:text-ink">
             Guidelines
           </Link>
+          <Link href="/about" className="hover:text-ink">
+            About
+          </Link>
           <Link href="/privacy" className="hover:text-ink">
             Privacy
           </Link>
