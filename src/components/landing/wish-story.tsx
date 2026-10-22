@@ -26,6 +26,7 @@ const STEPS = [
 
 const WISH = "An app that mutes my mic when the dog starts barking.";
 const METOOS = 214;
+const DIM = 0.3;
 
 // Same looks as StatusChip, stacked so they can cross-fade.
 const CHIPS = [
@@ -65,7 +66,8 @@ export function WishStory() {
           },
         });
 
-        tl.set(steps, { opacity: (i: number) => (i === 0 ? 1 : 0.28) })
+        tl.set(steps, { opacity: (i: number) => (i === 0 ? 1 : DIM) })
+          .set(q("[data-dawn]"), { autoAlpha: 0, yPercent: 30 })
           .set(q("[data-char]"), { opacity: 0 })
           .set([chip("built"), chip("unverified"), chip("fulfilled"), q("[data-build]"), q("[data-link]"), q("[data-votes]")], {
             autoAlpha: 0,
@@ -75,11 +77,11 @@ export function WishStory() {
           // 1. The wish is typed out.
           .to(q("[data-char]"), { opacity: 1, duration: 0.01, stagger: 0.85 / WISH.length }, 0.05)
           // 2. Me-toos pile up.
-          .to(steps, { opacity: (i: number) => (i === 1 ? 1 : 0.28) }, 1)
+          .to(steps, { opacity: (i: number) => (i === 1 ? 1 : DIM) }, 1)
           .to(q("[data-metoo]"), { backgroundColor: "#f4b740", borderColor: "#f4b740" }, 1.05)
           .to(metoos, { n: METOOS, duration: 0.85, ease: "power1.in", onUpdate: () => void (count.textContent = String(Math.round(metoos.n))) }, 1.1)
           // 3. Claimed, then a link goes up.
-          .to(steps, { opacity: (i: number) => (i === 2 ? 1 : 0.28) }, 2)
+          .to(steps, { opacity: (i: number) => (i === 2 ? 1 : DIM) }, 2)
           // Each swap fades out before the next state fades in, so no scroll
           // position shows two chips at once.
           .to(chip("open"), { autoAlpha: 0, duration: 0.08 }, 2.05)
@@ -87,8 +89,10 @@ export function WishStory() {
           .to([chip("built"), q("[data-build]")], { autoAlpha: 0, duration: 0.08 }, 2.6)
           .to([chip("unverified"), q("[data-link]")], { autoAlpha: 1, duration: 0.12 }, 2.7)
           // 4. The people who wanted it say it works.
-          .to(steps, { opacity: (i: number) => (i === 3 ? 1 : 0.28) }, 3)
+          .to(steps, { opacity: (i: number) => (i === 3 ? 1 : DIM) }, 3)
           .to(q("[data-votes]"), { autoAlpha: 1 }, 3.1)
+          // ...and the sun comes up on it.
+          .to(q("[data-dawn]"), { autoAlpha: 1, yPercent: 0, duration: 0.7, ease: "power1.out" }, 3.1)
           .to(chip("unverified"), { autoAlpha: 0, duration: 0.08 }, 3.4)
           .fromTo(chip("fulfilled"), { autoAlpha: 0, scale: 0.85 }, { autoAlpha: 1, scale: 1, ease: "back.out(3)" }, 3.5)
           .to({}, { duration: 0.4 });
@@ -102,30 +106,36 @@ export function WishStory() {
   );
 
   return (
-    <section ref={scope} aria-labelledby="story-title" className="mx-auto w-full max-w-[1120px] px-4 sm:px-6">
-      <div data-pin className="grid gap-12 py-24 sm:py-32 lg:min-h-svh lg:grid-cols-12 lg:items-center lg:gap-8 lg:py-20">
-        <div className="lg:col-span-5">
-          <h2
-            id="story-title"
-            className="font-serif text-[clamp(2.4rem,4.6vw,3.75rem)] leading-[1] font-normal tracking-[-0.03em] text-ink"
-          >
-            How a wish comes true
-          </h2>
-          <ol className="mt-10 space-y-7">
-            {STEPS.map((step, i) => (
-              <li key={step.title} data-step className="flex gap-5">
-                <span className="w-5 shrink-0 pt-0.5 font-serif text-[22px] leading-7 text-primary tabular">{i + 1}</span>
-                <div>
-                  <h3 className="font-serif text-[21px] leading-7 font-medium text-ink">{step.title}</h3>
-                  <p className="mt-1 max-w-[40ch] text-[15px] leading-6 text-ink-muted">{step.body}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </div>
+    <section ref={scope} aria-labelledby="story-title" className="relative">
+      <div data-pin className="relative lg:min-h-svh">
+        {/* Dawn: shown as-is when the story doesn't pin, risen by step 4 when it does. */}
+        <div
+          data-dawn
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-[70%] bg-[radial-gradient(70%_80%_at_50%_100%,rgba(244,183,64,0.26),rgba(214,128,120,0.10)_45%,transparent_80%)] [mask-image:linear-gradient(180deg,#000_55%,transparent)]"
+        />
+        <div className="relative mx-auto grid max-w-[1280px] gap-14 px-5 py-24 sm:px-10 sm:py-32 lg:min-h-svh lg:grid-cols-12 lg:items-center lg:gap-10 lg:py-20">
+          <div className="lg:col-span-5">
+            <h2
+              id="story-title"
+              className="font-serif text-[clamp(2.5rem,4.8vw,4.25rem)] leading-[1] font-light tracking-[-0.03em] text-balance"
+            >
+              How a wish comes true
+            </h2>
+            <ol className="mt-12 space-y-8">
+              {STEPS.map((step, i) => (
+                <li key={step.title} data-step className="flex gap-5">
+                  <span className="w-5 shrink-0 pt-0.5 font-serif text-[22px] leading-7 text-amber tabular">{i + 1}</span>
+                  <div>
+                    <h3 className="font-serif text-[22px] leading-7">{step.title}</h3>
+                    <p className="mt-1.5 max-w-[42ch] text-[15px] leading-6 text-inverse-ink/65">{step.body}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
 
-        <div className="lg:col-span-7">
-          <div className="rounded-[28px] bg-surface-container p-4 sm:p-10 lg:p-12">
+          <div className="lg:col-span-6 lg:col-start-7">
             <StoryCard />
           </div>
         </div>
@@ -139,7 +149,7 @@ function StoryCard() {
   return (
     <div
       aria-hidden
-      className="card mx-auto max-w-[540px] p-5 shadow-[0_30px_60px_-24px_rgba(29,27,69,0.28)] select-none sm:p-7"
+      className="card mx-auto max-w-[560px] rotate-[-1.5deg] p-5 text-ink shadow-[0_50px_120px_-40px_rgba(244,183,64,0.45),0_30px_60px_-30px_rgba(0,0,0,0.6)] select-none sm:p-8"
     >
       <div className="flex items-center justify-between gap-2">
         <span className="text-caption text-outline">posted just now</span>
@@ -161,7 +171,7 @@ function StoryCard() {
         </span>
       </div>
 
-      <p className="my-3 min-h-[60px] font-serif text-wish-sm text-ink sm:min-h-[72px] sm:text-wish">
+      <p className="my-3 min-h-[60px] font-serif text-wish-sm text-ink italic sm:min-h-[72px] sm:text-wish">
         {WISH.split("").map((c, i) => (
           <span key={i} data-char>
             {c}

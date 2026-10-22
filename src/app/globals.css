@@ -22,6 +22,8 @@
   --color-hairline: #e6e3ec;
   --color-inverse: #2a2856;
   --color-inverse-ink: #f4f2fa;
+  /* The landing sky: deepest at the top, night at the horizon. */
+  --color-midnight: #100f2c;
 
   --color-primary: #835400;
   --color-amber: #f4b740;

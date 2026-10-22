@@ -180,10 +180,11 @@ export function NightSky({ className }: { className?: string }) {
         starMaterial.uniforms.uTime.value = elapsed;
 
         // Ease toward the pointer and drift up a little as the page scrolls.
+        // Gentle, since one sky now stays pinned behind several screens.
         stars.rotation.y += (pointer.x * 0.05 - stars.rotation.y) * 0.04;
         stars.rotation.x += (pointer.y * 0.035 - stars.rotation.x) * 0.04;
         stars.rotation.z += dt * 0.004;
-        camera.position.y = -window.scrollY * 0.012;
+        camera.position.y = -window.scrollY * 0.004;
 
         if (trail.visible) {
           shot.age += dt;
