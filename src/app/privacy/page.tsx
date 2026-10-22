@@ -63,9 +63,10 @@ export default function PrivacyPage() {
             storage so it survives a reload. It never leaves your device until you post it.
           </li>
           <li>
-            <strong>Usage analytics.</strong> PostHog records page views and actions such as posting a wish or tapping
-            share, along with standard request details (browser, device type, approximate location from your IP). It
-            sets no cookies and records no sessions.
+            <strong>Usage analytics.</strong> PostHog records page views, how fast pages load and actions such as posting
+            a wish or tapping share, along with standard request details (browser, device type, approximate location from
+            your IP). It sets no cookies, stores nothing in your browser and records no sessions. To count visitors, it
+            uses a one-way hash of your IP address and browser that changes every day.
           </li>
           <li>
             <strong>Error reports.</strong> When something breaks, Sentry receives the error, the page it happened on and
