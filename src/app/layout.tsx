@@ -9,12 +9,14 @@ import { siteUrl } from "@/lib/site";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
+// Variable, with the optical-size axis: big headlines get Newsreader's
+// high-contrast display cut automatically, small text its sturdier text cut.
 const newsreader = Newsreader({
   subsets: ["latin"],
   variable: "--font-newsreader",
   display: "swap",
   style: ["normal", "italic"],
-  weight: ["400", "500", "600"],
+  axes: ["opsz"],
 });
 
 const description =
