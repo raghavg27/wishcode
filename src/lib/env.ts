@@ -52,13 +52,16 @@ export const env = {
   get turnstileSecretKey() {
     return process.env.TURNSTILE_SECRET_KEY || "";
   },
-  /** Comma-separated GitHub handles that get admin rights on sign-in. */
-  get adminHandles(): Set<string> {
+  /**
+   * Comma-separated numeric GitHub user ids that get admin rights on sign-in.
+   * Ids, not handles: a renamed handle can be registered by someone else.
+   */
+  get adminGithubIds(): Set<number> {
     return new Set(
-      (process.env.ADMIN_GITHUB_HANDLES || "")
+      (process.env.ADMIN_GITHUB_IDS || "")
         .split(",")
-        .map((h) => h.trim().toLowerCase())
-        .filter(Boolean),
+        .map((id) => Number(id.trim()))
+        .filter((id) => Number.isSafeInteger(id) && id > 0),
     );
   },
 };

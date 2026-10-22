@@ -47,7 +47,7 @@ export async function upsertDeveloper(userId: string) {
     p_github_id: identity.githubId,
     p_handle: identity.handle,
     p_avatar_url: identity.avatar,
-    p_is_admin: env.adminHandles.has(identity.handle.toLowerCase()),
+    p_is_admin: env.adminGithubIds.has(identity.githubId),
   });
   if (error) throw error;
   return row as NonNullable<Viewer["developer"]>;

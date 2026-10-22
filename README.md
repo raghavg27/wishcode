@@ -260,7 +260,7 @@ Set these variables in `.env.local` for local development, and in Vercel for dep
 | `GMAIL_APP_PASSWORD` | No | The Google app password for `GMAIL_USER`. |
 | `EMAIL_TOKEN_SECRET` | No | The key that signs the links in emails. The default is `SUPABASE_SECRET_KEY`. |
 | `RATE_LIMIT_SALT` | No | The pepper for the hash of client IP addresses. The default is `SUPABASE_SECRET_KEY`. |
-| `ADMIN_GITHUB_HANDLES` | No | A comma-separated list of GitHub handles. These developers receive admin rights when they sign in. |
+| `ADMIN_GITHUB_IDS` | No | A comma-separated list of numeric GitHub user IDs. These developers receive admin rights when they sign in. To find an ID, open `https://api.github.com/users/<handle>` and use the `id` value. |
 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | No | The public Cloudflare Turnstile site key. |
 | `TURNSTILE_SECRET_KEY` | No | The Cloudflare Turnstile secret key. |
 | `NEXT_PUBLIC_POSTHOG_KEY` | No | The PostHog project key for product analytics. |
@@ -362,7 +362,7 @@ A network is a salted hash of the IP address. Offices, schools and mobile networ
 - Each device can report a wish or a live link one time.
 - Reports do not hide content automatically. They go into a queue at `/admin`. The most reported items are at the top.
 - An admin removes the wish or the link, or dismisses its reports. Admins also see a remove control on each wish and each link.
-- Admin rights come from `ADMIN_GITHUB_HANDLES` at sign-in. Each admin function examines `developers.is_admin` again. For all other users, `/admin` returns 404.
+- Admin rights come from `ADMIN_GITHUB_IDS` at sign-in. The list uses GitHub IDs, not handles, because another person can register a handle after a rename. Each admin function examines `developers.is_admin` again. For all other users, `/admin` returns 404.
 
 ### Email delivery
 

@@ -52,6 +52,25 @@ describe("upsertDeveloper", () => {
     expect(rpc).toHaveBeenCalledWith("upsert_developer", expect.objectContaining({ p_github_id: 1001, p_handle: "alice" }));
   });
 
+  it("grants admin by GitHub id, never by handle", async () => {
+    vi.stubEnv("ADMIN_GITHUB_IDS", "1001");
+    rpc.mockResolvedValue({ data: {}, error: null });
+    const signIn = (handle: string, id: string) =>
+      getUserById.mockResolvedValue({
+        data: { user: { identities: [{ provider: "github", identity_data: { user_name: handle, provider_id: id } }] } },
+        error: null,
+      });
+
+    signIn("alice", "1001");
+    await upsertDeveloper("u1");
+    // Someone who registered the admin's old handle.
+    signIn("alice", "2002");
+    await upsertDeveloper("u3");
+
+    expect(rpc.mock.calls.map(([, args]) => args.p_is_admin)).toEqual([true, false]);
+    vi.unstubAllEnvs();
+  });
+
   it("never makes a developer of an auth user with no GitHub identity", async () => {
     getUserById.mockResolvedValue({
       data: {
