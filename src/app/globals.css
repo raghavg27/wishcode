@@ -154,7 +154,23 @@
   box-shadow: var(--shadow-card);
 }
 
+/* Landing intro: hidden until its script reveals it, or shown after 2.5s if
+   the script never runs. */
+[data-intro] {
+  opacity: 0;
+  animation: intro-fallback 0s 2.5s forwards;
+}
+@keyframes intro-fallback {
+  to {
+    opacity: 1;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  [data-intro] {
+    opacity: 1;
+    animation: none;
+  }
   *,
   *::before,
   *::after {
