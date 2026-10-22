@@ -64,7 +64,7 @@ export function SiteHeader() {
             <HeaderAuth />
           </Suspense>
           <Link
-            href="/#compose"
+            href="/wishes#compose"
             className="inline-flex items-center gap-1 rounded-lg bg-amber px-3.5 py-2 text-label font-semibold text-on-amber shadow-[0_1px_2px_rgba(29,27,69,0.08)] transition-colors hover:bg-amber-hover sm:px-4"
           >
             <Plus className="size-[18px]" aria-hidden />

@@ -26,7 +26,7 @@ export default function LoginPage({ searchParams }: PageProps<"/login">) {
     <main className="flex flex-1 items-start justify-center px-4 py-10 sm:py-20">
       <div className="w-full max-w-[560px]">
         <div className="mb-4 flex items-center justify-between">
-          <Link href="/" className="inline-flex items-center gap-2 text-label font-medium text-ink-muted hover:text-ink">
+          <Link href="/wishes" className="inline-flex items-center gap-2 text-label font-medium text-ink-muted hover:text-ink">
             <ArrowLeft className="size-4" aria-hidden /> All wishes
           </Link>
         </div>
@@ -51,7 +51,7 @@ export default function LoginPage({ searchParams }: PageProps<"/login">) {
             <Heart className="mt-1 size-5 shrink-0 text-primary" aria-hidden />
             <span>
               Just here to wish? Posting and me-too never need an account.{" "}
-              <Link href="/" className="font-medium text-primary underline underline-offset-2">
+              <Link href="/wishes" className="font-medium text-primary underline underline-offset-2">
                 Back to the wishes →
               </Link>
             </span>

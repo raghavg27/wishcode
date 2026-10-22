@@ -71,7 +71,7 @@ export default function PrinciplesPage() {
         </div>
       </section>
       <div className="mt-10 flex flex-wrap gap-3">
-        <Link href="/#compose" className="rounded-lg bg-amber px-5 py-2.5 text-label font-semibold text-on-amber hover:bg-amber-hover">
+        <Link href="/wishes#compose" className="rounded-lg bg-amber px-5 py-2.5 text-label font-semibold text-on-amber hover:bg-amber-hover">
           Make a wish
         </Link>
         <Link href="/login" className="rounded-lg bg-surface-low px-5 py-2.5 text-label font-medium text-ink hover:bg-surface-container">

@@ -16,7 +16,7 @@ function href(status: StatusFilter, sort: Sort) {
   if (status !== "all") params.set("status", status);
   if (sort !== "newest") params.set("sort", sort);
   const qs = params.toString();
-  return qs ? `/?${qs}` : "/";
+  return qs ? `/wishes?${qs}` : "/wishes";
 }
 
 export function LedgerFilters({ status, sort, counts }: { status: StatusFilter; sort: Sort; counts?: LedgerStats["counts"] }) {

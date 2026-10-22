@@ -21,27 +21,27 @@ const COPY: Record<NotFoundKind, Copy> = {
     reference: "/????",
     title: "I looked everywhere. Nothing here.",
     body: "The link might have a typo, or the page never existed.",
-    primary: { href: "/", label: "Back to all wishes" },
+    primary: { href: "/wishes", label: "Back to all wishes" },
   },
   wish: {
     reference: "#WISH-????",
     title: "No wish at this address",
     body: "Check the link for a typo. If nobody has wished for it yet, you can be the first. It takes one sentence and no account.",
-    primary: { href: "/#compose", label: "Make a wish" },
-    secondary: { href: "/", label: "Browse wishes" },
+    primary: { href: "/wishes#compose", label: "Make a wish" },
+    secondary: { href: "/wishes", label: "Browse wishes" },
   },
   developer: {
     reference: "@????",
     title: "No developer by that handle",
     body: "Profiles appear once a developer connects GitHub. If they changed their GitHub handle, their profile moved with it.",
     primary: { href: "/developers", label: "See all builders" },
-    secondary: { href: "/", label: "Back to all wishes" },
+    secondary: { href: "/wishes", label: "Back to all wishes" },
   },
   share: {
     reference: "/w/…/by",
     title: "This share link no longer works",
     body: "The build it pointed to was removed or flagged, or the wish hasn't been confirmed as come true yet.",
-    primary: { href: "/", label: "Browse wishes" },
+    primary: { href: "/wishes", label: "Browse wishes" },
   },
 };
 

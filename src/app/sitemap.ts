@@ -5,7 +5,8 @@ import { developerPath, siteUrl, wishPath } from "@/lib/site";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = siteUrl();
   const staticPages: MetadataRoute.Sitemap = [
-    { url: `${base}/`, changeFrequency: "hourly", priority: 1 },
+    { url: `${base}/`, changeFrequency: "daily", priority: 1 },
+    { url: `${base}/wishes`, changeFrequency: "hourly", priority: 0.9 },
     { url: `${base}/principles`, changeFrequency: "monthly", priority: 0.3 },
     { url: `${base}/developers`, changeFrequency: "daily", priority: 0.5 },
   ];

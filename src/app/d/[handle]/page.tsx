@@ -70,7 +70,7 @@ async function Profile({ params, searchParams }: PageProps<"/d/[handle]">) {
             <EmptyState
               doodle={StickyNote}
               title={filter === "first" ? "Not first to ship on anything yet. Give it time." : "Nothing shipped yet. Give it time."}
-              action={isSelf ? { href: "/?status=open&sort=top", label: "Find a wish to build" } : undefined}
+              action={isSelf ? { href: "/wishes?status=open&sort=top", label: "Find a wish to build" } : undefined}
             />
           ) : (
             <ul className="flex flex-col gap-4">

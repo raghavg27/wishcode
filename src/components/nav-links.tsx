@@ -6,8 +6,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const LINKS = [
-  { href: "/", label: "Wishes", match: (p: string) => p === "/" },
-  { href: "/?status=fulfilled", label: "Fulfilled", match: () => false },
+  { href: "/wishes", label: "Wishes", match: (p: string) => p === "/wishes" },
+  { href: "/wishes?status=fulfilled", label: "Fulfilled", match: () => false },
   { href: "/principles", label: "Principles", match: (p: string) => p.startsWith("/principles") },
 ];
 
@@ -37,8 +37,8 @@ export function NavLinksView({ pathname }: { pathname: string }) {
 }
 
 const MOBILE = [
-  { href: "/", label: "Wishes", icon: Layers, match: (p: string) => p === "/" },
-  { href: "/?status=being_built", label: "Building", icon: Hammer, match: () => false },
+  { href: "/wishes", label: "Wishes", icon: Layers, match: (p: string) => p === "/wishes" },
+  { href: "/wishes?status=being_built", label: "Building", icon: Hammer, match: () => false },
   { href: "/developers", label: "Builders", icon: Users, match: (p: string) => p.startsWith("/developers") || p.startsWith("/d/") },
   { href: "/principles", label: "Principles", icon: ScrollText, match: (p: string) => p.startsWith("/principles") },
 ];

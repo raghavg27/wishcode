@@ -31,6 +31,15 @@ const nextConfig: NextConfig = {
     "/api/og/wish/[id]/came-true": ["./assets/fonts/**"],
     "/api/og/link/[linkId]": ["./assets/fonts/**"],
   },
+  // The wishes feed lived at / before the landing page; keep its filter links working.
+  async redirects() {
+    return ["status", "sort"].map((key) => ({
+      source: "/",
+      has: [{ type: "query" as const, key }],
+      destination: "/wishes",
+      permanent: false,
+    }));
+  },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },

@@ -18,7 +18,7 @@ export function EmailNotice({
   eyebrow,
   title,
   body,
-  href = "/",
+  href = "/wishes",
   cta = "Back to all wishes",
 }: {
   eyebrow?: string;

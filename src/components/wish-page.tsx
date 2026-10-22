@@ -184,7 +184,7 @@ async function WishView({
       )}
 
       <div className="mb-6 flex items-center justify-between">
-        <Link href="/" className="inline-flex items-center gap-2 text-label font-medium text-ink-muted hover:text-ink">
+        <Link href="/wishes" className="inline-flex items-center gap-2 text-label font-medium text-ink-muted hover:text-ink">
           <ArrowLeft className="size-4" aria-hidden /> All wishes
         </Link>
         <span className="font-mono text-label-sm text-outline">{wishLabel(wish.id)}</span>

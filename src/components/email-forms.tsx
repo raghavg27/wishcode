@@ -96,7 +96,7 @@ function Outcome({ title, body, wishHref }: { title: string; body?: string; wish
     <div className="mt-8 rounded-xl bg-surface-low p-5" role="status">
       <p className="text-label font-semibold text-ink">{title}</p>
       {body && <p className="mt-1 text-label text-ink-muted">{body}</p>}
-      <Link href={wishHref ?? "/"} className={`${buttonStyles.quiet} mt-4 bg-surface-container`}>
+      <Link href={wishHref ?? "/wishes"} className={`${buttonStyles.quiet} mt-4 bg-surface-container`}>
         {wishHref ? "See the wish" : "Back to all wishes"}
       </Link>
     </div>

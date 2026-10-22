@@ -20,7 +20,7 @@ export default function ErrorPage({ error, reset }: { error: Error & { digest?: 
           <button type="button" onClick={reset} className={buttonStyles.amber}>
             <RotateCcw className="size-4" aria-hidden /> Try again
           </button>
-          <Link href="/" className={buttonStyles.quiet}>
+          <Link href="/wishes" className={buttonStyles.quiet}>
             Back to all wishes
           </Link>
         </div>

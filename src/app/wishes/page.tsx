@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { Composer } from "@/components/composer";
 import { LedgerFilters } from "@/components/ledger-filters";
@@ -7,7 +8,12 @@ import { LedgerNote, Skeleton } from "@/components/ui";
 import { parseSort, parseStatus } from "@/lib/config";
 import { getLedgerPage, getLiveMetoos, getStats, withLiveCounts } from "@/lib/data";
 
-export default function LedgerPage({ searchParams }: PageProps<"/">) {
+export const metadata: Metadata = {
+  title: "All wishes",
+  alternates: { canonical: "/wishes" },
+};
+
+export default function LedgerPage({ searchParams }: PageProps<"/wishes">) {
   return (
     <main className="mx-auto w-full max-w-[1120px] px-4 py-6 sm:py-8">
       <h1 className="sr-only">Wishcode: post an app you wish existed</h1>
@@ -31,7 +37,7 @@ export default function LedgerPage({ searchParams }: PageProps<"/">) {
   );
 }
 
-async function Feed({ searchParams }: Pick<PageProps<"/">, "searchParams">) {
+async function Feed({ searchParams }: Pick<PageProps<"/wishes">, "searchParams">) {
   const params = await searchParams;
   const status = parseStatus(params.status);
   const sort = parseSort(params.sort);
