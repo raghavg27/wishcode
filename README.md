@@ -82,7 +82,7 @@ Visitors post wishes without an account. Thus, Wishcode keeps very little data, 
 - Any visitor can report a wish or a link.
 - Reports do not hide content automatically. The admin examines each report and removes the content or dismisses the report.
 
-Wishcode uses PostHog for product analytics. For the full details, read the [privacy policy](https://wishcode-ai.vercel.app/privacy) and the [terms of use](https://wishcode-ai.vercel.app/terms).
+Wishcode uses PostHog for product analytics and Sentry for error tracking. For the full details, read the [privacy policy](https://wishcode-ai.vercel.app/privacy) and the [terms of use](https://wishcode-ai.vercel.app/terms).
 
 ### Report a vulnerability
 

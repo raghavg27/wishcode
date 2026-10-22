@@ -18,6 +18,7 @@ This document tells you how to run your own copy of Wishcode. It also tells you 
 | Email | Gmail SMTP through Nodemailer |
 | Bot check | [Cloudflare Turnstile](https://developers.cloudflare.com/turnstile/) |
 | Analytics | [PostHog](https://posthog.com) |
+| Error tracking | [Sentry](https://sentry.io) |
 | Landing page | three.js, GSAP and Lenis |
 | Tests | Vitest and an SQL smoke test |
 | Hosting | [Vercel](https://vercel.com) |
@@ -218,6 +219,10 @@ Set these variables in `.env.local` for local development, and in Vercel for dep
 | `TURNSTILE_SECRET_KEY` | No | The Cloudflare Turnstile secret key. |
 | `NEXT_PUBLIC_POSTHOG_KEY` | No | The PostHog project key for product analytics. |
 | `NEXT_PUBLIC_POSTHOG_HOST` | No | The PostHog host. The default is `https://us.i.posthog.com`. |
+| `NEXT_PUBLIC_SENTRY_DSN` | No | The Sentry project DSN. Production builds then report errors from the browser and the server. Browser events go through the `/monitoring` route. |
+| `SENTRY_AUTH_TOKEN` | No | A Sentry organization auth token. With `SENTRY_ORG` and `SENTRY_PROJECT`, production builds upload source maps. Keep it on the server. |
+| `SENTRY_ORG` | No | The Sentry organization slug. |
+| `SENTRY_PROJECT` | No | The Sentry project slug. |
 
 ## Commands
 
