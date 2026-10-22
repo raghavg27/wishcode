@@ -4,7 +4,7 @@ import { ArrowLeft, ArrowRight, Copy, Hand, Info, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { Modal } from "@/components/modal";
 import { StatusChip, buttonStyles } from "@/components/ui";
-import { formatNumber, pluralize } from "@/lib/format";
+import { pluralize } from "@/lib/format";
 import { wishPath } from "@/lib/site";
 import type { SimilarWish } from "@/lib/types";
 
@@ -57,7 +57,7 @@ export function DuplicateModal({ open, typed, similar, busy, onClose, onMetoo, o
               <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-label text-ink-muted">
                 <StatusChip status={w.status} verified={w.verified} />
                 <span className="inline-flex items-center gap-1 font-semibold text-ink tabular">
-                  <Hand className="size-4 text-primary" aria-hidden /> {formatNumber(w.metoo_count)} me-toos
+                  <Hand className="size-4 text-primary" aria-hidden /> {pluralize(w.metoo_count, "me-too")}
                 </span>
                 {meta(w) && <span>· {meta(w)}</span>}
               </div>

@@ -53,7 +53,7 @@ async function Directory() {
             <Avatar dev={d} size={40} />
             <span className="min-w-0 flex-1 truncate text-[15px] font-medium text-ink">@{d.handle}</span>
             <span className="text-label text-ink-muted tabular">
-              <strong className="text-ink">{formatNumber(d.links)}</strong> links · <strong className="text-ink">{formatNumber(d.building)}</strong> building
+              <strong className="text-ink">{formatNumber(d.links)}</strong> {d.links === 1 ? "link" : "links"} · <strong className="text-ink">{formatNumber(d.building)}</strong> building
             </span>
           </Link>
         </li>

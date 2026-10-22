@@ -13,7 +13,7 @@ import { EXTERNAL_REL } from "@/components/wish-card";
 import { getViewer } from "@/lib/auth";
 import { getDeveloperProfile } from "@/lib/data";
 import { developerShare } from "@/lib/share-copy";
-import { domainOf, formatDate, formatNumber, repoLabel } from "@/lib/format";
+import { domainOf, formatDate, formatNumber, pluralize, repoLabel } from "@/lib/format";
 import { GITHUB_HANDLE, developerPath, wishPath } from "@/lib/site";
 import type { DeveloperProfile } from "@/lib/types";
 
@@ -86,7 +86,7 @@ async function Profile({ params, searchParams }: PageProps<"/d/[handle]">) {
                       )}
                     </div>
                     <span className="inline-flex items-center gap-1 rounded-full border border-hairline px-2.5 py-0.5 text-label-sm text-ink-muted tabular">
-                      <Hand className="size-3.5" aria-hidden /> {formatNumber(l.wish.metoo_count)} me-toos
+                      <Hand className="size-3.5" aria-hidden /> {pluralize(l.wish.metoo_count, "me-too")}
                     </span>
                   </div>
                   <h3 className="mt-3 font-serif text-wish-sm text-ink sm:text-wish">
@@ -160,7 +160,7 @@ async function Profile({ params, searchParams }: PageProps<"/d/[handle]">) {
               <article key={c.wish.id} className="card p-4">
                 <div className="flex items-center justify-between text-label-sm text-ink-muted">
                   <span className="flex items-center gap-1 tabular">
-                    <Hand className="size-3.5" aria-hidden /> {formatNumber(c.wish.metoo_count)} me-toos
+                    <Hand className="size-3.5" aria-hidden /> {pluralize(c.wish.metoo_count, "me-too")}
                   </span>
                   <TimeAgo iso={c.created_at} prefix="Claimed" className="flex items-center gap-1" />
                 </div>
@@ -206,7 +206,7 @@ function ProfileHeader({ profile }: { profile: DeveloperProfile }) {
               <CalendarDays className="size-3.5" aria-hidden /> Joined {formatDate(profile.joined_at)}
             </span>
             <span className="flex items-center gap-1">
-              <Clock className="size-3.5" aria-hidden /> {formatNumber(profile.stats.links + profile.stats.building)} public contributions
+              <Clock className="size-3.5" aria-hidden /> {pluralize(profile.stats.links + profile.stats.building, "public contribution")}
             </span>
           </p>
         </div>
