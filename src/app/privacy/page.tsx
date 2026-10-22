@@ -69,8 +69,8 @@ export default function PrivacyPage() {
             uses a one-way hash of your IP address and browser that changes every day.
           </li>
           <li>
-            <strong>Error reports.</strong> When something breaks, Sentry receives the error, the page it happened on and
-            your browser and device type. It sets no cookies and records no sessions.
+            <strong>Error reports.</strong> When something breaks, Sentry receives the error, the page it happened on, your
+            browser and device type, and your IP address. It sets no cookies and records no sessions.
           </li>
         </ul>
         <p>I don&apos;t use advertising cookies, sell your data, or share it with advertisers.</p>
