@@ -89,6 +89,20 @@ export type Viewer = {
   developer: (DeveloperRef & { is_admin: boolean }) | null;
 };
 
+/** One reported wish or link on /admin, with its open reports. */
+export type ReportQueueItem = {
+  wish_id: number;
+  wish_text: string;
+  wish_created_at: string;
+  /** Null when the reports are about the wish itself. */
+  link: (Pick<WishLink, "id" | "url" | "description" | "repo_url"> & { developer: DeveloperRef }) | null;
+  report_count: number;
+  /** reason -> number of reports */
+  reasons: Record<string, number>;
+  first_reported_at: string;
+  last_reported_at: string;
+};
+
 export type FeedPage = {
   items: WishCard[];
   nextCursor: string | null;

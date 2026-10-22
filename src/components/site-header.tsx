@@ -1,4 +1,4 @@
-import { Code, LogOut, Plus } from "lucide-react";
+import { Code, Flag, LogOut, Plus } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 import { signOut } from "@/app/actions";
@@ -26,6 +26,16 @@ async function HeaderAuth() {
   if (!developer) return <ConnectLink />;
   return (
     <div className="flex items-center gap-1">
+      {developer.is_admin && (
+        <Link
+          href="/admin"
+          aria-label="Reports"
+          title="Reports"
+          className="flex size-8 items-center justify-center rounded-full text-outline hover:bg-surface-low hover:text-ink"
+        >
+          <Flag className="size-4" />
+        </Link>
+      )}
       <Link
         href={developerPath(developer.handle)}
         className="flex items-center gap-2 rounded-full py-1 pr-3 pl-1 text-label-sm font-medium text-ink hover:bg-surface-low"

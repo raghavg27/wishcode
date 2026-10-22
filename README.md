@@ -90,6 +90,7 @@ Browser ──(Server Actions / GET)──▶ Next.js on Vercel ──(service r
 - **Verdicts.** The wisher and devices that me-too'd a wish vote on whether each link works (`verdicts`). A trigger recomputes the link's `verdict`: the wisher's vote decides, otherwise 3 votes verify or flag it (a tie flags). Status counts only live (not flagged) links; `wishes.verified` drives the **Fulfilled ✓** vs **Fulfilled · unverified** badge. Taking back a me-too deletes that device's votes and ends its email subscription.
 - **Emails.** `postLink` schedules `notifyLinkPosted` with `after()`, so it runs once the response is sent. It reads recipients from `link_notification` (the only function that returns addresses), builds each email with `buildLinkEmail` and sends them one by one through `src/lib/mailer.ts`. Links in emails carry `<subscriptionId>.<HMAC>`; nothing is stored for them.
 - **Rate limits** are atomic fixed-window counters inside the same transaction as the write. Daily windows reset at midnight UTC: 2 wishes and 100 me-toos per device, 20 wishes and 1,000 me-toos per network (salted IP hash; shared IPs get a looser backstop), 5 claims and 20 links per developer, and 20 new email subscriptions per device (100 per network). Duplicate checks are capped at 60 per IP per hour. Values live in `LIMITS` in `src/lib/config.ts`. An over-limit write rolls back completely.
+- **Reports and moderation.** Anyone can report a wish or a live link (one report per device per target, 20 per device and 200 per network a day). Nothing is hidden automatically: reports queue on `/admin`, most reported first, where an admin removes the wish or link or dismisses its reports. Admins also get a remove control on every wish and link. Admin rights come from `ADMIN_GITHUB_HANDLES` on sign-in, and every admin RPC checks `developers.is_admin` itself; `/admin` is a 404 for everyone else.
 - **Duplicate suggestions.** The `embed` Edge Function returns a 384-dim `gte-small` embedding (4 s timeout), matched against an HNSW index at cosine ≥ 0.89. Wishes without an embedding yet are matched by `pg_trgm`. If the function isn't configured or fails, matching falls back to `pg_trgm` entirely, and posting is never blocked. Embedding calls are capped per IP.
 - **Caching.** Public reads (feed pages, wish detail, stats, profiles) use `"use cache"` with tags. Writes call `updateTag`, so wishes, claims, links and the sidebar stats show up immediately. Me-toos don't invalidate the feed or wish caches. Instead, every page reads its wishes' current counts and the viewer's own me-toos in one uncached primary-key lookup (`live_metoos`) and overlays them, so counts are live while the cached entries stay warm. Pages are partially prerendered: the static shell is served instantly and data streams in.
 - **404s.** Because pages stream, their status is committed before they can call `notFound()`. `src/proxy.ts` checks `/w/:id` and `/d/:handle` page loads against `page_exists` (memoised per instance), and the share URLs below against the wish's links, and rewrites misses to an unmatched path, so they return a real 404 with the right copy.
@@ -99,7 +100,7 @@ Browser ──(Server Actions / GET)──▶ Next.js on Vercel ──(service r
 
 ## API
 
-Mutations are Server Actions (`src/app/actions.ts`): `postWish`, `setMetoo`, `setClaim`, `postLink`, `removeLink`, `setVerdict`, `subscribe`, and, from email links, `emailVerdict` and `unsubscribe`. Next.js enforces same-origin requests for them. Public JSON endpoints:
+Mutations are Server Actions (`src/app/actions.ts`): `postWish`, `setMetoo`, `setClaim`, `postLink`, `removeLink`, `setVerdict`, `subscribe`, `report`, the admin-only `moderate`, and, from email links, `emailVerdict` and `unsubscribe`. Next.js enforces same-origin requests for them. Public JSON endpoints:
 
 | Route | Purpose |
 | --- | --- |
@@ -111,6 +112,3 @@ Mutations are Server Actions (`src/app/actions.ts`): `postWish`, `setMetoo`, `se
 | `GET /api/og/wish/:id/came-true` | Wisher share card PNG (404 until the wisher confirms a link) |
 | `POST /e/unsubscribe?t=` | RFC 8058 one-click unsubscribe (handled by `/api/unsubscribe`) |
 
-## Not built yet
-
-The admin screens (`/admin`) are deferred. The database side exists already: `admin_delete_wish` and admin link removal via `remove_link`, gated by `developers.is_admin`, which is set from `ADMIN_GITHUB_HANDLES` on sign-in.

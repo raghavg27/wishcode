@@ -1,7 +1,7 @@
 import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import { connection } from "next/server";
-import { FEED_PAGE_SIZE, type Sort, type StatusFilter } from "@/lib/config";
+import { FEED_PAGE_SIZE, REPORT_QUEUE_SIZE, type Sort, type StatusFilter } from "@/lib/config";
 import { decodeCursor, encodeCursor } from "@/lib/cursor";
 import { readDeviceHash } from "@/lib/identity";
 import { db } from "@/lib/supabase/admin";
@@ -10,6 +10,7 @@ import type {
   DirectoryEntry,
   FeedPage,
   LedgerStats,
+  ReportQueueItem,
   ViewerWishState,
   WishCard,
   WishDetail,
@@ -175,6 +176,14 @@ export async function isWisherSubscription(subscriptionId: number): Promise<bool
   const wish = data?.wish as { device_id: number } | { device_id: number }[] | undefined;
   const wishDevice = Array.isArray(wish) ? wish[0]?.device_id : wish?.device_id;
   return data != null && wishDevice === data.device_id;
+}
+
+/** Open reports for /admin. Never cached; the RPC checks the caller is an admin. */
+export async function getReportQueue(developerId: string): Promise<ReportQueueItem[]> {
+  await connection();
+  const { data, error } = await db().rpc("admin_report_queue", { p_developer_id: developerId, p_limit: REPORT_QUEUE_SIZE });
+  if (error) throw error;
+  return (data ?? []) as ReportQueueItem[];
 }
 
 /** Overlays live me-too counts onto cached wishes. */
