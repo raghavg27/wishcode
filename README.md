@@ -447,17 +447,12 @@ wishcode/
 │   ├── migrations/     # Database schema, triggers and functions
 │   ├── functions/embed # Embeddings Edge Function (gte-small)
 │   └── tests/smoke.sql # SQL smoke test
-├── assets/fonts/       # Fonts for the share cards
-├── design/             # Screen designs and the interactive prototype
-└── docs/               # Design specifications
+└── assets/fonts/       # Fonts for the share cards
 ```
 
 ## Documentation
 
-- [Product and technical specification (v1)](Wishcode%20%E2%80%94%20v1%20PRD%2C%20TRD%20%26%20App%20Flow.md): the PRD, the TRD and the app flow.
 - [Supabase integration](supabase.md): how the app connects to Supabase.
-- [Design files](design/): the screen designs and the interactive prototype.
-- [Design specifications](docs/superpowers/specs/): the design decisions for each feature.
 
 ## Support
 
