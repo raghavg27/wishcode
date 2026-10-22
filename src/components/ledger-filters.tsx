@@ -32,7 +32,7 @@ export function LedgerFilters({ status, sort, counts }: { status: StatusFilter; 
               scroll={false}
               aria-current={active ? "page" : undefined}
               className={clsx(
-                "flex shrink-0 items-center gap-1.5 rounded-lg px-3.5 py-1.5 text-label font-medium whitespace-nowrap transition-all",
+                "flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-label sm:px-3.5 font-medium whitespace-nowrap transition-all",
                 active ? "bg-surface-lowest text-ink shadow-sm" : "text-ink-muted hover:text-ink",
               )}
             >
