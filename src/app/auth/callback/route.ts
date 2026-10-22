@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const developer = await upsertDeveloper(data.user.id, data.user.user_metadata);
+    const developer = await upsertDeveloper(data.user.id);
     if (!developer) {
       await supabase.auth.signOut();
       return fail("not_github");

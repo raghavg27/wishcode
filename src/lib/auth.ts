@@ -1,5 +1,6 @@
 import "server-only";
 import { cache } from "react";
+import type { UserIdentity } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import { connection } from "next/server";
 import { env } from "@/lib/env";
@@ -8,7 +9,7 @@ import { db } from "@/lib/supabase/admin";
 import { createAuthClient } from "@/lib/supabase/server";
 import type { Viewer } from "@/lib/types";
 
-type GithubMetadata = {
+type GithubIdentityData = {
   user_name?: string;
   preferred_username?: string;
   avatar_url?: string;
@@ -16,20 +17,32 @@ type GithubMetadata = {
   sub?: string;
 };
 
-/** Extracts the GitHub identity Supabase stores in user_metadata. */
-export function githubIdentity(meta: GithubMetadata | undefined) {
-  const handle = meta?.user_name || meta?.preferred_username;
-  const githubId = Number(meta?.provider_id || meta?.sub);
+/**
+ * The GitHub account behind a Supabase Auth identity. Reads identity_data,
+ * which Supabase Auth fills from GitHub at sign-in. Never user_metadata: its
+ * owner can rewrite it (auth.updateUser), so it can't say who someone is.
+ */
+export function githubIdentity(identity: Pick<UserIdentity, "provider" | "identity_data"> | undefined) {
+  if (identity?.provider !== "github") return null;
+  const data = identity.identity_data as GithubIdentityData | undefined;
+  const handle = data?.user_name || data?.preferred_username;
+  const githubId = Number(data?.provider_id || data?.sub);
   if (!handle || !GITHUB_HANDLE.test(handle) || !Number.isSafeInteger(githubId) || githubId <= 0) return null;
-  const avatar = meta?.avatar_url?.startsWith("https://") ? meta.avatar_url : null;
+  const avatar = data?.avatar_url?.startsWith("https://") ? data.avatar_url : null;
   return { handle, githubId, avatar };
 }
 
-/** Creates or refreshes the developers row for a signed-in GitHub user. */
-export async function upsertDeveloper(userId: string, meta: GithubMetadata | undefined) {
-  const identity = githubIdentity(meta);
+/**
+ * Creates or refreshes the developers row for a signed-in GitHub user, or
+ * returns null when the auth user has no GitHub identity (e.g. an email
+ * sign-up): only GitHub accounts become developers.
+ */
+export async function upsertDeveloper(userId: string) {
+  const { data, error: userError } = await db().auth.admin.getUserById(userId);
+  if (userError) throw userError;
+  const identity = githubIdentity(data.user?.identities?.find((i) => i.provider === "github"));
   if (!identity) return null;
-  const { data, error } = await db().rpc("upsert_developer", {
+  const { data: row, error } = await db().rpc("upsert_developer", {
     p_id: userId,
     p_github_id: identity.githubId,
     p_handle: identity.handle,
@@ -37,7 +50,7 @@ export async function upsertDeveloper(userId: string, meta: GithubMetadata | und
     p_is_admin: env.adminHandles.has(identity.handle.toLowerCase()),
   });
   if (error) throw error;
-  return data as NonNullable<Viewer["developer"]>;
+  return row as NonNullable<Viewer["developer"]>;
 }
 
 /**
@@ -69,6 +82,6 @@ export const getViewer = cache(async (): Promise<Viewer> => {
     };
   }
   // Session exists but the callback never created the row (e.g. it failed).
-  const created = await upsertDeveloper(claims.sub, claims.user_metadata as GithubMetadata);
+  const created = await upsertDeveloper(claims.sub);
   return { developer: created };
 });

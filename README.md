@@ -136,7 +136,7 @@ Only developers sign in. Wishers and me-too visitors do not sign in.
 > [!IMPORTANT]
 > Keep the `**` at the end of each redirect URL. The callback has a `?next=…` query, and Supabase compares the full URL. If the URL does not agree with an entry, Supabase sends the user to the Site URL. Then the user lands on `/?code=…` and is not signed in.
 
-8. Disable the Email provider. The app does not use it. This step is not necessary.
+8. Disable the Email provider and **Allow anonymous sign-ins**. The app does not use them. Only accounts with a GitHub identity become developers, but do not keep other sign-in methods open.
 
 ### Step 4: Set the environment variables
 
