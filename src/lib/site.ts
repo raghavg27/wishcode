@@ -7,6 +7,9 @@ export function siteUrl(): string {
   return "http://localhost:3000";
 }
 
+/** Where people can chip in for hosting. */
+export const SUPPORT_URL = "https://buymeacoffee.com/raghavg27";
+
 export function wishPath(id: number | string) {
   return `/w/${id}`;
 }

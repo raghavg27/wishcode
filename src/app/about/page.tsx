@@ -2,6 +2,7 @@ import { Mail } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { OPERATOR } from "@/lib/legal";
+import { SUPPORT_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "About",
@@ -9,7 +10,6 @@ export const metadata: Metadata = {
 };
 
 const FEEDBACK_EMAIL = "raghavg2705@gmail.com";
-const SUPPORT_URL = "https://buymeacoffee.com/raghavg27";
 
 export default function AboutPage() {
   return (
@@ -38,11 +38,11 @@ export default function AboutPage() {
       </section>
       <p className="mt-12 font-serif text-[22px] leading-8 text-ink">Made in India ☺️, for the world ❤️</p>
       <p className="mt-2 text-[15px] leading-6 text-ink-muted">
-        Wishcode is free, and I keep it running myself. If it&apos;s been useful to you, you can{" "}
+        Wishcode is free, and I keep it running myself. If you like it or it&apos;s been useful to you, you can{" "}
         <a href={SUPPORT_URL} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-ink">
-          buy me a coffee
-        </a>{" "}
-        ☕
+          buy me a coffee ☕ or a mansion 🏠
+        </a>
+        .
       </p>
       <section className="card mt-10 p-6">
         <h2 className="font-serif text-headline font-semibold text-ink">Get in touch</h2>
