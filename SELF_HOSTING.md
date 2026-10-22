@@ -199,6 +199,27 @@ Behavior:
 - If the server cannot connect to Cloudflare, the check passes. The server writes `[turnstile] siteverify` to the log. A Cloudflare outage does not stop posting.
 - For local tests, Cloudflare gives [test keys](https://developers.cloudflare.com/turnstile/troubleshooting/testing/) that always pass or always fail.
 
+### Step 9: Add analytics and error tracking (not necessary)
+
+[PostHog](https://posthog.com) counts visitors, where they come from and what they do. [Sentry](https://sentry.io) reports errors from the browser and the server.
+
+> [!CAUTION]
+> Wishcode uses PostHog's cookieless mode. Turn it on in the PostHog project, or PostHog drops every event.
+
+1. In PostHog, create a project. Copy the project API key.
+2. In the project settings, turn on **cookieless server hash mode**.
+3. Set `NEXT_PUBLIC_POSTHOG_KEY` in Vercel. For a PostHog project in the EU, also set `NEXT_PUBLIC_POSTHOG_HOST` to `https://eu.i.posthog.com`.
+4. In Sentry, create a Next.js project. Copy the DSN, and set `NEXT_PUBLIC_SENTRY_DSN` in Vercel.
+5. For readable stack traces, create a Sentry organization auth token. Set `SENTRY_AUTH_TOKEN`, `SENTRY_ORG` and `SENTRY_PROJECT` in Vercel.
+6. Deploy again. The build puts the keys into the page code, so a new build is necessary.
+
+Behavior:
+
+- PostHog sets no cookies and stores nothing in the browser. It counts unique visitors with a hash of the IP address and browser that changes every day. A visitor who comes back on another day counts again.
+- Analytics go to `/relay` on your own domain, and `src/proxy.ts` forwards them to PostHog without the visitor's cookies. Thus, ad blockers do not drop them. Sentry events go to `/monitoring` in the same way.
+- Sentry reports only from production builds. `pnpm dev` sends nothing.
+- PostHog does not capture errors or record sessions. Errors go to Sentry.
+
 ## Configuration
 
 Set these variables in `.env.local` for local development, and in Vercel for deployment. The template is [`.env.example`](.env.example).
@@ -217,8 +238,8 @@ Set these variables in `.env.local` for local development, and in Vercel for dep
 | `ADMIN_GITHUB_IDS` | No | A comma-separated list of numeric GitHub user IDs. These developers receive admin rights when they sign in. To find an ID, open `https://api.github.com/users/<handle>` and use the `id` value. |
 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | No | The public Cloudflare Turnstile site key. |
 | `TURNSTILE_SECRET_KEY` | No | The Cloudflare Turnstile secret key. |
-| `NEXT_PUBLIC_POSTHOG_KEY` | No | The PostHog project key for product analytics. |
-| `NEXT_PUBLIC_POSTHOG_HOST` | No | The PostHog host. The default is `https://us.i.posthog.com`. |
+| `NEXT_PUBLIC_POSTHOG_KEY` | No | The PostHog project key for analytics. The project must have cookieless mode turned on. |
+| `NEXT_PUBLIC_POSTHOG_HOST` | No | The PostHog host that `/relay` forwards to. The default is `https://us.i.posthog.com`. For the EU, use `https://eu.i.posthog.com`. |
 | `NEXT_PUBLIC_SENTRY_DSN` | No | The Sentry project DSN. Production builds then report errors from the browser and the server. Browser events go through the `/monitoring` route. |
 | `SENTRY_AUTH_TOKEN` | No | A Sentry organization auth token. With `SENTRY_ORG` and `SENTRY_PROJECT`, production builds upload source maps. Keep it on the server. |
 | `SENTRY_ORG` | No | The Sentry organization slug. |
