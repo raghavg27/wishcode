@@ -10,7 +10,7 @@ export function SiteFooter() {
             No account needed to wish. Any developer can build one. I don&apos;t check links before they go up.
           </p>
         </div>
-        <nav aria-label="Footer" className="flex items-center gap-5 text-label-sm text-ink-muted">
+        <nav aria-label="Footer" className="flex flex-wrap items-center gap-x-5 gap-y-2 text-label-sm text-ink-muted">
           <Link href="/wishes" className="hover:text-ink">
             Live feed
           </Link>
@@ -19,6 +19,12 @@ export function SiteFooter() {
           </Link>
           <Link href="/principles" className="hover:text-ink">
             Guidelines
+          </Link>
+          <Link href="/privacy" className="hover:text-ink">
+            Privacy
+          </Link>
+          <Link href="/terms" className="hover:text-ink">
+            Terms
           </Link>
         </nav>
       </div>

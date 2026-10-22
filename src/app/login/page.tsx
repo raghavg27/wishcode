@@ -42,7 +42,10 @@ export default function LoginPage({ searchParams }: PageProps<"/login">) {
           <Suspense fallback={<Skeleton className="mx-auto mt-8 h-14 w-full rounded-xl" />}>
             <LoginAction searchParams={searchParams} />
           </Suspense>
-          <p className="mt-3 text-label text-ink-muted">I only use your GitHub handle and avatar. Nothing else.</p>
+          <p className="mt-3 text-label text-ink-muted">
+            Your handle and avatar are shown publicly. Your GitHub email is only used to tell you when your link is
+            confirmed. <Link href="/privacy" className="underline underline-offset-2 hover:text-ink">Privacy</Link>
+          </p>
 
           <div className="my-8 flex items-center gap-4 text-label-sm tracking-wider text-ink-muted uppercase">
             <span className="h-px flex-1 bg-hairline" /> Good to know <span className="h-px flex-1 bg-hairline" />
