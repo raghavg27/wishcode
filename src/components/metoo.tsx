@@ -113,13 +113,13 @@ export function MetooButton({ wishId, active: initialActive, count: initialCount
         )}
       >
         <WaveHand tap={tap} className="size-5" />
-        <span className="tabular">
-          <RollingCount value={count} tap={tap} /> {count === 1 ? "me-too" : "me-toos"}
-        </span>
+        <span>{active ? "You too ✓" : "Me too"}</span>
         <span className="text-label font-medium opacity-70" aria-hidden>
           ·
         </span>
-        <span className="text-label font-medium">{active ? "You too ✓" : "Me too +1"}</span>
+        <span className="text-label font-medium tabular">
+          <RollingCount value={count} tap={tap} /> {count === 1 ? "me-too" : "me-toos"}
+        </span>
         {plusOne}
       </button>
     );

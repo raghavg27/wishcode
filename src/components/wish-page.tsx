@@ -442,7 +442,6 @@ function WishHero({
         <p className="flex flex-wrap items-center gap-x-2 text-label-sm text-ink-muted">
           <History className="size-3.5" aria-hidden />
           <TimeAgo iso={wish.created_at} prefix="Posted" /> by anonymous wisher
-          <span className="font-mono text-outline">{wishLabel(wish.id)}</span>
         </p>
         <StatusChip status={wish.status} verified={wish.verified} className="uppercase tracking-wider" />
       </div>
