@@ -67,6 +67,10 @@ export default function PrivacyPage() {
             share, along with standard request details (browser, device type, approximate location from your IP). It
             sets no cookies and records no sessions.
           </li>
+          <li>
+            <strong>Error reports.</strong> When something breaks, Sentry receives the error, the page it happened on and
+            your browser and device type. It sets no cookies and records no sessions.
+          </li>
         </ul>
         <p>I don&apos;t use advertising cookies, sell your data, or share it with advertisers.</p>
       </LegalSection>
@@ -93,6 +97,7 @@ export default function PrivacyPage() {
           <li>Cloudflare Turnstile checks that whoever posts a wish isn&apos;t a bot, using signals from your browser.</li>
           <li>Google (Gmail) delivers the emails.</li>
           <li>PostHog provides the analytics.</li>
+          <li>Sentry receives error reports.</li>
         </ul>
         <p>
           These providers may process data in the United States and other countries. I&apos;ll also disclose data if
