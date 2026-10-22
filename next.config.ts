@@ -24,6 +24,9 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
   poweredByHeader: false,
+  // PostHog's API paths end in "/", so the relay needs them kept. proxy.ts
+  // still redirects pages with a trailing slash.
+  skipTrailingSlashRedirect: true,
   images: {
     remotePatterns: [{ protocol: "https", hostname: "avatars.githubusercontent.com" }],
   },

@@ -1,4 +1,5 @@
 import * as Sentry from "@sentry/nextjs";
+import { POSTHOG_RELAY, posthogUiHost } from "@/lib/posthog";
 
 // Error tracking, only when a DSN is configured. Loaded up front so it also
 // catches errors that happen while the page starts. No session replay.
@@ -17,7 +18,8 @@ const key = process.env.NEXT_PUBLIC_POSTHOG_KEY;
 if (key) {
   import("posthog-js").then(({ default: posthog }) => {
     posthog.init(key, {
-      api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://us.i.posthog.com",
+      api_host: POSTHOG_RELAY,
+      ui_host: posthogUiHost(),
       capture_pageview: "history_change",
       persistence: "memory",
       disable_session_recording: true,

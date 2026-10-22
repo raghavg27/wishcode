@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { MISSING_HEADER, pageExists, shareTargetExists, type MissingKind } from "@/lib/page-exists";
+import { POSTHOG_RELAY, posthogUpstream } from "@/lib/posthog";
 import { GITHUB_HANDLE, parseWishId } from "@/lib/site";
 
 // /w/:id, and its share URLs /w/:id/by/:handle and /w/:id/came-true.
@@ -9,6 +10,18 @@ const DEVELOPER_PATH = /^\/d\/([^/]+)\/?$/;
 const UNSUBSCRIBE_PATH = /^\/e\/unsubscribe\/?$/;
 
 export async function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  if (pathname.startsWith(`${POSTHOG_RELAY}/`)) return relayToPostHog(request);
+
+  // next.config.ts turns off Next's trailing-slash redirect because PostHog's
+  // API paths end in "/". Keep redirecting everything else.
+  if (pathname.length > 1 && pathname.endsWith("/")) {
+    // A plain URL: NextURL would put the trailing slash back.
+    const url = new URL(request.url);
+    url.pathname = pathname.replace(/\/+$/, "");
+    return NextResponse.redirect(url, 308);
+  }
+
   // One-click unsubscribe (RFC 8058) POSTs to the page's URL. A page can't
   // also be a route handler, so send POSTs that aren't Server Actions to one.
   if (
@@ -30,6 +43,20 @@ export async function proxy(request: NextRequest) {
     return NextResponse.rewrite(new URL("/_missing", request.url), { request: { headers } });
   }
   return refreshSession(request);
+}
+
+/**
+ * Forwards analytics to PostHog without the visitor's cookies. Vercel's
+ * X-Forwarded-For still carries their IP, for location and visitor counts.
+ */
+function relayToPostHog(request: NextRequest) {
+  const url = posthogUpstream(request.nextUrl.pathname);
+  url.search = request.nextUrl.search;
+  const headers = new Headers(request.headers);
+  headers.delete("cookie");
+  headers.delete("authorization");
+  headers.set("host", url.host);
+  return NextResponse.rewrite(url, { request: { headers } });
 }
 
 /**
