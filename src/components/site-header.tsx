@@ -66,7 +66,7 @@ export function SiteHeader() {
             <LogoMark className="size-7" />
             <span className="font-serif text-headline font-semibold tracking-tight text-ink">Wishcode</span>
           </Link>
-          <Suspense fallback={<NavLinksView pathname="" />}>
+          <Suspense fallback={<NavLinksView location={null} />}>
             <NavLinks />
           </Suspense>
         </div>
