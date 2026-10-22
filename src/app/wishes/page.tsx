@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { Composer } from "@/components/composer";
 import { LedgerFilters } from "@/components/ledger-filters";
 import { LedgerList } from "@/components/ledger-list";
-import { BuildCta, MostWanted, SidebarFootnote, WeekStats } from "@/components/sidebar";
+import { BuildCta, MostWanted, SidebarFootnote, SupportNote, WeekStats } from "@/components/sidebar";
 import { LedgerNote, Skeleton } from "@/components/ui";
 import { parseSort, parseStatus } from "@/lib/config";
 import { getLedgerPage, getLiveMetoos, getStats, withLiveCounts } from "@/lib/data";
@@ -30,6 +30,7 @@ export default function LedgerPage({ searchParams }: PageProps<"/wishes">) {
             <Sidebar />
           </Suspense>
           <BuildCta />
+          <SupportNote />
           <SidebarFootnote />
         </aside>
       </div>

@@ -1,10 +1,10 @@
-import { ArrowRight, Flame, Hand, History, SquareTerminal, TrendingUp } from "lucide-react";
+import { ArrowRight, Coffee, Flame, Hand, History, SquareTerminal, TrendingUp } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 import { GithubIcon } from "@/components/icons";
 import { getViewer } from "@/lib/auth";
 import { formatNumber, weekDeltaText } from "@/lib/format";
-import { wishPath } from "@/lib/site";
+import { SUPPORT_URL, wishPath } from "@/lib/site";
 import type { LedgerStats } from "@/lib/types";
 
 export function WeekStats({ week }: { week: LedgerStats["week"] }) {
@@ -123,6 +123,26 @@ function BuildCtaView({ signedIn }: { signedIn: boolean }) {
         )}
       </Link>
     </section>
+  );
+}
+
+/** A quiet ask to help cover hosting. */
+export function SupportNote() {
+  return (
+    <a
+      href={SUPPORT_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group flex items-start gap-3 rounded-xl bg-amber-soft/60 p-4 transition-colors hover:bg-amber-soft"
+    >
+      <Coffee className="mt-0.5 size-5 shrink-0 text-[#643f00]" aria-hidden />
+      <span>
+        <span className="block text-label font-semibold text-ink">Support this project</span>
+        <span className="mt-0.5 block text-caption text-ink-muted">
+          Wishcode is free, and I keep it running myself. A coffee helps keep it that way.
+        </span>
+      </span>
+    </a>
   );
 }
 

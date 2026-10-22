@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
-import { BuildCta } from "@/components/sidebar";
+import { BuildCta, SupportNote } from "@/components/sidebar";
 import { Laptop } from "@/components/doodles";
 import { Avatar, EmptyState, Skeleton } from "@/components/ui";
 import { getDirectory } from "@/lib/data";
@@ -26,8 +26,9 @@ export default function DevelopersPage() {
             <Directory />
           </Suspense>
         </div>
-        <aside className="lg:col-span-4">
+        <aside className="flex flex-col gap-6 lg:col-span-4">
           <BuildCta />
+          <SupportNote />
         </aside>
       </div>
     </main>
