@@ -154,6 +154,17 @@
   box-shadow: var(--shadow-card);
 }
 
+/* Over a night section the header goes clear and its text turns light, by
+   re-pointing the tokens its utilities already use. */
+header[data-over-night] {
+  --color-surface-lowest: rgb(16 15 44 / 0.55);
+  --color-surface-low: rgb(255 255 255 / 0.08);
+  --color-ink: var(--color-inverse-ink);
+  --color-ink-muted: rgb(244 242 250 / 0.72);
+  --color-outline: rgb(244 242 250 / 0.5);
+  box-shadow: none;
+}
+
 /* Landing intro: hidden until its script reveals it, or shown after 2.5s if
    the script never runs. */
 [data-intro] {

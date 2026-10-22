@@ -2,6 +2,7 @@ import { Code, LogOut, Plus } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 import { signOut } from "@/app/actions";
+import { HeaderShell } from "@/components/header-shell";
 import { LogoMark } from "@/components/icons";
 import { NavLinks, NavLinksView } from "@/components/nav-links";
 import { Avatar } from "@/components/ui";
@@ -48,7 +49,7 @@ async function HeaderAuth() {
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-50 bg-surface-lowest/80 shadow-[0_1px_8px_rgba(29,27,69,0.04)] backdrop-blur-md">
+    <HeaderShell className="sticky top-0 z-50 bg-surface-lowest/80 shadow-[0_1px_8px_rgba(29,27,69,0.04)] backdrop-blur-md transition-[background-color,box-shadow] duration-300">
       <div className="mx-auto flex h-16 max-w-[1120px] items-center justify-between px-4">
         <div className="flex items-center">
           <Link href="/" className="flex items-center gap-2" aria-label="Wishcode home">
@@ -73,6 +74,6 @@ export function SiteHeader() {
           </Link>
         </div>
       </div>
-    </header>
+    </HeaderShell>
   );
 }
