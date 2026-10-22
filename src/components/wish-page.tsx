@@ -6,7 +6,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { DeveloperPanel, RemoveOwnLink } from "@/components/developer-panel";
 import { EmailOptIn, WisherOptInCard } from "@/components/email-opt-in";
-import { GithubIcon } from "@/components/icons";
+import { GithubIcon, LogoMark } from "@/components/icons";
 import { FlaggedLink, LinkVerdictPanel } from "@/components/link-verdict";
 import { MetooButton } from "@/components/metoo";
 import { PostLinkModal, PostLinkTrigger } from "@/components/post-link";
@@ -538,7 +538,7 @@ function ShareCardPreview({ wish }: { wish: WishDetail }) {
       <div className="relative p-6 sm:p-8">
         <div className="flex items-center justify-between">
           <span className="flex items-center gap-2 text-label font-semibold text-ink">
-            <span className="flex size-5 items-center justify-center rounded bg-amber text-caption font-bold">W</span>
+            <LogoMark className="size-5" />
             Wishcode
           </span>
           <StatusChip status={wish.status} verified={wish.verified} />
