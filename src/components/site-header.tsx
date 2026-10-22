@@ -1,4 +1,4 @@
-import { Code, Flag, LogOut, Plus } from "lucide-react";
+import { Code, Coffee, Flag, LogOut, Plus } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 import { signOut } from "@/app/actions";
@@ -7,7 +7,7 @@ import { LogoMark } from "@/components/icons";
 import { NavLinks, NavLinksView } from "@/components/nav-links";
 import { Avatar } from "@/components/ui";
 import { getViewer } from "@/lib/auth";
-import { developerPath } from "@/lib/site";
+import { developerPath, SUPPORT_URL } from "@/lib/site";
 
 function ConnectLink() {
   return (
@@ -71,6 +71,16 @@ export function SiteHeader() {
           </Suspense>
         </div>
         <div className="flex items-center gap-3 sm:gap-5">
+          <a
+            href={SUPPORT_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Support this project"
+            title="Support this project"
+            className="flex size-8 items-center justify-center rounded-full text-ink-muted transition-colors hover:bg-surface-low hover:text-ink"
+          >
+            <Coffee className="size-[18px]" />
+          </a>
           <Suspense fallback={<ConnectLink />}>
             <HeaderAuth />
           </Suspense>
