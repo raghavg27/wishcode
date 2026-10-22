@@ -1,6 +1,8 @@
-import { Flame, Hand, History, SquareTerminal, TrendingUp } from "lucide-react";
+import { ArrowRight, Flame, Hand, History, SquareTerminal, TrendingUp } from "lucide-react";
 import Link from "next/link";
+import { Suspense } from "react";
 import { GithubIcon } from "@/components/icons";
+import { getViewer } from "@/lib/auth";
 import { formatNumber, weekDeltaText } from "@/lib/format";
 import { wishPath } from "@/lib/site";
 import type { LedgerStats } from "@/lib/types";
@@ -79,7 +81,21 @@ export function MostWanted({ items }: { items: LedgerStats["most_wanted"] }) {
   );
 }
 
+/** "Want to build one?": GitHub connect, or a way to a wish once connected. */
 export function BuildCta() {
+  return (
+    <Suspense fallback={<BuildCtaView signedIn={false} />}>
+      <ViewerBuildCta />
+    </Suspense>
+  );
+}
+
+async function ViewerBuildCta() {
+  const { developer } = await getViewer().catch(() => ({ developer: null }));
+  return <BuildCtaView signedIn={Boolean(developer)} />;
+}
+
+function BuildCtaView({ signedIn }: { signedIn: boolean }) {
   return (
     <section className="rounded-xl bg-surface-high p-5 shadow-card">
       <span className="mb-3 inline-flex rounded-lg bg-surface-lowest p-2 shadow-xs">
@@ -87,14 +103,24 @@ export function BuildCta() {
       </span>
       <h2 className="mb-1 font-serif text-headline font-semibold text-ink">Want to build one?</h2>
       <p className="mb-5 text-[14px] leading-[22px] text-ink-muted">
-        Connect GitHub to claim a wish or share what you built. No deadlines, nobody to ask permission.
+        {signedIn
+          ? "The most wanted open wishes are a good place to start. Claim one or share what you built."
+          : "Connect GitHub to claim a wish or share what you built. No deadlines, nobody to ask permission."}
       </p>
       <Link
-        href="/login"
+        href={signedIn ? "/wishes?status=open&sort=top" : "/login"}
         className="flex w-full items-center justify-center gap-2 rounded-lg bg-inverse px-4 py-2.5 text-label font-medium text-inverse-ink shadow-sm transition-colors hover:bg-ink"
       >
-        <GithubIcon className="size-4" />
-        Connect GitHub
+        {signedIn ? (
+          <>
+            Find a wish to build <ArrowRight className="size-4" aria-hidden />
+          </>
+        ) : (
+          <>
+            <GithubIcon className="size-4" />
+            Connect GitHub
+          </>
+        )}
       </Link>
     </section>
   );
