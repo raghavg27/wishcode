@@ -19,7 +19,7 @@ They enable `vector` and `pg_trgm`, creates the tables, triggers and functions, 
 
 1. GitHub → Settings → Developer settings → OAuth Apps → New. Callback URL: `https://<project-ref>.supabase.co/auth/v1/callback`.
 2. Supabase → Authentication → Sign In / Providers → GitHub: enable it and paste the client ID and secret.
-3. Supabase → Authentication → URL Configuration: set **Site URL** to your production URL and add `https://<your-domain>/auth/callback` and `http://localhost:3000/auth/callback` to **Redirect URLs**.
+3. Supabase → Authentication → URL Configuration: set **Site URL** to your production URL and add `https://<your-domain>/auth/callback**` and `http://localhost:*/auth/callback**` to **Redirect URLs**. The trailing `**` is required: the callback carries `?next=…`, and Supabase matches the whole URL, query included. A redirect that doesn't match is silently replaced with the Site URL, so sign-in lands on `/?code=…` there instead of signing you in.
 4. Optional: disable the Email provider. Nothing in the app uses it.
 
 ### 3. Environment
