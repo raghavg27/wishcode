@@ -44,7 +44,9 @@ export async function ensureDeviceHash(): Promise<string> {
 
 /**
  * Salted hash of the client IP, used only as a rate-limit key that expires
- * within a day. The raw IP is never stored.
+ * within a day. The raw IP is never stored. Trusts X-Forwarded-For, which
+ * Vercel overwrites with the client IP; behind any other proxy, make sure it
+ * does the same, or clients can pick their own rate-limit key.
  */
 export async function clientIpKey(): Promise<string | null> {
   const h = await headers();
