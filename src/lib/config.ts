@@ -29,6 +29,9 @@ export const LIMITS = {
   reportsPerNetworkPerDay: 200,
 } as const;
 
+/** Turnstile widget action for posting a wish; the server checks tokens carry it. */
+export const POST_WISH_ACTION = "post_wish";
+
 /** Most reported targets shown on /admin at once. */
 export const REPORT_QUEUE_SIZE = 100;
 

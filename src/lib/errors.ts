@@ -17,6 +17,7 @@ export type ActionError = {
     | "invalid_email"
     | "suppressed"
     | "invalid_token"
+    | "bot_check_failed"
     | "unavailable";
   message: string;
   /** ISO time when a rate limit resets. */

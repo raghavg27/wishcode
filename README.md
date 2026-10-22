@@ -60,6 +60,15 @@ Gmail allows about 500 recipients a day (about 2,000 on Workspace). Sends past t
 
 Email links land on `/e/verdict` (confirm a Yes / No vote) and `/e/unsubscribe` (stop emails for one wish, or `&all=1` for all). Opening them changes nothing, since mail scanners open every link; the button on the page does. Mail clients' one-click unsubscribe (`List-Unsubscribe-Post`) POSTs to `/e/unsubscribe`, which `src/proxy.ts` routes to `/api/unsubscribe`.
 
+### 3d. Bot check on wishes (recommended, free)
+
+Posting a wish needs no account, so a [Cloudflare Turnstile](https://developers.cloudflare.com/turnstile/) check runs on the composer. It is invisible unless Cloudflare wants the visitor to tick a box.
+
+1. Cloudflare dashboard → Turnstile → Add widget. Add your production domain (and `localhost` if you want it locally), and choose **Invisible** or **Managed** mode.
+2. Set `NEXT_PUBLIC_TURNSTILE_SITE_KEY` and `TURNSTILE_SECRET_KEY` in Vercel and redeploy. The site key is inlined at build time, so a redeploy is needed.
+
+Set both or neither: with only the secret, every post is rejected. Without them posting has no bot check, so dev and previews work as is. The token is checked right before the wish is created, so the "Post mine anyway" retry reuses it. If Cloudflare can't be reached the check passes (logged as `[turnstile] siteverify`), so an outage there never stops posting. For local testing Cloudflare publishes [test keys](https://developers.cloudflare.com/turnstile/troubleshooting/testing/) that always pass or always fail.
+
 ### 4. Run
 
 ```bash
@@ -74,7 +83,7 @@ To test the database, apply the migration to a scratch Postgres that has pgvecto
 
 ### 5. Deploy (Vercel)
 
-Add the same env vars in Vercel (none are `NEXT_PUBLIC_`, so all can be marked Sensitive) and deploy. `SITE_URL` is optional there: it defaults to the production domain, so set it only for a custom domain. The build reads the database (sitemap and the ledger's static shell), so the env vars must be available at build time too.
+Add the same env vars in Vercel and deploy. All but the `NEXT_PUBLIC_` ones (PostHog and the Turnstile site key, which are public) can be marked Sensitive. `SITE_URL` is optional there: it defaults to the production domain, so set it only for a custom domain. The build reads the database (sitemap and the ledger's static shell), so the env vars must be available at build time too.
 
 ## Architecture
 

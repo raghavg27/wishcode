@@ -8,8 +8,9 @@ import { postWish, setMetoo } from "@/app/actions";
 import { DuplicateModal } from "@/components/duplicate-modal";
 import { primeMetoo } from "@/components/metoo";
 import { toast } from "@/components/toaster";
+import { useTurnstile } from "@/components/turnstile";
 import { track } from "@/lib/analytics";
-import { WISH_MAX, WISH_MIN } from "@/lib/config";
+import { POST_WISH_ACTION, WISH_MAX, WISH_MIN } from "@/lib/config";
 import { readDraft, writeDraft } from "@/lib/draft";
 import { resetsIn } from "@/lib/format";
 import { wishPath } from "@/lib/site";
@@ -27,6 +28,7 @@ export function Composer() {
   // Set when the daily limit is hit; cleared automatically once it resets.
   const [limit, setLimit] = useState<{ resetAt: string; label: string } | null>(null);
   const [similar, setSimilar] = useState<SimilarWish[] | null>(null);
+  const { ref: turnstileRef, getToken, reset: resetTurnstile } = useTurnstile(POST_WISH_ACTION);
 
   // Restore an unsent draft (e.g. after hitting the daily limit).
   useEffect(() => {
@@ -66,7 +68,10 @@ export function Composer() {
     setBusy("post");
     setError(null);
     try {
-      const result = await postWish({ text: normalized, force });
+      const turnstileToken = await getToken();
+      const result = await postWish({ text: normalized, force, turnstileToken });
+      // "similar" leaves the token unchecked for "Post mine anyway".
+      if (result.ok !== "similar") resetTurnstile();
       if (result.ok === true) {
         writeDraft("");
         setText("");
@@ -175,6 +180,9 @@ export function Composer() {
             </div>
           )}
         </div>
+
+        {/* Cloudflare's bot check; empty unless it needs the visitor to click. */}
+        <div ref={turnstileRef} className="mt-2 empty:hidden" />
 
         <div className="mt-3 flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
           <p className="flex items-center gap-2 text-label text-ink-muted">

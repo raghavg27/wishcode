@@ -4,7 +4,7 @@ import { revalidateTag, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { after } from "next/server";
 import { getViewer } from "@/lib/auth";
-import { DUPLICATE_LIMIT, DUPLICATE_THRESHOLD, LIMITS } from "@/lib/config";
+import { DUPLICATE_LIMIT, DUPLICATE_THRESHOLD, LIMITS, POST_WISH_ACTION } from "@/lib/config";
 import { tags } from "@/lib/data";
 import { verifyEmailToken, verifyLinkToken } from "@/lib/email-token";
 import { embed } from "@/lib/embeddings";
@@ -15,6 +15,7 @@ import { notifyLinkPosted, notifyLinkVerified } from "@/lib/notify";
 import { isReportReason, type ReportReason } from "@/lib/reports";
 import { db } from "@/lib/supabase/admin";
 import { createAuthClient } from "@/lib/supabase/server";
+import { turnstileEnabled, verifyTurnstile } from "@/lib/turnstile";
 import type { LinkVerdict, SimilarWish, WishStatus } from "@/lib/types";
 import { emailIssue, normalizeEmail, normalizeWishText, validateLinkInput, wishTextIssue } from "@/lib/validation";
 
@@ -40,7 +41,22 @@ export type PostWishResult =
   | { ok: "similar"; similar: SimilarWish[] }
   | ActionError;
 
-export async function postWish(input: { text: string; force?: boolean }): Promise<PostWishResult> {
+const BOT_CHECK_FAILED: ActionError = {
+  ok: false,
+  code: "bot_check_failed",
+  message: "Couldn't confirm you're not a bot. Please try again.",
+};
+
+/**
+ * `turnstileToken` is required once Turnstile is configured. It's checked
+ * only right before the wish is created, so a "similar" reply leaves it
+ * unused for the "Post mine anyway" retry.
+ */
+export async function postWish(input: {
+  text: string;
+  force?: boolean;
+  turnstileToken?: string | null;
+}): Promise<PostWishResult> {
   const text = normalizeWishText(String(input?.text ?? ""));
   const issue = wishTextIssue(text);
   if (issue) {
@@ -50,6 +66,8 @@ export async function postWish(input: { text: string; force?: boolean }): Promis
       message: issue === "too_short" ? "A bit more detail, at least 20 characters." : "Keep it under 200 characters.",
     };
   }
+  const token = typeof input?.turnstileToken === "string" ? input.turnstileToken : "";
+  if (turnstileEnabled() && (!token || token.length > 2048)) return BOT_CHECK_FAILED;
 
   try {
     const [deviceHash, ipKey] = await Promise.all([ensureDeviceHash(), clientIpKey()]);
@@ -79,6 +97,8 @@ export async function postWish(input: { text: string; force?: boolean }): Promis
         return { ok: "similar", similar: data as SimilarWish[] };
       }
     }
+
+    if (turnstileEnabled() && !(await verifyTurnstile(token, POST_WISH_ACTION))) return BOT_CHECK_FAILED;
 
     const { data, error } = await db().rpc("create_wish", {
       p_token_hash: deviceHash,

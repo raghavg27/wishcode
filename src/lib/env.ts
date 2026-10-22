@@ -45,6 +45,13 @@ export const env = {
   get emailTokenSecret() {
     return process.env.EMAIL_TOKEN_SECRET || required("SUPABASE_SECRET_KEY");
   },
+  /**
+   * Cloudflare Turnstile secret. Set together with
+   * NEXT_PUBLIC_TURNSTILE_SITE_KEY; unset, posting a wish has no bot check.
+   */
+  get turnstileSecretKey() {
+    return process.env.TURNSTILE_SECRET_KEY || "";
+  },
   /** Comma-separated GitHub handles that get admin rights on sign-in. */
   get adminHandles(): Set<string> {
     return new Set(
