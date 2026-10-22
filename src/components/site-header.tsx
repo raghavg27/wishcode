@@ -13,7 +13,7 @@ function ConnectLink() {
   return (
     <Link
       href="/login"
-      className="hidden items-center gap-1 text-label-sm font-medium text-ink-muted transition-colors hover:text-ink md:flex"
+      className="hidden items-center gap-1 text-label-sm font-medium text-ink-muted transition-colors hover:text-ink lg:flex"
     >
       <Code className="size-[18px]" aria-hidden />
       Connect GitHub <span className="text-caption font-normal text-outline">(for developers)</span>
@@ -41,7 +41,7 @@ async function HeaderAuth() {
         className="flex items-center gap-2 rounded-full py-1 pr-3 pl-1 text-label-sm font-medium text-ink hover:bg-surface-low"
       >
         <Avatar dev={developer} size={26} />
-        <span className="hidden md:inline">@{developer.handle}</span>
+        <span className="hidden lg:inline">@{developer.handle}</span>
       </Link>
       <form action={signOut}>
         <button
@@ -76,11 +76,11 @@ export function SiteHeader() {
           </Suspense>
           <Link
             href="/wishes#compose"
-            className="inline-flex items-center gap-1 rounded-lg bg-amber px-3.5 py-2 text-label font-semibold text-on-amber shadow-[0_1px_2px_rgba(29,27,69,0.08)] transition-colors hover:bg-amber-hover sm:px-4"
+            className="inline-flex items-center gap-1 rounded-lg bg-amber px-3.5 py-2 text-label font-semibold whitespace-nowrap text-on-amber shadow-[0_1px_2px_rgba(29,27,69,0.08)] transition-colors hover:bg-amber-hover sm:px-4"
           >
             <Plus className="size-[18px]" aria-hidden />
-            <span className="sm:hidden">Post</span>
-            <span className="hidden sm:inline">Post a wish</span>
+            <span className="lg:hidden">Post</span>
+            <span className="hidden lg:inline">Post a wish</span>
           </Link>
         </div>
       </div>

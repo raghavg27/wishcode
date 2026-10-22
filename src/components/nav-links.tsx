@@ -1,7 +1,7 @@
 "use client";
 
 import clsx from "clsx";
-import { Hammer, Layers, ScrollText, Users } from "lucide-react";
+import { BadgeCheck, Info, Layers, ScrollText, Users, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 
@@ -15,11 +15,18 @@ const feed = (except: string): Match => (l) =>
   (l.pathname === "/wishes" && l.status !== except) || l.pathname.startsWith("/w/");
 const filter = (status: string): Match => (l) => l.pathname === "/wishes" && l.status === status;
 
-const LINKS: { href: string; label: string; match: Match }[] = [
-  { href: "/wishes", label: "Wishes", match: feed("fulfilled") },
-  { href: "/wishes?status=fulfilled", label: "Fulfilled", match: filter("fulfilled") },
-  { href: "/principles", label: "Principles", match: (l) => l.pathname.startsWith("/principles") },
-  { href: "/about", label: "About", match: (l) => l.pathname.startsWith("/about") },
+// One list for the header (md and up) and the bottom bar (below md).
+const LINKS: { href: string; label: string; icon: LucideIcon; match: Match }[] = [
+  { href: "/wishes", label: "Wishes", icon: Layers, match: feed("fulfilled") },
+  { href: "/wishes?status=fulfilled", label: "Fulfilled", icon: BadgeCheck, match: filter("fulfilled") },
+  {
+    href: "/developers",
+    label: "Builders",
+    icon: Users,
+    match: (l) => l.pathname.startsWith("/developers") || l.pathname.startsWith("/d/"),
+  },
+  { href: "/principles", label: "Principles", icon: ScrollText, match: (l) => l.pathname.startsWith("/principles") },
+  { href: "/about", label: "About", icon: Info, match: (l) => l.pathname.startsWith("/about") },
 ];
 
 function useLocation(): Location {
@@ -33,7 +40,7 @@ export function NavLinks() {
 /** Rendered without highlighting while the location streams in. */
 export function NavLinksView({ location }: { location: Location | null }) {
   return (
-    <nav aria-label="Main" className="ml-4 hidden items-center gap-1 sm:flex">
+    <nav aria-label="Main" className="ml-4 hidden items-center gap-1 md:flex">
       {LINKS.map((l) => (
         <Link
           key={l.href}
@@ -51,18 +58,6 @@ export function NavLinksView({ location }: { location: Location | null }) {
   );
 }
 
-const MOBILE = [
-  { href: "/wishes", label: "Wishes", icon: Layers, match: feed("being_built") },
-  { href: "/wishes?status=being_built", label: "Building", icon: Hammer, match: filter("being_built") },
-  {
-    href: "/developers",
-    label: "Builders",
-    icon: Users,
-    match: (l: Location) => l.pathname.startsWith("/developers") || l.pathname.startsWith("/d/"),
-  },
-  { href: "/principles", label: "Principles", icon: ScrollText, match: (l: Location) => l.pathname.startsWith("/principles") },
-];
-
 export function MobileNav() {
   const location = useLocation();
   // The wish page has its own sticky action bar.
@@ -74,10 +69,10 @@ export function MobileNavView({ location }: { location: Location }) {
   return (
     <nav
       aria-label="Mobile"
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-hairline bg-surface/90 pb-[env(safe-area-inset-bottom)] backdrop-blur-md sm:hidden"
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-hairline bg-surface/90 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden"
     >
-      <ul className="grid grid-cols-4">
-        {MOBILE.map(({ href, label, icon: Icon, match }) => (
+      <ul className="grid grid-cols-5">
+        {LINKS.map(({ href, label, icon: Icon, match }) => (
           <li key={href}>
             <Link
               href={href}
