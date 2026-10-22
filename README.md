@@ -11,6 +11,10 @@
 [![Live](https://img.shields.io/badge/live-wishcode--ai.vercel.app-f4b740?labelColor=1d1b45)](https://wishcode-ai.vercel.app/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-f4b740?labelColor=1d1b45)](LICENSE)
 
+<br>
+
+<img src=".github/screenshots/landing.png" alt="The Wishcode landing page. The headline is &quot;I wish there was an app that splits a dinner bill from a photo of the receipt.&quot; A &quot;Make a wish&quot; button is below it." width="900">
+
 </div>
 
 ---
@@ -25,6 +29,10 @@ Each wish shows how many people want the app, which developers build it and what
 2. **Add a me-too.** Each me-too shows developers how many people want the app.
 3. **Build it.** A developer connects GitHub, claims the wish and posts a live link.
 4. **Verify it.** The people who want the app examine the link. If the wisher says Yes, or if 3 me-too visitors say Yes, the wish shows **Fulfilled ✓**.
+
+<p align="center">
+  <img src=".github/screenshots/wishes.png" alt="The Wishcode wishes page. The composer is at the top. Below it, a fulfilled wish shows the developer, an Open app link and a Me too button. The status filters and the weekly statistics are next to the list." width="900">
+</p>
 
 ## Features
 
