@@ -1,3 +1,4 @@
+import { withSentryConfig } from "@sentry/nextjs/config";
 import type { NextConfig } from "next";
 
 // The no-JS sign-in form redirects through Supabase Auth to GitHub, so both
@@ -53,4 +54,11 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+// Source maps upload only when SENTRY_AUTH_TOKEN, SENTRY_ORG and SENTRY_PROJECT
+// are set. Browser errors go through /monitoring so ad blockers don't drop them.
+export default withSentryConfig(nextConfig, {
+  tunnelRoute: "/monitoring",
+  widenClientFileUpload: true,
+  silent: !process.env.CI,
+  telemetry: false,
+});
