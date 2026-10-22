@@ -26,5 +26,14 @@ export function parseWishId(raw: string): number | null {
   return Number.isSafeInteger(id) ? id : null;
 }
 
+/**
+ * GitHub's avatar CDN, the only place avatars load from (matches the
+ * developers.avatar_url check). Any other host would see every visitor's IP,
+ * and the share-card routes fetch avatars server-side.
+ */
+export function isGithubAvatar(url: string | null | undefined): url is string {
+  return typeof url === "string" && /^https:\/\/avatars\.githubusercontent\.com\//.test(url);
+}
+
 /** GitHub handle syntax, as used in /d/:handle. */
 export const GITHUB_HANDLE = /^[A-Za-z0-9][A-Za-z0-9-]{0,38}$/;

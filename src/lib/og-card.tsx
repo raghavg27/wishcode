@@ -2,7 +2,7 @@ import "server-only";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
-import { siteUrl, wishPath } from "@/lib/site";
+import { isGithubAvatar, siteUrl, wishPath } from "@/lib/site";
 
 // Shared frame for the 1200×630 share cards under /api/og. Satori renders a
 // subset of CSS: every element with more than one child needs display: flex.
@@ -27,7 +27,7 @@ export function notFound() {
 }
 
 export async function avatarDataUrl(url: string | null | undefined): Promise<string | null> {
-  if (!url) return null;
+  if (!isGithubAvatar(url)) return null;
   try {
     const src = new URL(url);
     src.searchParams.set("s", "96");

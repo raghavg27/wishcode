@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Info, ShieldCheck } from "lucide-react";
 import { DISCLAIMER } from "@/lib/config";
-import { developerPath } from "@/lib/site";
+import { developerPath, isGithubAvatar } from "@/lib/site";
 import type { DeveloperRef, WishStatus } from "@/lib/types";
 
 export const buttonStyles = {
@@ -69,7 +69,7 @@ function initials(handle: string) {
 
 export function Avatar({ dev, size = 24, className }: { dev: DeveloperRef; size?: number; className?: string }) {
   const base = clsx("inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full", className);
-  if (dev.avatar_url) {
+  if (isGithubAvatar(dev.avatar_url)) {
     const src = new URL(dev.avatar_url);
     src.searchParams.set("s", String(size * 2));
     return (

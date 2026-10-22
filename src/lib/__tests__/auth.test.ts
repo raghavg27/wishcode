@@ -24,6 +24,12 @@ describe("githubIdentity", () => {
     });
   });
 
+  it("drops avatars that aren't on GitHub's avatar CDN", () => {
+    for (const avatar_url of ["https://evil.example/a.png", "https://avatars.githubusercontent.com@evil.example/"]) {
+      expect(githubIdentity({ provider: "github", identity_data: { ...github.identity_data, avatar_url } })?.avatar).toBeNull();
+    }
+  });
+
   it("rejects other providers and malformed data", () => {
     expect(githubIdentity({ ...github, provider: "email" })).toBeNull();
     expect(githubIdentity(undefined)).toBeNull();

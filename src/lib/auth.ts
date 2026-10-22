@@ -4,7 +4,7 @@ import type { UserIdentity } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import { connection } from "next/server";
 import { env } from "@/lib/env";
-import { GITHUB_HANDLE } from "@/lib/site";
+import { GITHUB_HANDLE, isGithubAvatar } from "@/lib/site";
 import { db } from "@/lib/supabase/admin";
 import { createAuthClient } from "@/lib/supabase/server";
 import type { Viewer } from "@/lib/types";
@@ -28,7 +28,7 @@ export function githubIdentity(identity: Pick<UserIdentity, "provider" | "identi
   const handle = data?.user_name || data?.preferred_username;
   const githubId = Number(data?.provider_id || data?.sub);
   if (!handle || !GITHUB_HANDLE.test(handle) || !Number.isSafeInteger(githubId) || githubId <= 0) return null;
-  const avatar = data?.avatar_url?.startsWith("https://") ? data.avatar_url : null;
+  const avatar = isGithubAvatar(data?.avatar_url) ? data.avatar_url : null;
   return { handle, githubId, avatar };
 }
 
