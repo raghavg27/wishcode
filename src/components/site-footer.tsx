@@ -1,4 +1,6 @@
+import { Coffee } from "lucide-react";
 import Link from "next/link";
+import { SUPPORT_URL } from "@/lib/site";
 
 export function SiteFooter() {
   return (
@@ -9,6 +11,15 @@ export function SiteFooter() {
           <p className="text-caption text-ink-muted">
             No account needed to wish. Any developer can build one. I don&apos;t check links before they go up.
           </p>
+          <a
+            href={SUPPORT_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-amber-soft px-3 py-1.5 text-label-sm font-medium text-on-amber transition-colors hover:bg-amber"
+          >
+            <Coffee className="size-4" aria-hidden />
+            Support this project
+          </a>
         </div>
         <nav aria-label="Footer" className="flex flex-wrap items-center gap-x-5 gap-y-2 text-label-sm text-ink-muted">
           <Link href="/wishes" className="hover:text-ink">
