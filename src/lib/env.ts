@@ -6,7 +6,7 @@ import "server-only";
 function required(name: string): string {
   const value = process.env[name];
   if (!value) {
-    throw new Error(`Missing required environment variable ${name}. See README.md#environment.`);
+    throw new Error(`Missing required environment variable ${name}. See SELF_HOSTING.md#configuration.`);
   }
   return value;
 }
