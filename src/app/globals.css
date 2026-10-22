@@ -4,7 +4,7 @@
    docs/superpowers/specs/2026-10-21-wishing-star-brand-design.md. Token names
    are kept from the original paper-and-ink design. Light only. */
 @theme {
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-instrument), ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-newsreader), ui-serif, Georgia, serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
 

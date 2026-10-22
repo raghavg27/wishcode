@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Newsreader } from "next/font/google";
+import { Instrument_Sans, Newsreader } from "next/font/google";
 import { Suspense } from "react";
 import { MobileNav } from "@/components/nav-links";
 import { SiteFooter } from "@/components/site-footer";
@@ -8,7 +8,9 @@ import { Toaster } from "@/components/toaster";
 import { siteUrl } from "@/lib/site";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
+// Instrument Sans: a grotesk with a little warmth, so the UI text has a voice
+// of its own next to Newsreader instead of the default Inter look.
+const instrumentSans = Instrument_Sans({ subsets: ["latin"], variable: "--font-instrument", display: "swap" });
 // Variable, with the optical-size axis: big headlines get Newsreader's
 // high-contrast display cut automatically, small text its sturdier text cut.
 const newsreader = Newsreader({
@@ -41,7 +43,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${inter.variable} ${newsreader.variable}`}>
+    <html lang="en" className={`${instrumentSans.variable} ${newsreader.variable}`}>
       <body className="flex min-h-dvh flex-col">
         <a
           href="#main"
