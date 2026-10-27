@@ -34,6 +34,7 @@ const nextConfig: NextConfig = {
     "/api/og/wish/[id]": ["./assets/fonts/**"],
     "/api/og/wish/[id]/came-true": ["./assets/fonts/**"],
     "/api/og/link/[linkId]": ["./assets/fonts/**"],
+    "/api/og/site": ["./assets/fonts/**"],
   },
   // The wishes feed lived at / before the landing page; keep its filter links working.
   async redirects() {
