@@ -205,11 +205,21 @@ export function withLiveCounts<T extends { id: number; metoo_count: number }>(wi
   });
 }
 
-export async function getSitemapEntries(): Promise<{ wishes: { id: number; updated_at: string }[]; developers: string[] }> {
+type SitemapEntries = {
+  wishes: { id: number; updated_at: string }[];
+  developers: { handle: string; updated_at: string | null }[];
+};
+
+export async function getSitemapEntries(): Promise<SitemapEntries> {
   "use cache";
   cacheLife("hours");
 
   const { data, error } = await db().rpc("sitemap_entries");
   if (error) throw error;
-  return data as { wishes: { id: number; updated_at: string }[]; developers: string[] };
+  const entries = data as { wishes: SitemapEntries["wishes"]; developers: (string | SitemapEntries["developers"][number])[] };
+  // Plain handles come from a database without the 20261027 migration yet.
+  return {
+    wishes: entries.wishes,
+    developers: entries.developers.map((d) => (typeof d === "string" ? { handle: d, updated_at: null } : d)),
+  };
 }

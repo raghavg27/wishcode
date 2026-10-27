@@ -18,6 +18,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     ...staticPages,
     ...entries.wishes.map((w) => ({ url: `${base}${wishPath(w.id)}`, lastModified: w.updated_at, priority: 0.7 })),
-    ...entries.developers.map((h) => ({ url: `${base}${developerPath(h)}`, priority: 0.4 })),
+    ...entries.developers.map((d) => ({
+      url: `${base}${developerPath(d.handle)}`,
+      ...(d.updated_at && { lastModified: d.updated_at }),
+      priority: 0.4,
+    })),
   ];
 }
