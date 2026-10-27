@@ -14,6 +14,7 @@ This document tells you how to run your own copy of Wishcode. It also tells you 
 | Styles | Tailwind CSS v4 |
 | Database | [Supabase](https://supabase.com) Postgres with `pgvector` and `pg_trgm` |
 | Authentication | Supabase Auth with GitHub OAuth (developers only) |
+| Live visitor count | Supabase Realtime Presence |
 | Embeddings | Supabase Edge Function with the built-in `gte-small` model |
 | Email | Gmail SMTP through Nodemailer |
 | Bot check | [Cloudflare Turnstile](https://developers.cloudflare.com/turnstile/) |
@@ -340,6 +341,13 @@ A network is a salted hash of the IP address. Offices, schools and mobile networ
 - An HNSW index finds wishes with a cosine similarity of 0.89 or more.
 - Wishes without an embedding use `pg_trgm` matching.
 - If the function is not configured or fails, all matching uses `pg_trgm`. Duplicate suggestions never stop a post.
+
+### Live visitor count
+
+- Each open page joins the public Realtime Presence channel `online` with the publishable key. The header shows an eye icon and the number of visitors in the channel.
+- The count shows only when 2 or more visitors are in the channel. Thus, a visitor never sees only themselves.
+- All tabs in one browser share a random ID from `localStorage`, so they count as one visitor. A tab that stays hidden for 1 minute stops counting until it is visible again.
+- The channel stores no data. If Realtime is not available, the count does not show. In the Supabase Realtime settings, keep public channels allowed (do not select "private channels only").
 
 ### Moderation
 
