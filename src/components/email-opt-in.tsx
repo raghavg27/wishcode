@@ -136,7 +136,7 @@ function EmailForm({ wishId, autoFocus }: { wishId: number; autoFocus?: boolean 
     e.preventDefault();
     const email = normalizeEmail(String(new FormData(e.currentTarget).get("email") ?? ""));
     if (emailIssue(email)) {
-      setError("That email address doesn't look right.");
+      setError("That email address does not look right.");
       return;
     }
     setError(null);
@@ -151,7 +151,7 @@ function EmailForm({ wishId, autoFocus }: { wishId: number; autoFocus?: boolean 
           setError(result.message);
         }
       } catch {
-        setError("Couldn't reach Wishcode. Check your connection and try again.");
+        setError("Could not reach Wishcode. Check your internet and try again.");
       }
     });
   }

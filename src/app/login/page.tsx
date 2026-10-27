@@ -17,8 +17,8 @@ export const metadata: Metadata = {
 
 const ERRORS: Record<string, string> = {
   denied: "GitHub sign-in was cancelled.",
-  not_github: "We couldn't read your GitHub profile. Please try again.",
-  unavailable: "GitHub sign-in is unavailable right now. Please try again shortly.",
+  not_github: "We could not read your GitHub profile. Please try again.",
+  unavailable: "GitHub sign-in is not working right now. Please try again soon.",
 };
 
 export default function LoginPage({ searchParams }: PageProps<"/login">) {

@@ -44,10 +44,10 @@ export function ReportButton({
       const result = await report(wishId, linkId, reason);
       if (result.ok) {
         close();
-        toast("Thanks for reporting. I'll take a look.", "success");
+        toast("Thanks for reporting. I will take a look.", "success");
       } else setError(result.message);
     } catch {
-      setError("Couldn't reach Wishcode. Check your connection and try again.");
+      setError("Could not reach Wishcode. Check your internet and try again.");
     }
     setBusy(false);
   }
@@ -147,7 +147,7 @@ export function ModerationActions({
         startTransition(() => router.refresh());
       } else toast(result.message);
     } catch {
-      toast("Couldn't reach Wishcode. Check your connection and try again.");
+      toast("Could not reach Wishcode. Check your internet and try again.");
     }
     setBusy(null);
     setConfirming(false);

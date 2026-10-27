@@ -44,11 +44,11 @@ export function DeveloperPanel({ wishId, status, removed, claims, developer, vie
       const result = await setClaim(wishId, active);
       if (result.ok) {
         if (active) track("claim", { wish_id: wishId });
-        toast(active ? "You're listed as building this wish." : "Claim removed.", "success");
+        toast(active ? "You are listed as building this wish." : "Claim removed.", "success");
         startTransition(() => router.refresh());
       } else toast(result.message);
     } catch {
-      toast("Couldn't reach Wishcode. Check your connection and try again.");
+      toast("Could not reach Wishcode. Check your internet and try again.");
     }
     setBusy(null);
   }
@@ -178,7 +178,7 @@ export function RemoveOwnLink({ linkId, compact }: { linkId: number; compact?: b
         startTransition(() => router.refresh());
       } else toast(result.message);
     } catch {
-      toast("Couldn't reach Wishcode. Check your connection and try again.");
+      toast("Could not reach Wishcode. Check your internet and try again.");
     }
     setBusy(false);
     setConfirming(false);

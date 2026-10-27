@@ -92,7 +92,7 @@ export function Composer() {
         setLimit({ resetAt: result.resetAt, label: resetsIn(result.resetAt, Date.now()) });
       }
     } catch {
-      setError("Couldn't reach Wishcode. Check your connection and try again.");
+      setError("Could not reach Wishcode. Check your internet and try again.");
     }
     setBusy(null);
   }
@@ -112,7 +112,7 @@ export function Composer() {
       }
       toast(result.message);
     } catch {
-      toast("Couldn't reach Wishcode. Check your connection and try again.");
+      toast("Could not reach Wishcode. Check your internet and try again.");
     }
     setBusy(null);
   }

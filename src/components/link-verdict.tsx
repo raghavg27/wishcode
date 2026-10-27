@@ -75,7 +75,7 @@ export function LinkVerdictPanel({ wishId, linkId, isWisher, metoo, wisherShare,
           toast(result.message);
         }
       } catch {
-        toast("Couldn't reach Wishcode. Check your connection and try again.");
+        toast("Could not reach Wishcode. Check your internet and try again.");
       }
     });
   }

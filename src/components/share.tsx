@@ -81,7 +81,7 @@ export function CopyLinkButton({
           setCopied(true);
           setTimeout(() => setCopied(false), 2000);
         } else {
-          toast("Couldn't copy. Long-press the address bar to copy the link.");
+          toast("Could not copy. Press and hold the address bar to copy the link.");
         }
       }}
       className={clsx(pill, className)}
@@ -190,7 +190,7 @@ export function DownloadImageButton({
       a.remove();
       setTimeout(() => URL.revokeObjectURL(url), 1000);
     } catch {
-      toast("Couldn't download the image. Try again.");
+      toast("Could not download the image. Try again.");
     } finally {
       setBusy(false);
     }

@@ -53,7 +53,7 @@ export const URL_ISSUE_MESSAGES: Record<UrlIssue, string> = {
   required: "Add the URL where the app lives.",
   too_long: "That URL is longer than 2,048 characters.",
   not_https: "Links must start with https://",
-  invalid: "That doesn't look like a valid URL.",
+  invalid: "That does not look like a valid link.",
 };
 
 export type LinkInput = { url: string; description: string; repoUrl: string | null };

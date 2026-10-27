@@ -48,7 +48,7 @@ export function useMetoo(wishId: number, initial: { active: boolean; count: numb
       }
     } catch {
       write(wishId, { active: current.active, count: current.count });
-      toast("Couldn't reach Wishcode. Check your connection and try again.");
+      toast("Could not reach Wishcode. Check your internet and try again.");
     }
   }, [wishId, initial]);
 

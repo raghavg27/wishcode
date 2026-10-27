@@ -129,7 +129,7 @@ export function PostLinkModal({ wishId, wishText, metooCount, developer, hasLink
         if (result.fields) setServerFields(result.fields);
       }
     } catch {
-      setError("Couldn't reach Wishcode. Check your connection and try again.");
+      setError("Could not reach Wishcode. Check your internet and try again.");
     }
     setBusy(false);
   }

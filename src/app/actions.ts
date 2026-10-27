@@ -44,7 +44,7 @@ export type PostWishResult =
 const BOT_CHECK_FAILED: ActionError = {
   ok: false,
   code: "bot_check_failed",
-  message: "Couldn't confirm you're not a bot. Please try again.",
+  message: "We could not check that you are a real person. Please try again.",
 };
 
 /**
@@ -122,7 +122,7 @@ export type MetooResult = { ok: true; active: boolean; metooCount: number } | Ac
 
 export async function setMetoo(wishId: number, active: boolean): Promise<MetooResult> {
   if (!isWishId(wishId) || typeof active !== "boolean") {
-    return { ok: false, code: "invalid", message: "Invalid request." };
+    return { ok: false, code: "invalid", message: "Something is wrong with that request. Please try again." };
   }
   try {
     const [deviceHash, ipKey] = await Promise.all([ensureDeviceHash(), clientIpKey()]);
@@ -164,7 +164,7 @@ export type ClaimResult = { ok: true; status: WishStatus; claimCount: number } |
 
 export async function setClaim(wishId: number, active: boolean): Promise<ClaimResult> {
   if (!isWishId(wishId) || typeof active !== "boolean") {
-    return { ok: false, code: "invalid", message: "Invalid request." };
+    return { ok: false, code: "invalid", message: "Something is wrong with that request. Please try again." };
   }
   try {
     const { developer } = await getViewer();
@@ -193,7 +193,7 @@ export async function postLink(
   wishId: number,
   input: { url: string; description: string; repoUrl?: string | null },
 ): Promise<PostLinkResult> {
-  if (!isWishId(wishId)) return { ok: false, code: "invalid", message: "Invalid request." };
+  if (!isWishId(wishId)) return { ok: false, code: "invalid", message: "Something is wrong with that request. Please try again." };
 
   const { value, issues } = validateLinkInput({
     url: String(input?.url ?? ""),
@@ -232,7 +232,7 @@ export async function postLink(
 export type RemoveLinkResult = { ok: true; wishId: number; status: WishStatus } | ActionError;
 
 export async function removeLink(linkId: number): Promise<RemoveLinkResult> {
-  if (!isWishId(linkId)) return { ok: false, code: "invalid", message: "Invalid request." };
+  if (!isWishId(linkId)) return { ok: false, code: "invalid", message: "Something is wrong with that request. Please try again." };
   try {
     const { developer } = await getViewer();
     if (!developer) return UNAUTHENTICATED;
@@ -255,7 +255,7 @@ export async function removeLink(linkId: number): Promise<RemoveLinkResult> {
 const INVALID_TOKEN: ActionError = {
   ok: false,
   code: "invalid_token",
-  message: "This link has expired or is invalid.",
+  message: "This link has expired or does not work.",
 };
 
 type VerdictRow = {
@@ -308,7 +308,7 @@ function applyVerdict(row: VerdictRow): VerdictResult {
 /** Sets (true/false) or clears (null) this browser's vote on a link. */
 export async function setVerdict(linkId: number, works: boolean | null): Promise<VerdictResult> {
   if (!isWishId(linkId) || (works !== null && typeof works !== "boolean")) {
-    return { ok: false, code: "invalid", message: "Invalid request." };
+    return { ok: false, code: "invalid", message: "Something is wrong with that request. Please try again." };
   }
   try {
     // A browser without a device cookie has never me-too'd or wished.
@@ -330,7 +330,7 @@ export type SubscribeResult = { ok: true; subscribed: true } | ActionError;
 
 /** Emails this address when someone posts a link on the wish. */
 export async function subscribe(wishId: number, email: string): Promise<SubscribeResult> {
-  if (!isWishId(wishId)) return { ok: false, code: "invalid", message: "Invalid request." };
+  if (!isWishId(wishId)) return { ok: false, code: "invalid", message: "Something is wrong with that request. Please try again." };
   const address = normalizeEmail(String(email ?? ""));
   if (emailIssue(address)) {
     return toActionError({ code: "P0001", message: "invalid_email" }, "subscribe");
@@ -359,7 +359,7 @@ export async function emailVerdict(token: string, linkId: number, works: boolean
   const subscriptionId = verifyEmailToken(token, env.emailTokenSecret);
   if (!subscriptionId) return INVALID_TOKEN;
   if (!isWishId(linkId) || typeof works !== "boolean") {
-    return { ok: false, code: "invalid", message: "Invalid request." };
+    return { ok: false, code: "invalid", message: "Something is wrong with that request. Please try again." };
   }
   try {
     const { data, error } = await db().rpc("set_verdict_by_subscription", {
@@ -416,7 +416,7 @@ export async function report(wishId: number, linkId: number | null, reason: Repo
     !isReportReason(reason) ||
     (reason === "malicious_link" && linkId === null)
   ) {
-    return { ok: false, code: "invalid", message: "Invalid request." };
+    return { ok: false, code: "invalid", message: "Something is wrong with that request. Please try again." };
   }
   try {
     const [deviceHash, ipKey] = await Promise.all([ensureDeviceHash(), clientIpKey()]);
@@ -445,7 +445,7 @@ export type ModerateResult = { ok: true } | ActionError;
  */
 export async function moderate(wishId: number, linkId: number | null, remove: boolean): Promise<ModerateResult> {
   if (!isWishId(wishId) || (linkId !== null && !isWishId(linkId)) || typeof remove !== "boolean") {
-    return { ok: false, code: "invalid", message: "Invalid request." };
+    return { ok: false, code: "invalid", message: "Something is wrong with that request. Please try again." };
   }
   try {
     const { developer } = await getViewer();

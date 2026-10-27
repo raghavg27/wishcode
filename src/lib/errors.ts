@@ -31,27 +31,27 @@ const RESETS = "The limit resets at midnight UTC.";
 
 const RATE_LIMIT_MESSAGES: Record<string, Record<string, string>> = {
   wish: {
-    device: `You've posted ${LIMITS.wishesPerDevicePerDay} wishes today. ${RESETS}`,
+    device: `You have posted ${LIMITS.wishesPerDevicePerDay} wishes today. ${RESETS}`,
     ip: `Your network has posted ${LIMITS.wishesPerNetworkPerDay} wishes today. ${RESETS}`,
   },
   metoo: {
-    device: `You've given ${LIMITS.metoosPerDevicePerDay} me-toos today. ${RESETS}`,
+    device: `You have given ${LIMITS.metoosPerDevicePerDay} me-toos today. ${RESETS}`,
     ip: `Your network has given ${LIMITS.metoosPerNetworkPerDay} me-toos today. ${RESETS}`,
   },
-  link: { developer: `You've posted ${LIMITS.linksPerDeveloperPerDay} links today. ${RESETS}` },
-  claim: { developer: `You've claimed ${LIMITS.claimsPerDeveloperPerDay} wishes today. ${RESETS}` },
+  link: { developer: `You have posted ${LIMITS.linksPerDeveloperPerDay} links today. ${RESETS}` },
+  claim: { developer: `You have claimed ${LIMITS.claimsPerDeveloperPerDay} wishes today. ${RESETS}` },
   verdict: {},
   subscribe: {
-    device: `You've turned on emails for ${LIMITS.subscriptionsPerDevicePerDay} wishes today. ${RESETS}`,
+    device: `You have turned on emails for ${LIMITS.subscriptionsPerDevicePerDay} wishes today. ${RESETS}`,
     ip: `Your network has turned on emails for ${LIMITS.subscriptionsPerNetworkPerDay} wishes today. ${RESETS}`,
   },
   unsubscribe: {},
   report: {
-    device: `You've sent ${LIMITS.reportsPerDevicePerDay} reports today. ${RESETS}`,
+    device: `You have sent ${LIMITS.reportsPerDevicePerDay} reports today. ${RESETS}`,
     ip: `Your network has sent ${LIMITS.reportsPerNetworkPerDay} reports today. ${RESETS}`,
   },
   reportLink: {
-    device: `You've sent ${LIMITS.reportsPerDevicePerDay} reports today. ${RESETS}`,
+    device: `You have sent ${LIMITS.reportsPerDevicePerDay} reports today. ${RESETS}`,
     ip: `Your network has sent ${LIMITS.reportsPerNetworkPerDay} reports today. ${RESETS}`,
   },
   moderate: {},
@@ -66,7 +66,7 @@ export function toActionError(err: unknown, action: keyof typeof RATE_LIMIT_MESS
         return {
           ok: false,
           code: "rate_limited",
-          message: RATE_LIMIT_MESSAGES[action]?.[scope] ?? "You're going a bit fast. Try again later.",
+          message: RATE_LIMIT_MESSAGES[action]?.[scope] ?? "You are going a bit fast. Try again later.",
           resetAt,
         };
       }
@@ -74,7 +74,7 @@ export function toActionError(err: unknown, action: keyof typeof RATE_LIMIT_MESS
         return {
           ok: false,
           code: "not_found",
-          message: action === "verdict" || action === "reportLink" ? "That link was removed." : "That wish doesn't exist.",
+          message: action === "verdict" || action === "reportLink" ? "That link was removed." : "That wish does not exist.",
         };
       case "wish_removed":
         return { ok: false, code: "wish_removed", message: "This wish was removed." };
@@ -82,10 +82,10 @@ export function toActionError(err: unknown, action: keyof typeof RATE_LIMIT_MESS
         return {
           ok: false,
           code: "already_linked",
-          message: "You've already posted a link on this wish. Remove it to post a new one.",
+          message: "You have already posted a link on this wish. Remove it to post a new one.",
         };
       case "forbidden":
-        return { ok: false, code: "forbidden", message: "You can't do that." };
+        return { ok: false, code: "forbidden", message: "You cannot do that." };
       case "not_eligible":
         return {
           ok: false,
@@ -93,7 +93,7 @@ export function toActionError(err: unknown, action: keyof typeof RATE_LIMIT_MESS
           message: action === "subscribe" ? "Tap Me too first to get emails." : "Only people who wanted this can vote.",
         };
       case "invalid_email":
-        return { ok: false, code: "invalid_email", message: "That email address doesn't look right." };
+        return { ok: false, code: "invalid_email", message: "That email address does not look right." };
       case "suppressed":
         return {
           ok: false,
@@ -105,7 +105,7 @@ export function toActionError(err: unknown, action: keyof typeof RATE_LIMIT_MESS
     }
   }
   if (e.code === "23514") {
-    return { ok: false, code: "invalid", message: "Some of that input isn't valid." };
+    return { ok: false, code: "invalid", message: "Some of what you entered is not right." };
   }
   if (e.code === "23505" && action === "link") {
     // Lost a race against our own concurrent submit: the unique index caught it.

@@ -102,7 +102,7 @@ export function LedgerList({ status, sort, initialItems, initialCursor, initialM
             className={`${buttonStyles.quiet} aria-disabled:opacity-50`}
           >
             {loading ? <Loader2 className="size-4 animate-spin" aria-hidden /> : null}
-            {error ? "Couldn't load more. Try again" : loading ? "Loading…" : "Load more wishes"}
+            {error ? "Could not load more. Try again" : loading ? "Loading…" : "Load more wishes"}
           </a>
         </div>
       )}
