@@ -1,5 +1,6 @@
 import { Coffee } from "lucide-react";
 import Link from "next/link";
+import { CodehypeBadge } from "@/components/codehype-badge";
 import { SUPPORT_URL } from "@/lib/site";
 
 export function SiteFooter() {
@@ -21,26 +22,29 @@ export function SiteFooter() {
             Support this project
           </a>
         </div>
-        <nav aria-label="Footer" className="flex flex-wrap items-center gap-x-5 gap-y-2 text-label-sm text-ink-muted">
-          <Link href="/wishes" className="hover:text-ink">
-            Wishes
-          </Link>
-          <Link href="/developers" className="hover:text-ink">
-            Builders
-          </Link>
-          <Link href="/principles" className="hover:text-ink">
-            Principles
-          </Link>
-          <Link href="/about" className="hover:text-ink">
-            About
-          </Link>
-          <Link href="/privacy" className="hover:text-ink">
-            Privacy
-          </Link>
-          <Link href="/terms" className="hover:text-ink">
-            Terms
-          </Link>
-        </nav>
+        <div className="flex flex-col items-start gap-4 md:items-end">
+          <nav aria-label="Footer" className="flex flex-wrap items-center gap-x-5 gap-y-2 text-label-sm text-ink-muted">
+            <Link href="/wishes" className="hover:text-ink">
+              Wishes
+            </Link>
+            <Link href="/developers" className="hover:text-ink">
+              Builders
+            </Link>
+            <Link href="/principles" className="hover:text-ink">
+              Principles
+            </Link>
+            <Link href="/about" className="hover:text-ink">
+              About
+            </Link>
+            <Link href="/privacy" className="hover:text-ink">
+              Privacy
+            </Link>
+            <Link href="/terms" className="hover:text-ink">
+              Terms
+            </Link>
+          </nav>
+          <CodehypeBadge className="w-[140px]" />
+        </div>
       </div>
     </footer>
   );

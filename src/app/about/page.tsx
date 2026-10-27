@@ -1,6 +1,7 @@
 import { Mail } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { CodehypeBadge } from "@/components/codehype-badge";
 import { OPERATOR } from "@/lib/legal";
 import { SUPPORT_URL } from "@/lib/site";
 
@@ -66,6 +67,7 @@ export default function AboutPage() {
           How it works
         </Link>
       </div>
+      <CodehypeBadge className="mt-12 w-[180px]" />
     </main>
   );
 }
