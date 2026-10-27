@@ -12,29 +12,29 @@ export async function POST(request: NextRequest) {
   const params = request.nextUrl.searchParams;
   if (params.has("d")) return stopDeveloper(params.get("d"));
   const subscriptionId = verifyEmailToken(params.get("t"), env.emailTokenSecret);
-  if (!subscriptionId) return new Response("This link has expired or is invalid.", { status: 400 });
+  if (!subscriptionId) return new Response("This link has expired or does not work.", { status: 400 });
   const all = params.get("all") === "1";
 
   const { error } = await db().rpc("unsubscribe", { p_subscription_id: subscriptionId, p_all: all });
   if (error) {
-    if (error.message === "not_found") return new Response("This link has expired or is invalid.", { status: 400 });
+    if (error.message === "not_found") return new Response("This link has expired or does not work.", { status: 400 });
     console.error("[unsubscribe] one-click failed", { subscriptionId, code: error.code });
     return new Response("Something went wrong. Please try again.", { status: 500 });
   }
-  return new Response(all ? "You won't get any more Wishcode emails." : "You won't get more emails about this wish.", {
+  return new Response(all ? "You will not get any more Wishcode emails." : "You will not get more emails about this wish.", {
     status: 200,
   });
 }
 
 async function stopDeveloper(token: string | null) {
   const linkId = verifyLinkToken(token, env.emailTokenSecret);
-  if (!linkId) return new Response("This link has expired or is invalid.", { status: 400 });
+  if (!linkId) return new Response("This link has expired or does not work.", { status: 400 });
 
   const { error } = await db().rpc("suppress_developer_email", { p_link_id: linkId });
   if (error) {
-    if (error.message === "not_found") return new Response("This link has expired or is invalid.", { status: 400 });
+    if (error.message === "not_found") return new Response("This link has expired or does not work.", { status: 400 });
     console.error("[unsubscribe] developer one-click failed", { linkId, code: error.code });
     return new Response("Something went wrong. Please try again.", { status: 500 });
   }
-  return new Response("You won't get any more Wishcode emails.", { status: 200 });
+  return new Response("You will not get any more Wishcode emails.", { status: 200 });
 }

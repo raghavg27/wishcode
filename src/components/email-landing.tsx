@@ -40,7 +40,7 @@ export function EmailNotice({
 }
 
 export function InvalidEmailLink() {
-  return <EmailNotice title="This link has expired or is invalid." body="Links in Wishcode emails only work as sent." />;
+  return <EmailNotice title="This link has expired or does not work." body="Links in Wishcode emails only work exactly as they were sent." />;
 }
 
 export function WishQuote({ text }: { text: string }) {

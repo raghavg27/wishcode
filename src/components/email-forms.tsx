@@ -47,16 +47,16 @@ export function EmailVerdictForm({
   if (result && !result.ok) {
     const body =
       result.code === "not_eligible"
-        ? "Your vote can't be counted because you took back your me-too on this wish."
+        ? "Your vote cannot be counted because you took back your me-too on this wish."
         : result.message;
-    return <Outcome title="Your vote wasn't counted" body={body} wishHref={wishHref} />;
+    return <Outcome title="Your vote was not counted" body={body} wishHref={wishHref} />;
   }
 
   return (
     <form action={submit} className="mt-8">
       <button type="submit" disabled={pending} className={`${works ? buttonStyles.amber : buttonStyles.dark} px-6 py-3`}>
         {works ? <Check className="size-4" aria-hidden /> : <X className="size-4" aria-hidden />}
-        {works ? "Yes, it works" : "No, it doesn't work"}
+        {works ? "Yes, it works" : "No, it does not work"}
       </button>
     </form>
   );
@@ -76,7 +76,7 @@ export function UnsubscribeForm({
   if (result?.ok) {
     return (
       <Outcome
-        title={result.all ? "You won't get any more Wishcode emails." : "You won't get more emails about this wish."}
+        title={result.all ? "You will not get any more Wishcode emails." : "You will not get more emails about this wish."}
         wishHref={wishHref}
       />
     );

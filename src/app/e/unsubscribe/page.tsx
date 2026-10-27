@@ -56,8 +56,8 @@ async function UnsubscribeView({ searchParams }: Pick<PageProps<"/e/unsubscribe"
       <h1 className="font-serif text-display-sm text-ink">{all ? "Stop all Wishcode emails?" : "Stop emails for this wish?"}</h1>
       <p className="mt-3 mb-6 text-[15px] leading-6 text-ink-muted">
         {all
-          ? "You won't get emails about any wish, including ones you subscribe to later."
-          : "You won't hear when someone posts another link for it."}
+          ? "You will not get emails about any wish, including ones you sign up for later."
+          : "You will not hear when someone posts another link for it."}
       </p>
       {wish?.text && !wish.removed && <WishQuote text={wish.text} />}
       <UnsubscribeForm action={unsubscribe.bind(null, token, all)} all={all} wishHref={href} />
@@ -79,7 +79,7 @@ async function DeveloperStopView({ token }: { token: string }) {
     <>
       <h1 className="font-serif text-display-sm text-ink">Stop all Wishcode emails?</h1>
       <p className="mt-3 mb-6 text-[15px] leading-6 text-ink-muted">
-        You won&apos;t hear when your builds are verified, or about any wish you subscribe to.
+        You will not hear when your builds are confirmed, or about any wish you sign up for.
       </p>
       <UnsubscribeForm action={stopDeveloperEmails.bind(null, token)} all wishHref={href} />
     </>

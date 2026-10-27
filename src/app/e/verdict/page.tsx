@@ -40,7 +40,7 @@ async function VerdictView({ searchParams }: Pick<PageProps<"/e/verdict">, "sear
   const wish = await getWish(context.wish_id);
   const href = wishPath(context.wish_id);
   if (!wish || wish.removed || !wish.text) {
-    return <EmailNotice title="This wish was removed" body="It was taken down, so there's nothing to vote on." />;
+    return <EmailNotice title="This wish was removed" body="It was taken down, so there is nothing to vote on." />;
   }
   const link = wish.links.find((l) => l.id === linkId);
   if (!link) {
@@ -59,7 +59,7 @@ async function VerdictView({ searchParams }: Pick<PageProps<"/e/verdict">, "sear
       <p className="mt-6 text-[15px] leading-6 text-ink-muted">
         {works
           ? "Confirm that this app does what the wish asked for."
-          : "Tell others this app doesn't do what the wish asked for."}{" "}
+          : "Tell others this app does not do what the wish asked for."}{" "}
         You can change your vote on the wish page.
       </p>
       <EmailVerdictForm action={emailVerdict.bind(null, token, linkId, works)} works={works} wishHref={href} wisherShare={share} />
