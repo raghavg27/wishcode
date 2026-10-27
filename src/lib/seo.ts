@@ -7,7 +7,7 @@ import type { DeveloperProfile, WishDetail } from "@/lib/types";
 // each one keeps the site name, type and default card.
 
 export const SITE_NAME = "Wishcode";
-export const DEFAULT_TITLE = "Wishcode — app ideas people wish existed";
+export const DEFAULT_TITLE = "Wishcode: app ideas people wish existed";
 export const SITE_DESCRIPTION = 
   "Post an app idea you wish existed. No signup. See how many people want the same thing, and developers build it and share the link.";
 

@@ -63,7 +63,7 @@ describe("pageMetadata", () => {
   it("leaves the title to the layout default when omitted", () => {
     const meta = pageMetadata({ description: "Home", path: "/" });
     expect(meta).not.toHaveProperty("title");
-    expect(meta.openGraph?.title).toBe("Wishcode — app ideas people wish existed");
+    expect(meta.openGraph?.title).toBe("Wishcode: app ideas people wish existed");
   });
 });
 

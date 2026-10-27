@@ -12,7 +12,7 @@ export const metadata: Metadata = pageMetadata({
 const PRINCIPLES = [
   {
     title: "Anyone can wish.",
-    body: `Post one sentence (${WISH_MIN}–${WISH_MAX} characters). No account. Leave an email if you want, and I'll tell you when someone builds it. I only use it for that, and every email has an unsubscribe link. Wishes stay up unless they're spam, abusive or share someone's private information.`,
+    body: `Post one sentence (${WISH_MIN} to ${WISH_MAX} characters). No account. Leave an email if you want, and I'll tell you when someone builds it. I only use it for that, and every email has an unsubscribe link. Wishes stay up unless they're spam, abusive or share someone's private information.`,
   },
   {
     title: "Everyone can see the demand.",

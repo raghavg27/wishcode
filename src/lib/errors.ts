@@ -101,7 +101,7 @@ export function toActionError(err: unknown, action: keyof typeof RATE_LIMIT_MESS
           message: "This address has turned off all Wishcode emails.",
         };
       case "invalid_text":
-        return { ok: false, code: "invalid", message: "Wishes need 20–200 characters." };
+        return { ok: false, code: "invalid", message: "A wish needs 20 to 200 characters." };
     }
   }
   if (e.code === "23514") {
