@@ -4,9 +4,11 @@ import { Suspense } from "react";
 import { signOut } from "@/app/actions";
 import { HeaderShell } from "@/components/header-shell";
 import { LogoMark } from "@/components/icons";
+import { LiveVisitors } from "@/components/live-visitors";
 import { NavLinks, NavLinksView } from "@/components/nav-links";
 import { Avatar } from "@/components/ui";
 import { getViewer } from "@/lib/auth";
+import { env } from "@/lib/env";
 import { developerPath, SUPPORT_URL } from "@/lib/site";
 
 function ConnectLink() {
@@ -71,6 +73,7 @@ export function SiteHeader() {
           </Suspense>
         </div>
         <div className="flex items-center gap-3 sm:gap-5">
+          <LiveVisitors url={env.supabaseUrl} publishableKey={env.supabasePublishableKey} />
           <a
             href={SUPPORT_URL}
             target="_blank"
