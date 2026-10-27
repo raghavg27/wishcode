@@ -230,6 +230,8 @@ Set these variables in `.env.local` for local development, and in Vercel for dep
 | `SUPABASE_PUBLISHABLE_KEY` | Yes | The publishable key. Wishcode uses it only for Supabase Auth. |
 | `SUPABASE_SECRET_KEY` | Yes | The secret key. The server uses it for all database calls. Keep it on the server. |
 | `SITE_URL` | No | The canonical URL for share links, share cards and the OAuth redirect. On Vercel, the default is the production domain. Set it for a custom domain. |
+| `GOOGLE_SITE_VERIFICATION` | No | The Google Search Console token from the HTML tag verification method. The site then adds the `google-site-verification` meta tag. |
+| `BING_SITE_VERIFICATION` | No | The Bing Webmaster Tools token from the HTML meta tag verification method. The site then adds the `msvalidate.01` meta tag. |
 | `EMBEDDINGS_FUNCTION` | No | The name of the embeddings Edge Function. Set it to `embed` after you deploy the function. |
 | `GMAIL_USER` | No | The Gmail address that sends the emails. |
 | `GMAIL_APP_PASSWORD` | No | The Google app password for `GMAIL_USER`. |

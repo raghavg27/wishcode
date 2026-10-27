@@ -5,6 +5,7 @@ import { MobileNav } from "@/components/nav-links";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { Toaster } from "@/components/toaster";
+import { DEFAULT_TITLE, OPEN_GRAPH_BASE, SITE_CARD, SITE_NAME } from "@/lib/seo";
 import { siteUrl } from "@/lib/site";
 import "./globals.css";
 
@@ -26,12 +27,17 @@ const description =
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl()),
-  title: { default: "Wishcode — apps people wish existed", template: "%s · Wishcode" },
+  title: { default: DEFAULT_TITLE, template: `%s · ${SITE_NAME}` },
   description,
-  applicationName: "Wishcode",
-  openGraph: { type: "website", siteName: "Wishcode", description },
-  twitter: { card: "summary_large_image" },
+  applicationName: SITE_NAME,
+  openGraph: { ...OPEN_GRAPH_BASE, description, images: [SITE_CARD] },
+  twitter: { card: "summary_large_image", images: [SITE_CARD.url] },
   formatDetection: { telephone: false },
+  // Search Console and Bing Webmaster Tools ownership tags, when configured.
+  verification: {
+    google: process.env.GOOGLE_SITE_VERIFICATION,
+    other: process.env.BING_SITE_VERIFICATION ? { "msvalidate.01": process.env.BING_SITE_VERIFICATION } : undefined,
+  },
 };
 
 export const viewport: Viewport = {
