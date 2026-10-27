@@ -1,5 +1,6 @@
 import { withSentryConfig } from "@sentry/nextjs/config";
 import type { NextConfig } from "next";
+import { HTML_LIMITED_BOT_UA_RE } from "next/dist/shared/lib/router/utils/html-bots";
 
 // The no-JS sign-in form redirects through Supabase Auth to GitHub, so both
 // must be allowed as form targets.
@@ -24,6 +25,10 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
   poweredByHeader: false,
+  // Next streams page metadata into <body> for Googlebot because it runs JS.
+  // Google may ignore a canonical or noindex found there, so Googlebot gets
+  // it in <head> like the other crawlers on Next's default list.
+  htmlLimitedBots: new RegExp(`${HTML_LIMITED_BOT_UA_RE.source}|Googlebot`, "i"),
   // PostHog's API paths end in "/", so the relay needs them kept. proxy.ts
   // still redirects pages with a trailing slash.
   skipTrailingSlashRedirect: true,
