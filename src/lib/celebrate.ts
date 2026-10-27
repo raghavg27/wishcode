@@ -1,4 +1,4 @@
-// Confetti for the three "it came true" moments. canvas-confetti is imported
+// Confetti for posting a wish and the three "it came true" moments. canvas-confetti is imported
 // on demand so it never ships in a page's initial bundle.
 
 const COLORS = ["#f4b740", "#1a7d52", "#1d1b45"]; // gold, leaf, night

@@ -1,19 +1,20 @@
 import clsx from "clsx";
-import { ArrowLeft, ArrowUpRight, CircleCheck, Flag, Gavel, Hand, History, ShieldCheck, Sparkles, SquareTerminal, Sprout } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, CircleCheck, Flag, Gavel, Hand, History, ShieldCheck, SquareTerminal, Sprout } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { DeveloperPanel, RemoveOwnLink } from "@/components/developer-panel";
-import { EmailOptIn, WisherOptInCard } from "@/components/email-opt-in";
+import { EmailOptIn } from "@/components/email-opt-in";
 import { GithubIcon, LogoMark } from "@/components/icons";
 import { JsonLd } from "@/components/json-ld";
 import { FlaggedLink, LinkVerdictPanel } from "@/components/link-verdict";
 import { MetooButton } from "@/components/metoo";
 import { PostLinkModal, PostLinkTrigger } from "@/components/post-link";
+import { PostedMoment } from "@/components/posted-moment";
 import { ModerationActions, ReportButton } from "@/components/report";
 import { ScrollIntoView } from "@/components/scroll-into-view";
-import { CopyLinkButton, DownloadImageButton, ShareIconButton, ShareTargets } from "@/components/share";
+import { DownloadImageButton, ShareIconButton, ShareTargets } from "@/components/share";
 import { ShareMomentButton } from "@/components/share-moment";
 import { TimeAgo } from "@/components/time-ago";
 import { DevChip, Disclaimer, Skeleton, StatusChip, buttonStyles, statusLabel } from "@/components/ui";
@@ -157,7 +158,6 @@ async function WishView({
   const [wish] = withLiveCounts([cached], live);
   const metooActive = live.mine.includes(id);
   const metoo = { active: metooActive, count: wish.metoo_count };
-  const askWisher = sp.posted === "1" && !wish.removed && viewer.is_wisher && !viewer.subscribed;
   const viewerLink = developer ? wish.links.find((l) => l.developer.id === developer.id) : undefined;
   const claimed = Boolean(developer && wish.claims.some((c) => c.developer.id === developer.id));
   const path = wishPath(wish.id);
@@ -170,15 +170,15 @@ async function WishView({
     <>
       {!wish.removed && wish.text && <JsonLd data={wishSchema({ ...wish, text: wish.text })} />}
       {sp.posted === "1" && !wish.removed && (
-        <div className="mb-6 flex flex-col gap-3 rounded-xl border border-amber/40 bg-craft-soft px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-          <p className="flex items-center gap-2 text-label font-medium text-ink">
-            <Sparkles className="size-4 text-primary" aria-hidden />
-            Your wish is live. Share it so others can me-too it.
-          </p>
-          <CopyLinkButton path={path} />
-        </div>
+        <PostedMoment
+          wishId={wish.id}
+          path={path}
+          text={shareText}
+          image={wishCardSrc(wish)}
+          filename={cardFilename(wish.id)}
+          askEmail={viewer.is_wisher && !viewer.subscribed}
+        />
       )}
-      {askWisher && <WisherOptInCard wishId={wish.id} subscribed={viewer.subscribed} />}
       {claimed && !wish.removed && (
         <div className="mb-6 flex items-center gap-2 rounded-xl bg-leaf-soft px-4 py-3 text-label font-medium text-ink">
           <CircleCheck className="size-4 text-leaf" aria-hidden />
@@ -201,7 +201,7 @@ async function WishView({
           {wish.removed ? (
             <RemovedHero wish={wish} />
           ) : (
-            <WishHero wish={wish} metooActive={metooActive} viewer={viewer} showOptIn={!askWisher} />
+            <WishHero wish={wish} metooActive={metooActive} viewer={viewer} />
           )}
 
           {!wish.removed && (
@@ -435,12 +435,10 @@ function WishHero({
   wish,
   metooActive,
   viewer,
-  showOptIn,
 }: {
   wish: WishDetail;
   metooActive: boolean;
   viewer: ViewerWishState;
-  showOptIn: boolean;
 }) {
   return (
     <article className="card relative overflow-hidden p-6 sm:p-8">
@@ -465,15 +463,13 @@ function WishHero({
         <ShieldCheck className="size-3.5" aria-hidden />
         Wishers are 100% anonymous. Tap to add your me-too to this wish.
       </p>
-      {showOptIn && (
-        <EmailOptIn
-          wishId={wish.id}
-          isWisher={viewer.is_wisher}
-          subscribed={viewer.subscribed}
-          metoo={{ active: metooActive, count: wish.metoo_count }}
-          className="mt-4"
-        />
-      )}
+      <EmailOptIn
+        wishId={wish.id}
+        isWisher={viewer.is_wisher}
+        subscribed={viewer.subscribed}
+        metoo={{ active: metooActive, count: wish.metoo_count }}
+        className="mt-4"
+      />
       <p className="mt-6 text-label text-ink-muted sm:hidden">
         <span className="font-semibold text-ink tabular">{pluralize(wish.metoo_count, "me-too")}</span>
         {wish.live_link_count > 0 && ` · ${pluralize(wish.live_link_count, "ship")}`}

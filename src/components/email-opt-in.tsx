@@ -1,6 +1,6 @@
 "use client";
 
-import { Mail, MailCheck, X } from "lucide-react";
+import { Mail, MailCheck } from "lucide-react";
 import { useCallback, useEffect, useId, useState, useSyncExternalStore, useTransition } from "react";
 import { subscribe } from "@/app/actions";
 import { useMetoo } from "@/components/metoo";
@@ -9,7 +9,7 @@ import { track } from "@/lib/analytics";
 import { EMAIL_MAX } from "@/lib/config";
 import { emailIssue, normalizeEmail } from "@/lib/validation";
 
-// "Email me when it's built": the wisher's card after posting and the
+// "Email me when it's built": the wisher's opt-in after posting and the
 // me-too-er's inline link share one subscribed state per wish. The server
 // only ever says subscribed or not; the address stays in this browser's
 // localStorage (to pre-fill the field) and the subscribe action.
@@ -98,38 +98,27 @@ export function EmailOptIn({ wishId, isWisher, subscribed: initial, metoo, class
   );
 }
 
-/** Shown to the wisher right after posting (/w/:id?posted=1). Dismissible. */
-export function WisherOptInCard({ wishId, subscribed: initial }: { wishId: number; subscribed: boolean }) {
+/** The wisher's opt-in in the posted moment (/w/:id?posted=1). */
+export function WisherOptIn({ wishId, subscribed: initial }: { wishId: number; subscribed: boolean }) {
   const isSubscribed = useSubscribed(wishId, initial);
-  const [dismissed, setDismissed] = useState(false);
   const id = useId();
-  if (dismissed) return null;
 
+  if (isSubscribed) {
+    return (
+      <p className="flex items-center gap-2 text-label font-medium text-ink" role="status">
+        <MailCheck className="size-4 text-leaf" aria-hidden /> {SUBSCRIBED_TEXT}
+      </p>
+    );
+  }
   return (
-    <section aria-labelledby={`${id}-title`} className="card relative mb-6 p-5 pr-12">
-      <button
-        type="button"
-        onClick={() => setDismissed(true)}
-        aria-label="Dismiss"
-        className="absolute top-3 right-3 flex size-8 items-center justify-center rounded-full text-ink-muted hover:bg-surface-low hover:text-ink"
-      >
-        <X className="size-4" aria-hidden />
-      </button>
-      {isSubscribed ? (
-        <p id={`${id}-title`} className="flex items-center gap-2 text-label font-medium text-ink" role="status">
-          <MailCheck className="size-4 text-leaf" aria-hidden /> {SUBSCRIBED_TEXT}
-        </p>
-      ) : (
-        <>
-          <h2 id={`${id}-title`} className="flex items-center gap-2 text-label font-semibold text-ink">
-            <Mail className="size-4 text-primary" aria-hidden /> Want to know when someone builds this?
-          </h2>
-          <p className="mt-1 mb-3 text-label-sm text-ink-muted">
-            We&apos;ll email you when a developer posts a live link. Optional, and every email has an unsubscribe link.
-          </p>
-          <EmailForm wishId={wishId} />
-        </>
-      )}
+    <section aria-labelledby={`${id}-title`}>
+      <h3 id={`${id}-title`} className="flex items-center gap-2 text-label font-semibold text-ink">
+        <Mail className="size-4 text-primary" aria-hidden /> Want to know when someone builds this?
+      </h3>
+      <p className="mt-1 mb-3 text-label-sm text-ink-muted">
+        We&apos;ll email you when a developer posts a live link. Optional, and every email has an unsubscribe link.
+      </p>
+      <EmailForm wishId={wishId} />
     </section>
   );
 }

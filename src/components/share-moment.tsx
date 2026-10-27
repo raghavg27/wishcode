@@ -62,7 +62,7 @@ export function ShareMoment({ share, titleId, onDone }: { share: ShareMomentProp
   );
 }
 
-function CardPreview({ src }: { src: string }) {
+export function CardPreview({ src }: { src: string }) {
   const ref = useRef<HTMLImageElement>(null);
   const [state, setState] = useState<"loading" | "loaded" | "failed">("loading");
 
