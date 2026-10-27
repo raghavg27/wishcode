@@ -6,4 +6,4 @@ export const CONTACT_EMAIL = "deploylab.ai@gmail.com";
 export const GOVERNING_LAW = "India";
 export const MIN_AGE = 18;
 /** When the privacy policy or terms last changed. */
-export const LEGAL_UPDATED = "22 October 2026";
+export const LEGAL_UPDATED = "27 October 2026";

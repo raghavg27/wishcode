@@ -72,6 +72,10 @@ export default function PrivacyPage() {
             <strong>Error reports.</strong> When something breaks, Sentry receives the error, the page it happened on, your
             browser and device type, and your IP address. It sets no cookies and records no sessions.
           </li>
+          <li>
+            <strong>The CodeHype badge.</strong> The footer and the About page show a badge loaded from CodeHype, so your
+            browser sends CodeHype your IP address, browser details and the page you&apos;re on when it loads the badge.
+          </li>
         </ul>
         <p>I don&apos;t use advertising cookies, sell your data, or share it with advertisers.</p>
       </LegalSection>
@@ -99,6 +103,7 @@ export default function PrivacyPage() {
           <li>Google (Gmail) delivers the emails.</li>
           <li>PostHog provides the analytics.</li>
           <li>Sentry receives error reports.</li>
+          <li>CodeHype serves the badge in the footer and on the About page.</li>
         </ul>
         <p>
           These providers may process data in the United States and other countries. I&apos;ll also disclose data if
