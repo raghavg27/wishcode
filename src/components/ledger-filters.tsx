@@ -2,6 +2,7 @@ import clsx from "clsx";
 import Link from "next/link";
 import type { Sort, StatusFilter } from "@/lib/config";
 import { formatNumber } from "@/lib/format";
+import { feedPath } from "@/lib/site";
 import type { LedgerStats } from "@/lib/types";
 
 const TABS: { value: StatusFilter; label: string; badge: string }[] = [
@@ -10,14 +11,6 @@ const TABS: { value: StatusFilter; label: string; badge: string }[] = [
   { value: "being_built", label: "Being built", badge: "bg-craft-chip text-[#2f1500]" },
   { value: "fulfilled", label: "Fulfilled", badge: "bg-leaf-chip text-leaf-ink" },
 ];
-
-function href(status: StatusFilter, sort: Sort) {
-  const params = new URLSearchParams();
-  if (status !== "all") params.set("status", status);
-  if (sort !== "newest") params.set("sort", sort);
-  const qs = params.toString();
-  return qs ? `/wishes?${qs}` : "/wishes";
-}
 
 export function LedgerFilters({ status, sort, counts }: { status: StatusFilter; sort: Sort; counts?: LedgerStats["counts"] }) {
   return (
@@ -28,7 +21,7 @@ export function LedgerFilters({ status, sort, counts }: { status: StatusFilter; 
           return (
             <Link
               key={t.value}
-              href={href(t.value, sort)}
+              href={feedPath(t.value, sort)}
               scroll={false}
               aria-current={active ? "page" : undefined}
               className={clsx(
@@ -48,7 +41,7 @@ export function LedgerFilters({ status, sort, counts }: { status: StatusFilter; 
         {(["newest", "top"] as const).map((s) => (
           <Link
             key={s}
-            href={href(status, s)}
+            href={feedPath(status, s)}
             scroll={false}
             aria-current={s === sort ? "page" : undefined}
             className={clsx(

@@ -6,6 +6,7 @@ import { Inbox, Lamp, Laptop, Tumbleweed } from "@/components/doodles";
 import { EmptyState, buttonStyles } from "@/components/ui";
 import { WishCard } from "@/components/wish-card";
 import type { Sort, StatusFilter } from "@/lib/config";
+import { feedPath } from "@/lib/site";
 import type { WishCard as Wish } from "@/lib/types";
 
 type Props = {
@@ -90,10 +91,19 @@ export function LedgerList({ status, sort, initialItems, initialCursor, initialM
       <div ref={sentinel} />
       {cursor && (
         <div className="flex justify-center py-2">
-          <button type="button" onClick={loadMore} disabled={loading} className={buttonStyles.quiet}>
+          {/* A real link, so crawlers and no-JS visitors can page through; with JS it appends in place. */}
+          <a
+            href={feedPath(status, sort, cursor)}
+            onClick={(e) => {
+              e.preventDefault();
+              loadMore();
+            }}
+            aria-disabled={loading || undefined}
+            className={`${buttonStyles.quiet} aria-disabled:opacity-50`}
+          >
             {loading ? <Loader2 className="size-4 animate-spin" aria-hidden /> : null}
             {error ? "Couldn't load more. Try again" : loading ? "Loading…" : "Load more wishes"}
-          </button>
+          </a>
         </div>
       )}
     </div>

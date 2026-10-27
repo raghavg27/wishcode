@@ -9,11 +9,17 @@ import { parseSort, parseStatus } from "@/lib/config";
 import { getLedgerPage, getLiveMetoos, getStats, withLiveCounts } from "@/lib/data";
 import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = pageMetadata({
+const metadata: Metadata = pageMetadata({
   title: "App ideas people want",
   description: "Browse app ideas posted by real people, sorted by how many want them. Open, being built, or already built.",
   path: "/wishes",
 });
+
+// Later pages (?cursor=) are for following links to older wishes, not for search results.
+export async function generateMetadata({ searchParams }: PageProps<"/wishes">): Promise<Metadata> {
+  const { cursor } = await searchParams;
+  return cursor ? { ...metadata, robots: { index: false, follow: true } } : metadata;
+}
 
 export default function LedgerPage({ searchParams }: PageProps<"/wishes">) {
   return (
@@ -44,14 +50,15 @@ async function Feed({ searchParams }: Pick<PageProps<"/wishes">, "searchParams">
   const params = await searchParams;
   const status = parseStatus(params.status);
   const sort = parseSort(params.sort);
-  const [page, stats] = await Promise.all([getLedgerPage(status, sort, null), getStats().catch(() => null)]);
+  const cursor = typeof params.cursor === "string" ? params.cursor : null;
+  const [page, stats] = await Promise.all([getLedgerPage(status, sort, cursor), getStats().catch(() => null)]);
   const live = await getLiveMetoos(page.items.map((w) => w.id));
 
   return (
     <>
       <LedgerFilters status={status} sort={sort} counts={stats?.counts} />
       <LedgerList
-        key={`${status}:${sort}`}
+        key={`${status}:${sort}:${cursor}`}
         status={status}
         sort={sort}
         initialItems={withLiveCounts(page.items, live)}

@@ -1,3 +1,5 @@
+import type { Sort, StatusFilter } from "@/lib/config";
+
 // Absolute site URL for share links, OG images and OAuth redirects.
 export function siteUrl(): string {
   const explicit = process.env.SITE_URL;
@@ -12,6 +14,16 @@ export const SUPPORT_URL = "https://buymeacoffee.com/raghavg27";
 
 export function wishPath(id: number | string) {
   return `/w/${id}`;
+}
+
+/** The wishes feed with a filter, sort and page cursor; defaults are left out. */
+export function feedPath(status: StatusFilter, sort: Sort, cursor?: string | null) {
+  const params = new URLSearchParams();
+  if (status !== "all") params.set("status", status);
+  if (sort !== "newest") params.set("sort", sort);
+  if (cursor) params.set("cursor", cursor);
+  const qs = params.toString();
+  return qs ? `/wishes?${qs}` : "/wishes";
 }
 
 export function developerPath(handle: string) {
