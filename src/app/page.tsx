@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { GithubIcon } from "@/components/icons";
+import { JsonLd } from "@/components/json-ld";
 import { ClosingStar } from "@/components/landing/closing-star";
 import { Hero } from "@/components/landing/hero";
 import { NightSky } from "@/components/landing/night-sky";
@@ -11,7 +12,7 @@ import { WishPrompt } from "@/components/landing/wish-prompt";
 import { WishStory } from "@/components/landing/wish-story";
 import { getStats } from "@/lib/data";
 import { formatNumber, pluralize } from "@/lib/format";
-import { pageMetadata, SITE_DESCRIPTION } from "@/lib/seo";
+import { pageMetadata, SITE_DESCRIPTION, siteSchema } from "@/lib/seo";
 import { wishPath } from "@/lib/site";
 
 export const metadata: Metadata = pageMetadata({ description: SITE_DESCRIPTION, path: "/" });
@@ -33,6 +34,7 @@ const SECTION_TITLE = "font-serif text-[clamp(2.5rem,4.8vw,4.25rem)] leading-[1]
 export default function LandingPage() {
   return (
     <main>
+      <JsonLd data={siteSchema()} />
       <SmoothScroll />
       {/* Slides under the sticky header, which turns night blue over data-night. */}
       <div data-night className="relative -mt-16 bg-[linear-gradient(180deg,var(--color-midnight)_0%,var(--color-ink)_100%)] text-inverse-ink [overflow-x:clip]">

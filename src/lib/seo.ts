@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { developerPath, isGithubAvatar, siteUrl, wishLabel, wishPath } from "@/lib/site";
+import type { DeveloperProfile, WishDetail } from "@/lib/types";
 
 // Metadata from different segments merges shallowly: a page that sets
 // openGraph replaces the layout's whole object. Pages build theirs here so
@@ -42,4 +44,70 @@ export function pageMetadata({ title, description, path, image }: PageMeta): Met
  */
 export function jsonLd(data: unknown): string {
   return JSON.stringify(data).replace(/</g, "\\u003c");
+}
+
+// Structured data (schema.org JSON-LD). URLs are absolute: crawlers read the
+// script without resolving it against the page.
+
+export function siteSchema() {
+  const url = siteUrl();
+  return [
+    { "@context": "https://schema.org", "@type": "WebSite", name: SITE_NAME, url, description: SITE_DESCRIPTION },
+    { "@context": "https://schema.org", "@type": "Organization", name: SITE_NAME, url, logo: `${url}/icon-512.png` },
+  ];
+}
+
+/** A wish as a forum post: wishers are anonymous, me-toos are likes, live links are what was shared in reply. */
+export function wishSchema(wish: WishDetail & { text: string }) {
+  const base = siteUrl();
+  const url = `${base}${wishPath(wish.id)}`;
+  const links = wish.links.filter((l) => l.verdict !== "flagged");
+  const post = {
+    "@context": "https://schema.org",
+    "@type": "DiscussionForumPosting",
+    "@id": url,
+    url,
+    headline: wish.text,
+    text: wish.text,
+    datePublished: wish.created_at,
+    author: { "@type": "Person", name: "Anonymous" },
+    interactionStatistic: { "@type": "InteractionCounter", interactionType: "https://schema.org/LikeAction", userInteractionCount: wish.metoo_count },
+    ...(links.length > 0 && {
+      sharedContent: links.map((l) => ({
+        "@type": "WebPage",
+        url: l.url,
+        ...(l.description && { description: l.description }),
+        datePublished: l.created_at,
+        author: { "@type": "Person", name: `@${l.developer.handle}`, url: `${base}${developerPath(l.developer.handle)}` },
+      })),
+    }),
+  };
+  const breadcrumbs = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: SITE_NAME, item: `${base}/` },
+      { "@type": "ListItem", position: 2, name: "App ideas", item: `${base}/wishes` },
+      { "@type": "ListItem", position: 3, name: wishLabel(wish.id), item: url },
+    ],
+  };
+  return [post, breadcrumbs] as const;
+}
+
+export function developerSchema(profile: DeveloperProfile) {
+  const url = `${siteUrl()}${developerPath(profile.handle)}`;
+  return {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    url,
+    dateCreated: profile.joined_at,
+    mainEntity: {
+      "@type": "Person",
+      name: `@${profile.handle}`,
+      alternateName: profile.handle,
+      url,
+      ...(isGithubAvatar(profile.avatar_url) && { image: profile.avatar_url }),
+      sameAs: [`https://github.com/${profile.handle}`],
+    },
+  };
 }

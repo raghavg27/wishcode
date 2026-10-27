@@ -7,6 +7,7 @@ import { Suspense } from "react";
 import { DeveloperPanel, RemoveOwnLink } from "@/components/developer-panel";
 import { EmailOptIn, WisherOptInCard } from "@/components/email-opt-in";
 import { GithubIcon, LogoMark } from "@/components/icons";
+import { JsonLd } from "@/components/json-ld";
 import { FlaggedLink, LinkVerdictPanel } from "@/components/link-verdict";
 import { MetooButton } from "@/components/metoo";
 import { PostLinkModal, PostLinkTrigger } from "@/components/post-link";
@@ -34,7 +35,7 @@ import {
   wisherShare,
   type ShareMomentProps,
 } from "@/lib/share-copy";
-import { OPEN_GRAPH_BASE } from "@/lib/seo";
+import { OPEN_GRAPH_BASE, wishSchema } from "@/lib/seo";
 import { parseWishId, siteUrl, wishLabel, wishPath } from "@/lib/site";
 import type { ViewerWishState, WishDetail, WishLink } from "@/lib/types";
 
@@ -167,6 +168,7 @@ async function WishView({
 
   return (
     <>
+      {!wish.removed && wish.text && <JsonLd data={wishSchema({ ...wish, text: wish.text })} />}
       {sp.posted === "1" && !wish.removed && (
         <div className="mb-6 flex flex-col gap-3 rounded-xl border border-amber/40 bg-craft-soft px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
           <p className="flex items-center gap-2 text-label font-medium text-ink">

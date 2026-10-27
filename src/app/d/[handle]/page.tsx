@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { RemoveOwnLink } from "@/components/developer-panel";
+import { JsonLd } from "@/components/json-ld";
 import { ProfileLinkFilter } from "@/components/profile-filter";
 import { ShareMomentButton } from "@/components/share-moment";
 import { TimeAgo } from "@/components/time-ago";
@@ -12,7 +13,7 @@ import { Avatar, EmptyState, Skeleton, StatusChip } from "@/components/ui";
 import { EXTERNAL_REL } from "@/components/wish-card";
 import { getViewer } from "@/lib/auth";
 import { getDeveloperProfile } from "@/lib/data";
-import { pageMetadata } from "@/lib/seo";
+import { developerSchema, pageMetadata } from "@/lib/seo";
 import { developerShare } from "@/lib/share-copy";
 import { domainOf, formatDate, formatNumber, pluralize, repoLabel } from "@/lib/format";
 import { GITHUB_HANDLE, developerPath, wishPath } from "@/lib/site";
@@ -58,6 +59,7 @@ async function Profile({ params, searchParams }: PageProps<"/d/[handle]">) {
 
   return (
     <>
+      <JsonLd data={developerSchema(profile)} />
       <ProfileHeader profile={profile} />
       <div className="mt-10 grid grid-cols-1 items-start gap-8 lg:grid-cols-12">
         <section className="lg:col-span-8" aria-labelledby="links-title">
