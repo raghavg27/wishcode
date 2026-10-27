@@ -4,7 +4,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Wishcode",
     short_name: "Wishcode",
-    description: "Post an app you wish existed. Developers build them.",
+    description: "Post an app idea you wish existed. Developers build it.",
     start_url: "/wishes",
     display: "standalone",
     background_color: "#fbf8f1",

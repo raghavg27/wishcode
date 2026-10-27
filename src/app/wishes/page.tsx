@@ -10,15 +10,15 @@ import { getLedgerPage, getLiveMetoos, getStats, withLiveCounts } from "@/lib/da
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
-  title: "All wishes",
-  description: "Every app people wish existed, with how many want each one and who's building it.",
+  title: "App ideas people want",
+  description: "Browse app ideas posted by real people, sorted by how many want them. Open, being built, or already built.",
   path: "/wishes",
 });
 
 export default function LedgerPage({ searchParams }: PageProps<"/wishes">) {
   return (
     <main className="mx-auto w-full max-w-[1120px] px-4 py-6 sm:py-8">
-      <h1 className="sr-only">Wishcode: post an app you wish existed</h1>
+      <h1 className="sr-only">App ideas people wish existed</h1>
       <Composer />
       <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12">
         <section className="flex flex-col gap-4 lg:col-span-8" aria-label="Wishes">

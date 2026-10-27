@@ -70,12 +70,14 @@ export async function wishMetadata(params: WishParams, cameTrue = false): Promis
   const wish = id ? await getWish(id).catch(() => null) : null;
   if (!wish || wish.removed || !wish.text) return { title: "Wish not found", robots: { index: false } };
 
-  let title = clip(wish.text);
+  const people = peopleCount(wish.metoo_count);
+  const wanted = people === 1 ? "1 person wants it" : `${formatNumber(people)} people want it`;
+  let title = `App idea: ${clip(wish.text, 58)}`;
   let ogTitle = `“${wish.text}”`;
   let description =
     wish.status === "fulfilled" && wish.first_link
-      ? `Fulfilled by @${wish.first_link.developer.handle}. ${pluralize(wish.metoo_count, "me-too")} on Wishcode.`
-      : `${pluralize(wish.metoo_count, "me-too")} on Wishcode. ${statusLabel(wish.status, wish.verified)}.`;
+      ? `“${clip(wish.text, 110)}” An app idea on Wishcode, built by @${wish.first_link.developer.handle}. ${wanted}.`
+      : `“${clip(wish.text, 110)}” An app idea on Wishcode. ${wanted}. ${statusLabel(wish.status, wish.verified)}.`;
   let url = wishPath(wish.id);
   let image = wishCardSrc(wish);
 

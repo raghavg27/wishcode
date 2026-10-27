@@ -10,7 +10,7 @@ import { pageMetadata } from "@/lib/seo";
 import { developerPath } from "@/lib/site";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Builders",
+  title: "Developers building app ideas",
   description: "Developers building and shipping apps for wishes on Wishcode.",
   path: "/developers",
 });
