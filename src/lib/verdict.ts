@@ -16,6 +16,6 @@ export function computeVerdict(wisherVerdict: boolean | null, worksCount: number
 export function verdictCountsText(worksCount: number, brokenCount: number): string | null {
   const parts: string[] = [];
   if (worksCount > 0) parts.push(`${worksCount} ${worksCount === 1 ? "says" : "say"} it works`);
-  if (brokenCount > 0) parts.push(`${brokenCount} ${brokenCount === 1 ? "says" : "say"} it doesn't`);
+  if (brokenCount > 0) parts.push(`${brokenCount} ${brokenCount === 1 ? "says" : "say"} it does not`);
   return parts.length > 0 ? parts.join(" · ") : null;
 }

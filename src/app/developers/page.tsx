@@ -20,7 +20,7 @@ export default function DevelopersPage() {
     <main className="mx-auto w-full max-w-[1120px] px-4 py-8 sm:py-12">
       <h1 className="font-serif text-display-sm text-ink sm:text-display">Builders</h1>
       <p className="mt-2 max-w-xl text-[15px] leading-6 text-ink-muted">
-        Developers who connected GitHub to claim wishes and post live links, ordered by links shipped.
+        Developers who connected GitHub to claim wishes and post live links, sorted by how many links they have shipped.
       </p>
       <div className="mt-8 grid grid-cols-1 items-start gap-8 lg:grid-cols-12">
         <div className="lg:col-span-8">

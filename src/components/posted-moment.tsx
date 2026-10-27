@@ -54,7 +54,7 @@ export function PostedMoment({
         Your wish is live
       </h2>
       <p className="mt-2 text-[15px] leading-6 text-ink-muted">
-        Share it so others can me-too it. Every me-too tells developers it&apos;s worth building.
+        Share it so others can me-too it. Every me-too tells developers it is worth building.
       </p>
 
       <CardPreview src={image} />

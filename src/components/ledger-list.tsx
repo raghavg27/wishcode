@@ -18,20 +18,20 @@ type Props = {
 };
 
 const EMPTY: Record<StatusFilter, Parameters<typeof EmptyState>[0]> = {
-  all: { doodle: Lamp, title: "No wishes yet. Rub the lamp.", action: { href: "/wishes#compose", label: "Post the first wish" } },
+  all: { doodle: Lamp, title: "No wishes yet. Be the first to make one.", action: { href: "/wishes#compose", label: "Post the first wish" } },
   open: {
     doodle: Inbox,
-    title: "Everything's being built or done. Wild.",
-    action: { href: "/wishes?status=fulfilled", label: "See what's been built" },
+    title: "Every wish is being built or already done.",
+    action: { href: "/wishes?status=fulfilled", label: "See what has been built" },
   },
   being_built: {
     doodle: Laptop,
-    title: "Nobody's building yet. First one in gets bragging rights.",
+    title: "Nobody is building yet. You could be the first.",
     action: { href: "/wishes?status=open", label: "Browse open wishes" },
   },
   fulfilled: {
     doodle: Tumbleweed,
-    title: "Nothing fulfilled yet. This tumbleweed is waiting for a hero.",
+    title: "No wish has come true yet. You could be the first to build one.",
     action: { href: "/wishes?status=open", label: "Browse open wishes" },
   },
 };

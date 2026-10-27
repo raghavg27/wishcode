@@ -40,7 +40,7 @@ const COPY: Record<NotFoundKind, Copy> = {
   share: {
     reference: "/w/…/by",
     title: "This share link no longer works",
-    body: "The build it pointed to was removed or flagged, or the wish hasn't been confirmed as come true yet.",
+    body: "The build it pointed to was removed or flagged, or nobody has confirmed the wish came true yet.",
     primary: { href: "/wishes", label: "Browse wishes" },
   },
 };

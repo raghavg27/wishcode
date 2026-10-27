@@ -10,7 +10,7 @@ export function SiteFooter() {
         <div className="max-w-2xl space-y-1">
           <p className="text-label font-medium text-ink">Post an app you wish existed. Someone might build it.</p>
           <p className="text-caption text-ink-muted">
-            No account needed to wish. Any developer can build one. I don&apos;t check links before they go up.
+            No account needed to wish. Any developer can build one. I do not check links before they go up.
           </p>
           <a
             href={SUPPORT_URL}

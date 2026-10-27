@@ -46,11 +46,11 @@ export const DUPLICATE_LIMIT = 3;
 
 export const FEED_PAGE_SIZE = 20;
 
-export const DISCLAIMER = "I don't check links before they go up.";
+export const DISCLAIMER = "I do not check links before they go up.";
 
 /** Shown above a wish's links. */
 export const LINKS_DISCLAIMER =
-  "I don't check links before they go up. The people who wanted this wish vote on whether each one works.";
+  "I do not check links before they go up. The people who wanted this wish vote on whether each one works.";
 
 export const STATUS_FILTERS = ["all", "open", "being_built", "fulfilled"] as const;
 export type StatusFilter = (typeof STATUS_FILTERS)[number];

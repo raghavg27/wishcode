@@ -73,7 +73,7 @@ export function ReportButton({
           <p className="mt-1 text-label text-ink-muted">
             {target === "wish"
               ? "Reports are anonymous. I review every one and remove what breaks the rules."
-              : "Reports are anonymous. If the app just doesn't work, the people who wanted it can vote on that instead."}
+              : "Reports are anonymous. If the app just does not work, the people who wanted it can vote on that instead."}
           </p>
           <fieldset className="mt-5 space-y-2">
             <legend className="sr-only">Reason</legend>

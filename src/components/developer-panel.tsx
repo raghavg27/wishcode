@@ -93,7 +93,7 @@ export function DeveloperPanel({ wishId, status, removed, claims, developer, vie
           {claimed ? (
             <div className="flex items-center justify-between rounded-lg bg-leaf-soft px-3 py-2.5 text-label font-medium text-leaf-ink">
               <span className="flex items-center gap-2">
-                <CircleCheck className="size-4" aria-hidden /> You&apos;re building this
+                <CircleCheck className="size-4" aria-hidden /> You are building this
               </span>
               <button
                 type="button"
@@ -101,7 +101,7 @@ export function DeveloperPanel({ wishId, status, removed, claims, developer, vie
                 disabled={working}
                 className="text-label-sm text-ink-muted underline decoration-dotted hover:text-ink disabled:opacity-50"
               >
-                Unclaim
+                Remove claim
               </button>
             </div>
           ) : null}
@@ -122,13 +122,13 @@ export function DeveloperPanel({ wishId, status, removed, claims, developer, vie
               className={clsx(buttonStyles.quiet, "w-full py-2.5")}
             >
               {busy === "claim" ? <Loader2 className="size-4 animate-spin" aria-hidden /> : <UserPlus className="size-4" aria-hidden />}
-              I&apos;m building this
+              I am building this
             </button>
           )}
         </div>
 
         <p className="mt-3 text-center text-caption text-ink-muted">
-          {developer ? "No deadlines. Anyone can build it." : "You'll need GitHub. No deadlines. Anyone can build it."}
+          {developer ? "No deadlines. Anyone can build it." : "You will need GitHub. No deadlines. Anyone can build it."}
         </p>
       </div>
 

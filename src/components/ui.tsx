@@ -127,7 +127,7 @@ export function LedgerNote({ className }: { className?: string }) {
     <div className={clsx("flex items-start gap-3 rounded-xl bg-surface-low p-4 text-label-sm text-outline", className)}>
       <ShieldCheck className="mt-0.5 size-4 shrink-0" aria-hidden />
       <p>
-        Anyone can post a wish, and any developer can post what they built. I don&apos;t check links before they go up, so the
+        Anyone can post a wish, and any developer can post what they built. I do not check links before they go up, so the
         people who wanted each wish vote on whether it works.
       </p>
     </div>

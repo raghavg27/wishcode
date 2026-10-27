@@ -15,7 +15,7 @@ export default function ErrorPage({ error, reset }: { error: Error & { digest?: 
     <main className="flex flex-1 items-center justify-center px-4 py-20">
       <div className="max-w-md text-center">
         <h1 className="font-serif text-display-sm text-ink">Something broke on my end</h1>
-        <p className="mt-2 text-[15px] text-ink-muted">It&apos;s usually temporary. Try again in a moment.</p>
+        <p className="mt-2 text-[15px] text-ink-muted">This usually fixes itself. Try again in a moment.</p>
         {error.digest && <p className="mt-2 font-mono text-caption text-outline">Ref: {error.digest}</p>}
         <div className="mt-6 flex justify-center gap-3">
           <button type="button" onClick={reset} className={buttonStyles.amber}>

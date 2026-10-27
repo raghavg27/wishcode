@@ -182,7 +182,7 @@ async function WishView({
       {claimed && !wish.removed && (
         <div className="mb-6 flex items-center gap-2 rounded-xl bg-leaf-soft px-4 py-3 text-label font-medium text-ink">
           <CircleCheck className="size-4 text-leaf" aria-hidden />
-          You&apos;re listed as building this wish
+          You are listed as building this wish
           <span className="rounded bg-leaf-chip/60 px-1.5 py-0.5 text-caption font-semibold tracking-wider text-leaf-ink uppercase">
             Active claim
           </span>
@@ -224,7 +224,7 @@ async function WishView({
                   </span>
                   <h3 className="font-serif text-[22px] leading-8 font-medium text-ink">No live link yet</h3>
                   <p className="mt-1 max-w-sm text-[14px] leading-[22px] text-ink-muted">
-                    The first developer to post a working link fulfils this wish for everyone who wished it.
+                    The first developer to post a working link makes this wish come true for everyone who wanted it.
                   </p>
                   <PostLinkTrigger signedIn={Boolean(developer)} className={`${buttonStyles.amber} mt-6 rounded-full px-6`}>
                     Post a live link <ArrowUpRight className="size-4" aria-hidden />
@@ -486,7 +486,7 @@ function RemovedHero({ wish }: { wish: WishDetail }) {
         <Gavel className="mt-0.5 size-5 shrink-0 text-ink-muted" aria-hidden />
         <div>
           <p className="text-label font-semibold text-ink">This wish was removed.</p>
-          <p className="text-label text-ink-muted">Its text is hidden and you can&apos;t me-too it anymore.</p>
+          <p className="text-label text-ink-muted">Its text is hidden and you cannot me-too it anymore.</p>
         </div>
       </div>
       <div className="mt-5 flex items-center gap-3 text-label-sm text-ink-muted">

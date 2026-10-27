@@ -8,7 +8,7 @@ import { gsap, useGSAP } from "@/components/landing/gsap";
 const STEPS = [
   {
     title: "Write one sentence.",
-    body: "Say what the app should do. No account, no form. Leave an email if you want to hear when it's built.",
+    body: "Say what the app should do. No account, no form. Leave an email if you want to hear when it is built.",
   },
   {
     title: "Others tap Me too.",
@@ -20,7 +20,7 @@ const STEPS = [
   },
   {
     title: "The people who wanted it check.",
-    body: "If the wisher says it works, or three people who me-too'd it do, the wish is marked Fulfilled ✓.",
+    body: "If the wisher says it works, or three people who gave it a me-too say so, the wish is marked Fulfilled ✓.",
   },
 ];
 

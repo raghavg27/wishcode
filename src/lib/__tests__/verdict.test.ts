@@ -19,8 +19,8 @@ describe("computeVerdict", () => {
 describe("verdictCountsText", () => {
   it("describes the votes", () => {
     expect(verdictCountsText(0, 0)).toBeNull();
-    expect(verdictCountsText(3, 1)).toBe("3 say it works · 1 says it doesn't");
+    expect(verdictCountsText(3, 1)).toBe("3 say it works · 1 says it does not");
     expect(verdictCountsText(1, 0)).toBe("1 says it works");
-    expect(verdictCountsText(0, 2)).toBe("2 say it doesn't");
+    expect(verdictCountsText(0, 2)).toBe("2 say it does not");
   });
 });

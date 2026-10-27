@@ -18,9 +18,9 @@ import { wishPath } from "@/lib/site";
 export const metadata: Metadata = pageMetadata({ description: SITE_DESCRIPTION, path: "/" });
 
 const FOR_DEVELOPERS = [
-  "Claiming is a heads-up, not a lock. Lots of people can build the same wish.",
-  "No deadlines, and nobody to ask permission.",
-  "When the people who wanted it say your build works, I'll email you.",
+  "Claiming a wish tells others you are on it. It does not lock it, and many people can build the same wish.",
+  "No deadlines, and no one to ask for permission.",
+  "When the people who wanted it say your build works, I will email you.",
   "Everything you post shows on your public profile.",
 ];
 
@@ -92,7 +92,7 @@ async function MostWanted() {
           <h2 id="wanted-title" className={`${SECTION_TITLE} text-ink`}>
             Wished for most right now
           </h2>
-          <p className="mt-4 text-[17px] text-ink-muted">Lots of people want these. Nobody&apos;s built them yet.</p>
+          <p className="mt-4 text-[17px] text-ink-muted">Lots of people want these. Nobody has built them yet.</p>
         </div>
         <Link
           href="/wishes?status=open&sort=top"

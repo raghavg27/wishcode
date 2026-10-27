@@ -141,7 +141,7 @@ async function Profile({ params, searchParams }: PageProps<"/d/[handle]">) {
             <Info className="mt-0.5 size-4 shrink-0" aria-hidden />
             <p>
               <span className="block font-medium text-ink">Public profile</span>
-              I don&apos;t check links before they go up. Developers post them directly.
+              I do not check links before they go up. Developers post them directly.
             </p>
           </div>
         </section>

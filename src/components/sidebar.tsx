@@ -61,7 +61,7 @@ export function MostWanted({ items }: { items: LedgerStats["most_wanted"] }) {
           Most wanted, still open
         </h2>
       </div>
-      <p className="mb-4 text-caption text-ink-muted">Lots of people want these. Nobody&apos;s built them yet.</p>
+      <p className="mb-4 text-caption text-ink-muted">Lots of people want these. Nobody has built them yet.</p>
       <ul className="space-y-1">
         {items.map((w) => (
           <li key={w.id}>

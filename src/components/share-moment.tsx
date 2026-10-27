@@ -14,12 +14,12 @@ const COPY = {
   developer: {
     eyebrow: "Shipped",
     title: "You built it",
-    body: "Here's your card. Post it: it links straight to your build on the wish.",
+    body: "Here is your card. Post it. It links straight to your build on the wish.",
   },
   wisher: {
     eyebrow: "Wish granted",
     title: "Your wish came true",
-    body: "Here's your card. Share it and give the developer who built it some credit.",
+    body: "Here is your card. Share it and give the developer who built it some credit.",
   },
 } as const;
 
@@ -76,7 +76,7 @@ export function CardPreview({ src }: { src: string }) {
       {state === "loading" && <Skeleton className="absolute inset-0 rounded-none" />}
       {state === "failed" ? (
         <p className="absolute inset-0 flex items-center justify-center gap-2 text-label text-ink-muted">
-          <ImageOff className="size-4" aria-hidden /> The preview didn&apos;t load, but the link still works.
+          <ImageOff className="size-4" aria-hidden /> The preview did not load, but the link still works.
         </p>
       ) : (
         // eslint-disable-next-line @next/next/no-img-element -- the card is already a sized PNG from /api/og

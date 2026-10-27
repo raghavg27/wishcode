@@ -160,8 +160,8 @@ export function PostLinkModal({ wishId, wishText, metooCount, developer, hasLink
             <div className="mt-5 flex items-start gap-3 rounded-xl bg-surface-low p-4 text-[14px] text-ink">
               <Unlink className="mt-0.5 size-5 shrink-0 text-outline" aria-hidden />
               <p>
-                You&apos;ve already posted a link on this wish. One link per developer per wish: remove your existing link to post a new
-                one.
+                You have already posted a link on this wish. Each developer can post one link per wish. Remove your link to post a
+                new one.
               </p>
             </div>
           ) : (
@@ -174,7 +174,7 @@ export function PostLinkModal({ wishId, wishText, metooCount, developer, hasLink
                   <span>
                     Posted as <strong className="text-ink">@{developer.handle}</strong>.{" "}
                     {hasLinks ? (
-                      "It will be listed alongside the other builds."
+                      "It will show next to the other builds."
                     ) : (
                       <>
                         As the first link, this wish becomes{" "}
@@ -234,7 +234,7 @@ export function PostLinkModal({ wishId, wishText, metooCount, developer, hasLink
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   onBlur={() => setTouched((t) => ({ ...t, description: true }))}
-                  placeholder="Lightweight menu bar app that…"
+                  placeholder="A small menu bar app that…"
                   aria-invalid={Boolean(fieldError("description")) || undefined}
                   className={inputClass(Boolean(fieldError("description")))}
                 />
@@ -274,7 +274,7 @@ export function PostLinkModal({ wishId, wishText, metooCount, developer, hasLink
               )}
 
               <p className="text-caption text-ink-muted">
-                Wishcode doesn&apos;t fetch, scan or review your link. It opens in a new tab for visitors.
+                Wishcode does not open, scan or check your link. It opens in a new tab for visitors.
               </p>
 
               <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">

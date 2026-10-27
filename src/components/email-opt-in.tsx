@@ -58,7 +58,7 @@ type Props = {
   metoo: { active: boolean; count: number };
 };
 
-const SUBSCRIBED_TEXT = "We'll email you when someone builds this.";
+const SUBSCRIBED_TEXT = "We will email you when someone builds this.";
 
 /** Under the me-too control: a small link that expands into the email field. */
 export function EmailOptIn({ wishId, isWisher, subscribed: initial, metoo, className }: Props & { className?: string }) {
@@ -87,7 +87,7 @@ export function EmailOptIn({ wishId, isWisher, subscribed: initial, metoo, class
         onClick={() => setOpen(true)}
         className={`inline-flex items-center gap-1.5 text-label-sm font-medium text-primary underline decoration-dotted underline-offset-4 hover:decoration-solid ${className ?? ""}`}
       >
-        <Mail className="size-3.5" aria-hidden /> Email me when it&apos;s built
+        <Mail className="size-3.5" aria-hidden /> Email me when it is built
       </button>
     );
   }
@@ -116,7 +116,7 @@ export function WisherOptIn({ wishId, subscribed: initial }: { wishId: number; s
         <Mail className="size-4 text-primary" aria-hidden /> Want to know when someone builds this?
       </h3>
       <p className="mt-1 mb-3 text-label-sm text-ink-muted">
-        We&apos;ll email you when a developer posts a live link. Optional, and every email has an unsubscribe link.
+        We will email you when a developer posts a live link. This is optional, and every email has an unsubscribe link.
       </p>
       <EmailForm wishId={wishId} />
     </section>

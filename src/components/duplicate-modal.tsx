@@ -77,7 +77,7 @@ export function DuplicateModal({ open, typed, similar, busy, onClose, onMetoo, o
 
       <p className="mt-2 flex items-start gap-2 rounded-lg bg-surface-low px-3 py-2.5 text-label text-ink-muted">
         <Info className="mt-0.5 size-4 shrink-0" aria-hidden />
-        Me-tooing pools your demand behind one wish, so developers see the real need.
+        Adding your me-too to one wish shows developers how many people really want it.
       </p>
 
       <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">

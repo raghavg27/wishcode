@@ -121,7 +121,7 @@ function VerdictChip({ verdict, worksCount, brokenCount, wisherVerdict }: Verdic
     return (
       <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
         <span className={clsx(chip, "border-danger/30 bg-danger-soft/60 text-danger")}>
-          <TriangleAlert className="size-3.5" aria-hidden /> Doesn&apos;t work
+          <TriangleAlert className="size-3.5" aria-hidden /> Does not work
         </span>
         <span className="text-label-sm text-ink-muted">
           {wisherVerdict === false ? "flagged by the wisher" : `flagged by ${brokenCount} people`}
@@ -176,7 +176,7 @@ export function FlaggedLink({ handle, flagged, children }: { handle: string; fla
       <p className="flex items-center gap-2 text-label text-ink-muted">
         <TriangleAlert className="size-4 shrink-0 text-outline" aria-hidden />
         <span>
-          People say this doesn&apos;t work <span className="text-outline">· @{handle}</span>
+          People say this does not work <span className="text-outline">· @{handle}</span>
         </span>
       </p>
       <button

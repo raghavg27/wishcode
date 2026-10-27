@@ -91,7 +91,7 @@ export function Hero({ footnote }: { footnote?: React.ReactNode }) {
           <WishPrompt labelledBy="hero-title" />
           <div className="mt-14 flex flex-col gap-6 sm:mt-20 sm:flex-row sm:items-end sm:justify-between sm:gap-10">
             <p className="max-w-[44ch] text-[16px] leading-7 text-pretty text-inverse-ink/70 sm:text-[17px]">
-              Finish the sentence. You don&apos;t need an account. Developers see how many people want each wish, and
+              Finish the sentence. You do not need an account. Developers see how many people want each wish, and
               build the ones they like.
             </p>
             {/* Its own wrapper: footnote streams in, and gsap must only touch hydrated markup. */}
