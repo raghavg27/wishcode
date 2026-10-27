@@ -70,6 +70,17 @@ export async function getWish(id: number): Promise<WishDetail | null> {
   return (data as WishDetail | null) ?? null;
 }
 
+/** A few wishes like this one (then the most wanted), for links between wish pages. */
+export async function getRelatedWishes(id: number): Promise<WishCard[]> {
+  "use cache";
+  cacheLife("hours");
+  cacheTag(tags.wish(id), tags.ledger);
+
+  const { data, error } = await db().rpc("related_wishes", { p_id: id, p_limit: 5 });
+  if (error) throw error;
+  return (data as WishCard[]).filter((w) => w.text);
+}
+
 /**
  * Which wish a link belongs to (deleted links included; callers check the
  * wish's links). Uncached so a miss for a brand-new link never sticks.

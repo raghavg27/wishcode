@@ -151,6 +151,16 @@ begin
   assert failed, 'metoo on removed wish';
   assert jsonb_array_length(public.ledger_feed(null, 'newest', null, null, null, 20)) = 2;
 
+  -- Related wishes skip the wish itself and removed wishes; a removed wish has none.
+  r := public.related_wishes(w1, 5);
+  assert jsonb_array_length(r) = 1, 'related: the one other live wish';
+  assert not r @> jsonb_build_array(jsonb_build_object('id', w1)), 'related: not itself';
+  assert not r @> jsonb_build_array(jsonb_build_object('id', w2)), 'related: not removed';
+  assert public.related_wishes(w2, 5) = '[]'::jsonb, 'related: removed wish has none';
+  r := public.sitemap_entries();
+  assert r->'developers' @> '[{"handle": "alice2"}]'::jsonb and (r->'developers'->0) ? 'updated_at', 'sitemap developer dates';
+  assert not r->'wishes' @> jsonb_build_array(jsonb_build_object('id', w2)), 'sitemap skips removed wishes';
+
   raise notice 'smoke: all assertions passed';
 end;
 $$;
@@ -549,6 +559,7 @@ begin
     execute format('set local role %I', rn);
     foreach stmt in array array[
       'select public.ledger_feed(null, ''newest'', null, null, null, 1)',
+      'select public.related_wishes(1, 5)',
       'select public.set_verdict(null, 1, true)',
       'select public.set_verdict_by_subscription(1, 1, true)',
       'select public.subscribe(null, null, 1, ''a@b.co'', 1, 1)',

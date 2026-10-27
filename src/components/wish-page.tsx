@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { ArrowLeft, ArrowUpRight, CircleCheck, Flag, Gavel, History, ShieldCheck, Sparkles, SquareTerminal, Sprout } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, CircleCheck, Flag, Gavel, Hand, History, ShieldCheck, Sparkles, SquareTerminal, Sprout } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -20,7 +20,7 @@ import { DevChip, Disclaimer, Skeleton, StatusChip, buttonStyles, statusLabel } 
 import { EXTERNAL_REL } from "@/components/wish-card";
 import { getViewer } from "@/lib/auth";
 import { LINKS_DISCLAIMER } from "@/lib/config";
-import { getLiveMetoos, getViewerWishState, getWish, withLiveCounts } from "@/lib/data";
+import { getLiveMetoos, getRelatedWishes, getViewerWishState, getWish, withLiveCounts } from "@/lib/data";
 import { domainOf, durationBetween, formatDate, formatNumber, pluralize, repoLabel } from "@/lib/format";
 import {
   cameTruePath,
@@ -295,6 +295,11 @@ async function WishView({
             viewerLinkId={viewerLink?.id ?? null}
           />
           <WishRecord wish={wish} />
+          {!wish.removed && (
+            <Suspense>
+              <RelatedWishes wishId={wish.id} />
+            </Suspense>
+          )}
           {developer?.is_admin && !wish.removed && (
             <section className="card p-6" aria-labelledby="admin-title">
               <h2 id="admin-title" className="mb-1 text-label font-semibold tracking-wider text-ink uppercase">
@@ -532,6 +537,33 @@ function WishRecord({ wish }: { wish: WishDetail }) {
           </ReportButton>
         </div>
       )}
+    </section>
+  );
+}
+
+async function RelatedWishes({ wishId }: { wishId: number }) {
+  const wishes = await getRelatedWishes(wishId).catch(() => []);
+  if (wishes.length === 0) return null;
+  return (
+    <section className="card p-5" aria-labelledby="related-title">
+      <h2 id="related-title" className="mb-3 text-label font-semibold tracking-wider text-ink uppercase">
+        People also wished for
+      </h2>
+      <ul className="space-y-1">
+        {wishes.map((w) => (
+          <li key={w.id}>
+            <Link
+              href={wishPath(w.id)}
+              className="group -mx-2 flex items-start justify-between gap-3 rounded-lg p-2 transition-colors hover:bg-surface-low"
+            >
+              <span className="line-clamp-2 text-[14px] leading-tight text-ink group-hover:text-primary">{w.text}</span>
+              <span className="mt-0.5 flex shrink-0 items-center gap-1 text-label font-semibold text-primary tabular">
+                <Hand className="size-3.5" aria-hidden /> {formatNumber(w.metoo_count)}
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }
