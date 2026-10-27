@@ -123,6 +123,6 @@ async function refreshSession(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|api/og|monitoring|favicon.ico|icon|apple-icon|robots.txt|sitemap.xml|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)",
+    "/((?!_next/static|_next/image|api/og|monitoring|favicon.ico|icon|apple-icon|robots.txt|sitemap.xml|llms.txt|llms-full.txt|ai.txt|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)",
   ],
 };
