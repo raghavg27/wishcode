@@ -12,6 +12,7 @@ import { Avatar, EmptyState, Skeleton, StatusChip } from "@/components/ui";
 import { EXTERNAL_REL } from "@/components/wish-card";
 import { getViewer } from "@/lib/auth";
 import { getDeveloperProfile } from "@/lib/data";
+import { pageMetadata } from "@/lib/seo";
 import { developerShare } from "@/lib/share-copy";
 import { domainOf, formatDate, formatNumber, pluralize, repoLabel } from "@/lib/format";
 import { GITHUB_HANDLE, developerPath, wishPath } from "@/lib/site";
@@ -26,11 +27,11 @@ async function load(params: PageProps<"/d/[handle]">["params"]) {
 export async function generateMetadata({ params }: PageProps<"/d/[handle]">): Promise<Metadata> {
   const profile = await load(params).catch(() => null);
   if (!profile) return { title: "Developer not found", robots: { index: false } };
-  return {
+  return pageMetadata({
     title: `@${profile.handle}`,
     description: `@${profile.handle} on Wishcode: ${profile.stats.links} live links posted, ${profile.stats.building} wishes being built.`,
-    alternates: { canonical: developerPath(profile.handle) },
-  };
+    path: developerPath(profile.handle),
+  });
 }
 
 export default function DeveloperPage({ params, searchParams }: PageProps<"/d/[handle]">) {

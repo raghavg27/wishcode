@@ -5,7 +5,7 @@ import { MobileNav } from "@/components/nav-links";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { Toaster } from "@/components/toaster";
-import { DEFAULT_TITLE, OPEN_GRAPH_BASE, SITE_CARD, SITE_NAME } from "@/lib/seo";
+import { DEFAULT_TITLE, OPEN_GRAPH_BASE, SITE_CARD, SITE_DESCRIPTION, SITE_NAME } from "@/lib/seo";
 import { siteUrl } from "@/lib/site";
 import "./globals.css";
 
@@ -22,8 +22,7 @@ const newsreader = Newsreader({
   axes: ["opsz"],
 });
 
-const description =
-  "Post an app you wish existed. No signup. Developers build them and share the link.";
+const description = SITE_DESCRIPTION;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl()),

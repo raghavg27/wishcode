@@ -34,6 +34,7 @@ import {
   wisherShare,
   type ShareMomentProps,
 } from "@/lib/share-copy";
+import { OPEN_GRAPH_BASE } from "@/lib/seo";
 import { parseWishId, siteUrl, wishLabel, wishPath } from "@/lib/site";
 import type { ViewerWishState, WishDetail, WishLink } from "@/lib/types";
 
@@ -99,7 +100,7 @@ export async function wishMetadata(params: WishParams, cameTrue = false): Promis
     description,
     alternates: { canonical: wishPath(wish.id) },
     // og:url stays on the share URL: some platforms re-read the preview from it.
-    openGraph: { title: ogTitle, description, url, images: [{ url: image, width: 1200, height: 630 }] },
+    openGraph: { ...OPEN_GRAPH_BASE, title: ogTitle, description, url, images: [{ url: image, width: 1200, height: 630 }] },
     twitter: { card: "summary_large_image", title: ogTitle, description, images: [image] },
   };
 }

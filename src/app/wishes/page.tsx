@@ -7,11 +7,13 @@ import { BuildCta, MostWanted, SidebarFootnote, SupportNote, WeekStats } from "@
 import { LedgerNote, Skeleton } from "@/components/ui";
 import { parseSort, parseStatus } from "@/lib/config";
 import { getLedgerPage, getLiveMetoos, getStats, withLiveCounts } from "@/lib/data";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "All wishes",
-  alternates: { canonical: "/wishes" },
-};
+  description: "Every app people wish existed, with how many want each one and who's building it.",
+  path: "/wishes",
+});
 
 export default function LedgerPage({ searchParams }: PageProps<"/wishes">) {
   return (

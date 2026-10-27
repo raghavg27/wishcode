@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { DISCLAIMER, LIMITS, WISH_MAX, WISH_MIN } from "@/lib/config";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Principles",
   description: "How Wishcode works: anyone can wish, developers build, and the people who wanted it decide if it works.",
-};
+  path: "/principles",
+});
 
 const PRINCIPLES = [
   {

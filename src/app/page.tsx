@@ -11,11 +11,10 @@ import { WishPrompt } from "@/components/landing/wish-prompt";
 import { WishStory } from "@/components/landing/wish-story";
 import { getStats } from "@/lib/data";
 import { formatNumber, pluralize } from "@/lib/format";
+import { pageMetadata, SITE_DESCRIPTION } from "@/lib/seo";
 import { wishPath } from "@/lib/site";
 
-export const metadata: Metadata = {
-  alternates: { canonical: "/" },
-};
+export const metadata: Metadata = pageMetadata({ description: SITE_DESCRIPTION, path: "/" });
 
 const FOR_DEVELOPERS = [
   "Claiming is a heads-up, not a lock. Lots of people can build the same wish.",

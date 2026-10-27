@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ContactLink, LegalPage, LegalSection } from "@/components/legal";
 import { GOVERNING_LAW, MIN_AGE, OPERATOR } from "@/lib/legal";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Terms",
   description: "The rules for posting wishes and links on Wishcode.",
-};
+  path: "/terms",
+});
 
 const link = "font-medium text-primary underline underline-offset-2";
 

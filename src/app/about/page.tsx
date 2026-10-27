@@ -3,12 +3,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { CodehypeBadge } from "@/components/codehype-badge";
 import { OPERATOR } from "@/lib/legal";
+import { pageMetadata } from "@/lib/seo";
 import { SUPPORT_URL } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "About",
   description: "Why Wishcode exists, who runs it, and how to report issues or send feedback.",
-};
+  path: "/about",
+});
 
 const FEEDBACK_EMAIL = "raghavg2705@gmail.com";
 

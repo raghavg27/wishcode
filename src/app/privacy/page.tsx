@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ContactLink, LegalPage, LegalSection } from "@/components/legal";
 import { MIN_AGE, OPERATOR } from "@/lib/legal";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Privacy",
   description: "What Wishcode collects, why, who it's shared with, and how to get it deleted.",
-};
+  path: "/privacy",
+});
 
 export default function PrivacyPage() {
   return (

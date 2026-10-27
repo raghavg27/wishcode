@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 
 export const SITE_NAME = "Wishcode";
 export const DEFAULT_TITLE = "Wishcode — apps people wish existed";
+export const SITE_DESCRIPTION = "Post an app you wish existed. No signup. Developers build them and share the link.";
 
 /** The default 1200×630 share card, for pages without one of their own. */
 export const SITE_CARD = { url: "/api/og/site", width: 1200, height: 630, alt: "Wishcode: I wish there was an app that…" };

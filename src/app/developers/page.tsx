@@ -6,12 +6,14 @@ import { Laptop } from "@/components/doodles";
 import { Avatar, EmptyState, Skeleton } from "@/components/ui";
 import { getDirectory } from "@/lib/data";
 import { formatNumber } from "@/lib/format";
+import { pageMetadata } from "@/lib/seo";
 import { developerPath } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Builders",
   description: "Developers building and shipping apps for wishes on Wishcode.",
-};
+  path: "/developers",
+});
 
 export default function DevelopersPage() {
   return (
