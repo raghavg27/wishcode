@@ -12,23 +12,23 @@ export const metadata: Metadata = pageMetadata({
 const PRINCIPLES = [
   {
     title: "Anyone can wish.",
-    body: `Post one sentence (${WISH_MIN} to ${WISH_MAX} characters). No account. Leave an email if you want, and I'll tell you when someone builds it. I only use it for that, and every email has an unsubscribe link. Wishes stay up unless they're spam, abusive or share someone's private information.`,
+    body: `Post one sentence (${WISH_MIN} to ${WISH_MAX} characters). No account. Leave an email if you want, and I will tell you when someone builds it. I only use it for that, and every email has an unsubscribe link. Wishes stay up unless they are spam, abusive or share someone's private information.`,
   },
   {
     title: "Everyone can see the demand.",
-    body: "Every wish shows how many people want it, who's building it and what they've built. One me-too per device per wish, and you can take it back.",
+    body: "Every wish shows how many people want it, who is building it and what they have built. One me-too per device per wish, and you can take it back.",
   },
   {
-    title: "Claiming is a heads-up, not a lock.",
-    body: "Developers who connect GitHub can say “I'm building this.” Claims never expire, lots of people can claim the same wish, and nobody has to claim before shipping.",
+    title: "Claiming a wish does not lock it.",
+    body: "Developers who connect GitHub can say “I am building this.” Claims never run out, many people can claim the same wish, and nobody has to claim before they ship.",
   },
   {
     title: "The people who wanted it decide if it works.",
-    body: "When a developer posts a link, the wish shows Fulfilled · unverified. If the wisher says it works, or 3 people who me-too'd it do, it becomes Fulfilled ✓. If enough of them say it doesn't work, the link gets folded away with a warning.",
+    body: "When a developer posts a link, the wish shows Fulfilled · unverified. If the wisher says it works, or 3 people who gave it a me-too say so, it becomes Fulfilled ✓. If enough of them say it does not work, the link is hidden behind a warning.",
   },
   {
     title: "Open links with care.",
-    body: `${DISCLAIMER} They open in a new tab, show who posted them, and the developer or I can take them down. If a wish or link is spam, abusive, shares someone's private information or looks like a scam, tap Report and I'll review it.`,
+    body: `${DISCLAIMER} They open in a new tab, show who posted them, and the developer or I can take them down. If a wish or link is spam, abusive, shares someone's private information or looks like a scam, tap Report and I will look at it.`,
   },
   {
     title: "Fair use.",
@@ -41,7 +41,7 @@ export default function PrinciplesPage() {
     <main className="mx-auto w-full max-w-[760px] px-4 py-10 sm:py-16">
       <h1 className="font-serif text-display-sm text-ink sm:text-display">How it works</h1>
       <p className="mt-4 font-serif text-[20px] leading-8 text-ink-muted italic">
-        Wishcode is where people post apps they wish existed, and developers build them. Here&apos;s how I run it.
+        Wishcode is where people post apps they wish existed, and developers build them. Here is how I run it.
       </p>
       <ol className="mt-10 space-y-4">
         {PRINCIPLES.map((p, i) => (

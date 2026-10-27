@@ -18,7 +18,7 @@ export default function TermsPage() {
       title="Terms of use"
       intro={
         <p>
-          Wishcode is run by me, {OPERATOR}. By using it you agree to these terms. They&apos;re short, but they matter:
+          Wishcode is run by me, {OPERATOR}. By using it you agree to these terms. They are short, but they matter:
           please read them.
         </p>
       }
@@ -33,7 +33,7 @@ export default function TermsPage() {
         <p>
           A wish is an open invitation for anyone to build it. By posting one, you agree that anyone may build, sell or
           give away an app based on it, and that you have no claim to that app, its revenue or credit for it beyond what
-          the site shows. Don&apos;t post an idea you want to keep to yourself or that belongs to someone else, such as
+          the site shows. Do not post an idea you want to keep to yourself or that belongs to someone else, such as
           your employer&apos;s confidential plans.
         </p>
       </LegalSection>
@@ -44,7 +44,7 @@ export default function TermsPage() {
           copy and share it as part of running and promoting Wishcode, including in share images. The licence ends
           when the content is removed, except for copies others have already shared.
         </p>
-        <p>You&apos;re responsible for what you post. Don&apos;t post anything that:</p>
+        <p>You are responsible for what you post. Do not post anything that:</p>
         <ul>
           <li>is spam, advertising, or posted by bots or scripts;</li>
           <li>is hateful, harassing, threatening or abusive;</li>
@@ -62,15 +62,15 @@ export default function TermsPage() {
           to.
         </p>
         <p>
-          I don&apos;t check links before they go up, and I don&apos;t make, endorse or vouch for any app linked
-          here. “Fulfilled ✓” means people who wanted the wish said it works, not that it&apos;s safe. Open links with
+          I do not check links before they go up, and I do not make, support or vouch for any app linked
+          here. “Fulfilled ✓” means people who wanted the wish said it works, not that it is safe. Open links with
           care; using an app is between you and its developer.
         </p>
       </LegalSection>
 
       <LegalSection title="Fair use">
         <p>
-          Don&apos;t try to get around the daily limits, inflate me-toos or votes, scrape the site in a way that
+          Do not try to get around the daily limits, fake extra me-toos or votes, scrape the site in a way that
           strains it, or interfere with how it works. The <Link href="/principles" className={link}>principles page</Link>{" "}
           lists the limits.
         </p>
@@ -91,7 +91,7 @@ export default function TermsPage() {
       <LegalSection title="No warranty">
         <p>
           Wishcode is free and provided “as is”, without warranties of any kind. It may change, break or shut down, and
-          content may be lost. To the extent the law allows, I&apos;m not liable for any indirect or consequential loss,
+          content may be lost. To the extent the law allows, I am not liable for any indirect or consequential loss,
           or for anything caused by content or apps posted by others, and my total liability to you is limited to
           ₹1,000.
         </p>
@@ -106,7 +106,7 @@ export default function TermsPage() {
 
       <LegalSection title="Changes and law">
         <p>
-          If I change these terms, I&apos;ll update the date at the top; using Wishcode after that means you accept
+          If I change these terms, I will update the date at the top; using Wishcode after that means you accept
           the new terms. These terms are governed by the laws of {GOVERNING_LAW}, and its courts handle any dispute.
         </p>
       </LegalSection>

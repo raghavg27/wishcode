@@ -6,7 +6,7 @@ import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
   title: "Privacy",
-  description: "What Wishcode collects, why, who it's shared with, and how to get it deleted.",
+  description: "What Wishcode collects, why, who it is shared with, and how to get it deleted.",
   path: "/privacy",
 });
 
@@ -21,7 +21,7 @@ export default function PrivacyPage() {
         </p>
       }
     >
-      <LegalSection title="What's public">
+      <LegalSection title="What is public">
         <p>Anything you post on Wishcode is public and can be indexed by search engines:</p>
         <ul>
           <li>Wishes (shown as “anonymous wisher”), their me-too counts, and the share images made from them.</li>
@@ -30,7 +30,7 @@ export default function PrivacyPage() {
             links you post.
           </li>
         </ul>
-        <p>Who posted a wish, who me-too&apos;d it and how anyone voted are never shown.</p>
+        <p>Who posted a wish, who gave it a me-too and how anyone voted are never shown.</p>
       </LegalSection>
 
       <LegalSection title="What I collect">
@@ -39,11 +39,11 @@ export default function PrivacyPage() {
             <strong>A device cookie.</strong> The first time you post, me-too, vote or report, your browser gets a random
             code in a cookie (<code>wc_device</code>, kept for 2 years). I store only a one-way hash of it. It links
             your wishes, me-toos, votes, reports and email sign-ups to your browser, so you can take a me-too back and
-            so the daily limits work. It isn&apos;t tied to your name.
+            so the daily limits work. It is not linked to your name.
           </li>
           <li>
             <strong>Your IP address, hashed.</strong> To stop abuse from one network, I count actions per network using
-            a salted hash of your IP address. These counters expire within a day. I don&apos;t store raw IP addresses,
+            a salted hash of your IP address. These counters expire within a day. I do not store raw IP addresses,
             though my hosting providers keep their own short-lived logs.
           </li>
           <li>
@@ -57,11 +57,11 @@ export default function PrivacyPage() {
           <li>
             <strong>For developers who connect GitHub:</strong> your GitHub user ID, handle, avatar and the email address
             on your GitHub account. I use the email only to tell you when someone confirms your link works, and you can
-            turn that off from the email. I don&apos;t request access to your repositories. A session cookie (named{" "}
+            turn that off from the email. I do not ask for access to your repositories. A session cookie (named{" "}
             <code>sb-…</code>) keeps you signed in.
           </li>
           <li>
-            <strong>Your unsent draft.</strong> The wish you&apos;re typing is saved in your browser&apos;s local
+            <strong>Your unsent draft.</strong> The wish you are typing is saved in your browser&apos;s local
             storage so it survives a reload. It never leaves your device until you post it.
           </li>
           <li>
@@ -76,10 +76,10 @@ export default function PrivacyPage() {
           </li>
           <li>
             <strong>The CodeHype badge.</strong> The footer and the About page show a badge loaded from CodeHype, so your
-            browser sends CodeHype your IP address, browser details and the page you&apos;re on when it loads the badge.
+            browser sends CodeHype your IP address, browser details and the page you are on when it loads the badge.
           </li>
         </ul>
-        <p>I don&apos;t use advertising cookies, sell your data, or share it with advertisers.</p>
+        <p>I do not use advertising cookies, sell your data, or share it with advertisers.</p>
       </LegalSection>
 
       <LegalSection title="Why I use it">
@@ -89,7 +89,7 @@ export default function PrivacyPage() {
           <li>To improve it, using aggregate analytics.</li>
         </ul>
         <p>
-          If you&apos;re in the EU or UK, my legal bases are your consent (emails, which you can withdraw at any time),
+          If you are in the EU or UK, my legal bases are your consent (emails, which you can withdraw at any time),
           performance of our agreement (developer accounts), and my legitimate interest in running a safe, working
           service (everything else).
         </p>
@@ -101,21 +101,21 @@ export default function PrivacyPage() {
           <li>Vercel hosts the website.</li>
           <li>Supabase stores the database and handles GitHub sign-in.</li>
           <li>GitHub, when you choose to sign in with it.</li>
-          <li>Cloudflare Turnstile checks that whoever posts a wish isn&apos;t a bot, using signals from your browser.</li>
+          <li>Cloudflare Turnstile checks that whoever posts a wish is not a bot, using signals from your browser.</li>
           <li>Google (Gmail) delivers the emails.</li>
           <li>PostHog provides the analytics.</li>
           <li>Sentry receives error reports.</li>
           <li>CodeHype serves the badge in the footer and on the About page.</li>
         </ul>
         <p>
-          These providers may process data in the United States and other countries. I&apos;ll also disclose data if
+          These providers may process data in the United States and other countries. I will also share data if
           the law requires it.
         </p>
       </LegalSection>
 
       <LegalSection title="How long I keep it">
         <ul>
-          <li>Wishes, links and claims stay until they&apos;re removed. Removed wishes stop showing their text.</li>
+          <li>Wishes, links and claims stay until they are removed. Removed wishes stop showing their text.</li>
           <li>Email sign-ups last until you unsubscribe; the do-not-email list is kept so the request sticks.</li>
           <li>Rate-limit counters expire within a day.</li>
           <li>Developer profiles last until you ask me to delete them.</li>
@@ -125,8 +125,8 @@ export default function PrivacyPage() {
       <LegalSection title="Your choices and rights">
         <p>
           You can ask me to access, correct or delete your data, or to stop using it. Email <ContactLink /> and
-          I&apos;ll reply within 30 days. Wishes aren&apos;t tied to an account, so send me the wish&apos;s link if
-          you want one removed. You can unsubscribe from any email with one click. If you&apos;re
+          I will reply within 30 days. Wishes are not linked to an account, so send me the wish&apos;s link if
+          you want one removed. You can unsubscribe from any email with one click. If you are
           in the EU or UK you can also object to or restrict processing, ask for a portable copy, and complain to your
           data protection authority.
         </p>
@@ -136,12 +136,12 @@ export default function PrivacyPage() {
       </LegalSection>
 
       <LegalSection title="Children">
-        <p>Wishcode is for people aged {MIN_AGE} or over. If you think a child has given me their data, email me and I&apos;ll delete it.</p>
+        <p>Wishcode is for people aged {MIN_AGE} or over. If you think a child has given me their data, email me and I will delete it.</p>
       </LegalSection>
 
       <LegalSection title="Changes">
         <p>
-          If I change this policy, I&apos;ll update the date at the top, and for significant changes I&apos;ll put a
+          If I change this policy, I will update the date at the top, and for big changes I will put a
           notice on the site. See also the <Link href="/terms" className="font-medium text-primary underline underline-offset-2">terms of use</Link>.
         </p>
       </LegalSection>
