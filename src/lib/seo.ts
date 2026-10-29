@@ -82,21 +82,32 @@ export function wishSchema(wish: WishDetail & { text: string }) {
       })),
     }),
   };
-  const breadcrumbs = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: SITE_NAME, item: `${base}/` },
-      { "@type": "ListItem", position: 2, name: "App ideas", item: `${base}/wishes` },
-      { "@type": "ListItem", position: 3, name: wishLabel(wish.id), item: url },
-    ],
-  };
+  const breadcrumbs = breadcrumbSchema([
+    ["App ideas", "/wishes"],
+    [wishLabel(wish.id), wishPath(wish.id)],
+  ]);
   return [post, breadcrumbs] as const;
 }
 
-export function developerSchema(profile: DeveloperProfile) {
-  const url = `${siteUrl()}${developerPath(profile.handle)}`;
+/** A trail from the home page through each [name, path], the last being the page itself. */
+function breadcrumbSchema(trail: [name: string, path: string][]) {
+  const base = siteUrl();
   return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [[SITE_NAME, "/"], ...trail].map(([name, path], i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name,
+      item: `${base}${path}`,
+    })),
+  };
+}
+
+export function developerSchema(profile: DeveloperProfile) {
+  const path = developerPath(profile.handle);
+  const url = `${siteUrl()}${path}`;
+  const page = {
     "@context": "https://schema.org",
     "@type": "ProfilePage",
     url,
@@ -110,4 +121,9 @@ export function developerSchema(profile: DeveloperProfile) {
       sameAs: [`https://github.com/${profile.handle}`],
     },
   };
+  const breadcrumbs = breadcrumbSchema([
+    ["Builders", "/developers"],
+    [`@${profile.handle}`, path],
+  ]);
+  return [page, breadcrumbs] as const;
 }

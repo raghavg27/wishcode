@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { SITE_CARD, jsonLd, pageMetadata, wishSchema } from "../seo";
-import type { DeveloperRef, WishDetail, WishLink } from "../types";
+import { SITE_CARD, developerSchema, jsonLd, pageMetadata, wishSchema } from "../seo";
+import type { DeveloperProfile, DeveloperRef, WishDetail, WishLink } from "../types";
 
 beforeEach(() => vi.stubEnv("SITE_URL", "https://wishcode.example"));
 afterEach(() => vi.unstubAllEnvs());
@@ -84,6 +84,18 @@ describe("wishSchema", () => {
     const [post] = wishSchema(wish([link({ id: 1 }), link({ id: 2, url: "https://scam.example", verdict: "flagged" })]));
     expect(post.sharedContent).toEqual([
       expect.objectContaining({ url: "https://barkmute.app", author: expect.objectContaining({ url: "https://wishcode.example/d/priya" }) }),
+    ]);
+  });
+});
+
+describe("developerSchema", () => {
+  it("adds a breadcrumb trail through the builders directory", () => {
+    const [page, crumbs] = developerSchema({ handle: "priya", avatar_url: null, joined_at: "2026-10-01T00:00:00Z" } as DeveloperProfile);
+    expect(page).toMatchObject({ "@type": "ProfilePage", url: "https://wishcode.example/d/priya" });
+    expect(crumbs.itemListElement).toEqual([
+      expect.objectContaining({ position: 1, name: "Wishcode", item: "https://wishcode.example/" }),
+      expect.objectContaining({ position: 2, name: "Builders", item: "https://wishcode.example/developers" }),
+      expect.objectContaining({ position: 3, name: "@priya", item: "https://wishcode.example/d/priya" }),
     ]);
   });
 });
