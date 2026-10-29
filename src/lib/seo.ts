@@ -57,6 +57,18 @@ export function siteSchema() {
   ];
 }
 
+export function faqSchema(faq: readonly { question: string; answer: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faq.map(({ question, answer }) => ({
+      "@type": "Question",
+      name: question,
+      acceptedAnswer: { "@type": "Answer", text: answer },
+    })),
+  };
+}
+
 /** A wish as a forum post: wishers are anonymous, me-toos are likes, live links are what was shared in reply. */
 export function wishSchema(wish: WishDetail & { text: string }) {
   const base = siteUrl();

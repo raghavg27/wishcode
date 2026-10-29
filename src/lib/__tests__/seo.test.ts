@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { SITE_CARD, developerSchema, jsonLd, pageMetadata, wishSchema } from "../seo";
+import { SITE_CARD, developerSchema, faqSchema, jsonLd, pageMetadata, wishSchema } from "../seo";
 import type { DeveloperProfile, DeveloperRef, WishDetail, WishLink } from "../types";
 
 beforeEach(() => vi.stubEnv("SITE_URL", "https://wishcode.example"));
@@ -97,5 +97,15 @@ describe("developerSchema", () => {
       expect.objectContaining({ position: 2, name: "Builders", item: "https://wishcode.example/developers" }),
       expect.objectContaining({ position: 3, name: "@priya", item: "https://wishcode.example/d/priya" }),
     ]);
+  });
+});
+
+describe("faqSchema", () => {
+  it("turns each question into a Question with its answer", () => {
+    const schema = faqSchema([{ question: "Is it free?", answer: "Yes." }]);
+    expect(schema).toMatchObject({
+      "@type": "FAQPage",
+      mainEntity: [{ "@type": "Question", name: "Is it free?", acceptedAnswer: { "@type": "Answer", text: "Yes." } }],
+    });
   });
 });

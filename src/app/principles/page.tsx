@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { JsonLd } from "@/components/json-ld";
+import { FAQ } from "@/lib/faq";
 import { PRINCIPLES } from "@/lib/principles";
-import { pageMetadata } from "@/lib/seo";
+import { faqSchema, pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
   title: "How Wishcode works",
@@ -27,6 +29,20 @@ export default function PrinciplesPage() {
           </li>
         ))}
       </ol>
+      <section className="mt-14" aria-labelledby="faq-title">
+        <JsonLd data={faqSchema(FAQ)} />
+        <h2 id="faq-title" className="font-serif text-headline font-semibold text-ink">
+          Questions
+        </h2>
+        <dl className="mt-4 divide-y divide-hairline">
+          {FAQ.map((q) => (
+            <div key={q.question} className="py-5">
+              <dt className="text-[16px] leading-6 font-semibold text-ink">{q.question}</dt>
+              <dd className="mt-1 text-[15px] leading-6 text-ink-muted">{q.answer}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
       <div className="mt-10 flex flex-wrap gap-3">
         <Link href="/wishes#compose" className="rounded-lg bg-amber px-5 py-2.5 text-label font-semibold text-on-amber hover:bg-amber-hover">
           Make a wish
