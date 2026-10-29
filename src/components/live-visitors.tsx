@@ -1,16 +1,17 @@
 "use client";
 
-import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { Eye } from "lucide-react";
 import { useEffect, useState } from "react";
 import { badgeCount, HIDDEN_GRACE_MS, PRESENCE_CHANNEL, visitorId } from "@/lib/presence";
 
 // One client per page load: Realtime only, no auth session of its own.
-let client: SupabaseClient | null = null;
+// supabase-js is loaded on demand so it stays out of every page's first load.
+let client: Promise<SupabaseClient> | null = null;
 function realtimeClient(url: string, publishableKey: string) {
-  return (client ??= createClient(url, publishableKey, {
-    auth: { persistSession: false, autoRefreshToken: false },
-  }));
+  return (client ??= import("@supabase/supabase-js").then(({ createClient }) =>
+    createClient(url, publishableKey, { auth: { persistSession: false, autoRefreshToken: false } }),
+  ));
 }
 
 /**
@@ -22,33 +23,45 @@ export function LiveVisitors({ url, publishableKey }: { url: string; publishable
   const [count, setCount] = useState<number | null>(null);
 
   useEffect(() => {
-    const supabase = realtimeClient(url, publishableKey);
-    const channel = supabase.channel(PRESENCE_CHANNEL, { config: { presence: { key: visitorId() } } });
-    let subscribed = false;
-    let hiddenTimer: ReturnType<typeof setTimeout> | undefined;
+    let cancelled = false;
+    let cleanup = () => {};
 
-    channel
-      .on("presence", { event: "sync" }, () => setCount(badgeCount(channel.presenceState())))
-      .subscribe((status) => {
-        subscribed = status === "SUBSCRIBED";
-        if (subscribed && !document.hidden) void channel.track({});
-      });
+    realtimeClient(url, publishableKey)
+      .then((supabase) => {
+        if (cancelled) return;
+        const channel = supabase.channel(PRESENCE_CHANNEL, { config: { presence: { key: visitorId() } } });
+        let subscribed = false;
+        let hiddenTimer: ReturnType<typeof setTimeout> | undefined;
 
-    // A tab left in the background stops counting after a minute.
-    const onVisibility = () => {
-      clearTimeout(hiddenTimer);
-      if (document.hidden) {
-        hiddenTimer = setTimeout(() => void channel.untrack(), HIDDEN_GRACE_MS);
-      } else if (subscribed) {
-        void channel.track({});
-      }
-    };
-    document.addEventListener("visibilitychange", onVisibility);
+        channel
+          .on("presence", { event: "sync" }, () => setCount(badgeCount(channel.presenceState())))
+          .subscribe((status) => {
+            subscribed = status === "SUBSCRIBED";
+            if (subscribed && !document.hidden) void channel.track({});
+          });
+
+        // A tab left in the background stops counting after a minute.
+        const onVisibility = () => {
+          clearTimeout(hiddenTimer);
+          if (document.hidden) {
+            hiddenTimer = setTimeout(() => void channel.untrack(), HIDDEN_GRACE_MS);
+          } else if (subscribed) {
+            void channel.track({});
+          }
+        };
+        document.addEventListener("visibilitychange", onVisibility);
+
+        cleanup = () => {
+          clearTimeout(hiddenTimer);
+          document.removeEventListener("visibilitychange", onVisibility);
+          void supabase.removeChannel(channel);
+        };
+      })
+      .catch(() => {});
 
     return () => {
-      clearTimeout(hiddenTimer);
-      document.removeEventListener("visibilitychange", onVisibility);
-      void supabase.removeChannel(channel);
+      cancelled = true;
+      cleanup();
     };
   }, [url, publishableKey]);
 
