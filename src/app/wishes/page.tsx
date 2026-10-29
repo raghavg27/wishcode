@@ -16,9 +16,10 @@ const metadata: Metadata = pageMetadata({
 });
 
 // Later pages (?cursor=) are for following links to older wishes, not for search results.
+// Google treats noindex plus a canonical as conflicting, so those pages drop the canonical.
 export async function generateMetadata({ searchParams }: PageProps<"/wishes">): Promise<Metadata> {
   const { cursor } = await searchParams;
-  return cursor ? { ...metadata, robots: { index: false, follow: true } } : metadata;
+  return cursor ? { ...metadata, alternates: { canonical: null }, robots: { index: false, follow: true } } : metadata;
 }
 
 export default function LedgerPage({ searchParams }: PageProps<"/wishes">) {
