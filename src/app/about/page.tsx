@@ -2,7 +2,7 @@ import { Mail } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CodehypeBadge } from "@/components/codehype-badge";
-import { OPERATOR } from "@/lib/legal";
+import { CONTACT_EMAIL, OPERATOR } from "@/lib/legal";
 import { pageMetadata } from "@/lib/seo";
 import { SUPPORT_URL } from "@/lib/site";
 
@@ -11,8 +11,6 @@ export const metadata: Metadata = pageMetadata({
   description: "Why Wishcode exists, who runs it, and how to report issues or send feedback.",
   path: "/about",
 });
-
-const FEEDBACK_EMAIL = "raghavg2705@gmail.com";
 
 export default function AboutPage() {
   return (
@@ -53,13 +51,13 @@ export default function AboutPage() {
           Found a bug, have feedback, or just want to say hi? Email me and I will get back to you.
         </p>
         <a
-          href={`mailto:${FEEDBACK_EMAIL}?subject=${encodeURIComponent("Wishcode feedback")}`}
+          href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Wishcode feedback")}`}
           className="mt-4 inline-flex items-center gap-2 rounded-lg bg-amber px-5 py-2.5 text-label font-semibold text-on-amber hover:bg-amber-hover"
         >
           <Mail className="size-4" aria-hidden />
           Report issues, give feedback or contact me
         </a>
-        <p className="mt-3 text-caption text-ink-muted">{FEEDBACK_EMAIL}</p>
+        <p className="mt-3 text-caption text-ink-muted">{CONTACT_EMAIL}</p>
       </section>
       <div className="mt-10 flex flex-wrap gap-3">
         <Link href="/wishes#compose" className="rounded-lg bg-surface-low px-5 py-2.5 text-label font-medium text-ink hover:bg-surface-container">
