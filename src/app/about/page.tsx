@@ -28,12 +28,12 @@ export default function AboutPage() {
             time.
           </p>
           <p>
-            Building and shipping have become very fast. But great ideas have not. They still sit and wait. But not
-            anymore. Wishcode is here.
+            Building and shipping have become very fast. But great ideas have not. They still sit in notes apps and
+            group chats. Wishcode is where they go instead.
           </p>
           <p>
-            It is simple: post an idea, see how many people in the world want the same thing, and wait until a
-            developer brings it to life.
+            It is simple: post an idea, see how many people in the world want the same thing, and wait for a developer
+            to build it.
           </p>
         </div>
       </section>
