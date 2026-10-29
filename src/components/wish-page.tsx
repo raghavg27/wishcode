@@ -485,7 +485,7 @@ function RemovedHero({ wish }: { wish: WishDetail }) {
       <div className="flex items-start gap-3 rounded-xl border-l-4 border-outline bg-surface-high p-4">
         <Gavel className="mt-0.5 size-5 shrink-0 text-ink-muted" aria-hidden />
         <div>
-          <p className="text-label font-semibold text-ink">This wish was removed.</p>
+          <h1 className="text-label font-semibold text-ink">This wish was removed.</h1>
           <p className="text-label text-ink-muted">Its text is hidden and you cannot me-too it anymore.</p>
         </div>
       </div>
