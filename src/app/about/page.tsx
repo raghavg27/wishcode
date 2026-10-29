@@ -2,8 +2,9 @@ import { Mail } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CodehypeBadge } from "@/components/codehype-badge";
+import { JsonLd } from "@/components/json-ld";
 import { CONTACT_EMAIL, OPERATOR } from "@/lib/legal";
-import { pageMetadata } from "@/lib/seo";
+import { aboutSchema, pageMetadata } from "@/lib/seo";
 import { SUPPORT_URL } from "@/lib/site";
 
 export const metadata: Metadata = pageMetadata({
@@ -15,6 +16,7 @@ export const metadata: Metadata = pageMetadata({
 export default function AboutPage() {
   return (
     <main className="mx-auto w-full max-w-[760px] px-4 py-10 sm:py-16">
+      <JsonLd data={aboutSchema()} />
       <h1 className="font-serif text-display-sm text-ink sm:text-display">About</h1>
       <p className="mt-4 font-serif text-[20px] leading-8 text-ink-muted italic">
         Wishcode is where people post apps they wish existed, and developers build them. It is run by me, {OPERATOR}.

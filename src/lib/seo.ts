@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { OPERATOR } from "@/lib/legal";
 import { developerPath, isGithubAvatar, siteUrl, wishLabel, wishPath } from "@/lib/site";
 import type { DeveloperProfile, WishDetail } from "@/lib/types";
 
@@ -49,12 +50,19 @@ export function jsonLd(data: unknown): string {
 // Structured data (schema.org JSON-LD). URLs are absolute: crawlers read the
 // script without resolving it against the page.
 
+/** The person who runs Wishcode (see /about). */
+const FOUNDER = { "@type": "Person", name: OPERATOR, sameAs: ["https://github.com/raghavg27"] };
+
 export function siteSchema() {
   const url = siteUrl();
   return [
     { "@context": "https://schema.org", "@type": "WebSite", name: SITE_NAME, url, description: SITE_DESCRIPTION },
-    { "@context": "https://schema.org", "@type": "Organization", name: SITE_NAME, url, logo: `${url}/icon-512.png` },
+    { "@context": "https://schema.org", "@type": "Organization", name: SITE_NAME, url, logo: `${url}/icon-512.png`, founder: FOUNDER },
   ];
+}
+
+export function aboutSchema() {
+  return { "@context": "https://schema.org", "@type": "AboutPage", url: `${siteUrl()}/about`, mainEntity: FOUNDER };
 }
 
 export function faqSchema(faq: readonly { question: string; answer: string }[]) {

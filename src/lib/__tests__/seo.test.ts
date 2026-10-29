@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { SITE_CARD, developerSchema, faqSchema, jsonLd, pageMetadata, wishSchema } from "../seo";
+import { SITE_CARD, aboutSchema, developerSchema, faqSchema, jsonLd, pageMetadata, siteSchema, wishSchema } from "../seo";
 import type { DeveloperProfile, DeveloperRef, WishDetail, WishLink } from "../types";
 
 beforeEach(() => vi.stubEnv("SITE_URL", "https://wishcode.example"));
@@ -107,5 +107,13 @@ describe("faqSchema", () => {
       "@type": "FAQPage",
       mainEntity: [{ "@type": "Question", name: "Is it free?", acceptedAnswer: { "@type": "Answer", text: "Yes." } }],
     });
+  });
+});
+
+describe("founder", () => {
+  it("names the founder on the organization and the about page", () => {
+    const founder = { "@type": "Person", name: "Raghav Gupta", sameAs: ["https://github.com/raghavg27"] };
+    expect(siteSchema()[1]).toMatchObject({ "@type": "Organization", founder });
+    expect(aboutSchema()).toMatchObject({ "@type": "AboutPage", url: "https://wishcode.example/about", mainEntity: founder });
   });
 });
