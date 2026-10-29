@@ -89,7 +89,7 @@ ${principles}
 
 ## Privacy
 
-Wishers have no account: their device gets a random token, and Wishcode stores only its hash. Wishcode does not store IP addresses. An email address is optional and used only to say when a wish is built. Developers sign in with GitHub.
+Wishers have no account: their device gets a random token, and Wishcode stores only its hash. Wishcode does not store raw IP addresses; it counts actions per network with a salted hash of the IP, and those counters expire within a day. An email address is optional and used only to say when a wish is built. Developers sign in with GitHub.
 
 ## URLs
 
