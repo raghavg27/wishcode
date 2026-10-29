@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: PageProps<"/d/[handle]">): Pr
   const profile = await load(params).catch(() => null);
   if (!profile) return { title: "Developer not found", robots: { index: false } };
   return pageMetadata({
-    title: `@${profile.handle}`,
+    title: `@${profile.handle}, app builder`,
     description: `@${profile.handle} on Wishcode: ${profile.stats.links} live links posted, ${profile.stats.building} wishes being built.`,
     path: developerPath(profile.handle),
   });
