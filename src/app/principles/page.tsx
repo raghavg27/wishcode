@@ -6,7 +6,7 @@ import { PRINCIPLES } from "@/lib/principles";
 import { faqSchema, pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
-  title: "How Wishcode works",
+  title: "How it works",
   description: "How Wishcode works: anyone can wish, developers build, and the people who wanted it decide if it works.",
   path: "/principles",
 });

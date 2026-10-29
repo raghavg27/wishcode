@@ -7,7 +7,7 @@ import { pageMetadata } from "@/lib/seo";
 import { SUPPORT_URL } from "@/lib/site";
 
 export const metadata: Metadata = pageMetadata({
-  title: "About Wishcode",
+  title: "About and contact",
   description: "Why Wishcode exists, who runs it, and how to report issues or send feedback.",
   path: "/about",
 });
