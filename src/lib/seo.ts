@@ -27,8 +27,8 @@ type PageMeta = {
 };
 
 export function pageMetadata({ title, description, path, image }: PageMeta): Metadata {
-  const images = image ? [{ url: image, width: 1200, height: 630 }] : [SITE_CARD];
   const ogTitle = title ?? DEFAULT_TITLE;
+  const images = image ? [{ url: image, width: 1200, height: 630, alt: ogTitle }] : [SITE_CARD];
   return {
     ...(title ? { title } : {}),
     description,
