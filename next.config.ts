@@ -47,7 +47,7 @@ const nextConfig: NextConfig = {
       source: "/",
       has: [{ type: "query" as const, key }],
       destination: "/wishes",
-      permanent: false,
+      permanent: true,
     }));
   },
   async headers() {
