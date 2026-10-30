@@ -1,4 +1,4 @@
-import { Code, Coffee, Flag, LogOut, Plus } from "lucide-react";
+import { Code, Coffee, Flag, Plus } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 import { signOut } from "@/app/actions";
@@ -6,6 +6,7 @@ import { HeaderShell } from "@/components/header-shell";
 import { LogoMark } from "@/components/icons";
 import { LiveVisitors } from "@/components/live-visitors";
 import { NavLinks, NavLinksView } from "@/components/nav-links";
+import { SignOutButton } from "@/components/sign-out-button";
 import { Avatar } from "@/components/ui";
 import { getViewer } from "@/lib/auth";
 import { env } from "@/lib/env";
@@ -46,14 +47,7 @@ async function HeaderAuth() {
         <span className="hidden lg:inline">@{developer.handle}</span>
       </Link>
       <form action={signOut}>
-        <button
-          type="submit"
-          aria-label="Sign out"
-          title="Sign out"
-          className="flex size-8 items-center justify-center rounded-full text-outline hover:bg-surface-low hover:text-ink"
-        >
-          <LogOut className="size-4" />
-        </button>
+        <SignOutButton />
       </form>
     </div>
   );
