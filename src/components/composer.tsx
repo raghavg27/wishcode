@@ -3,7 +3,7 @@
 import clsx from "clsx";
 import { ArrowRight, Clock, CircleAlert, Loader2, ShieldCheck } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import { postWish, setMetoo } from "@/app/actions";
 import { DuplicateModal } from "@/components/duplicate-modal";
 import { primeMetoo } from "@/components/metoo";
@@ -29,6 +29,23 @@ export function Composer() {
   const [limit, setLimit] = useState<{ resetAt: string; label: string } | null>(null);
   const [similar, setSimilar] = useState<SimilarWish[] | null>(null);
   const { ref: turnstileRef, getToken, reset: resetTurnstile } = useTurnstile(POST_WISH_ACTION);
+  // Set when a post or a me-too sends the visitor to a wish page. Next.js keeps
+  // this page alive (hidden) meanwhile, so going back shows the old state and feed.
+  const leftForWish = useRef(false);
+
+  // Hidden after leaving: free the Post button.
+  useLayoutEffect(() => {
+    return () => {
+      if (leftForWish.current) setBusy(null);
+    };
+  }, []);
+
+  // Shown again after leaving: fetch the feed so it has the new wish and counts.
+  useEffect(() => {
+    if (!leftForWish.current) return;
+    leftForWish.current = false;
+    router.refresh();
+  }, [router]);
 
   // Restore an unsent draft (e.g. after hitting the daily limit).
   useEffect(() => {
@@ -77,6 +94,7 @@ export function Composer() {
         setText("");
         setSimilar(null);
         track("wish_posted", { forced: force });
+        leftForWish.current = true;
         router.push(`${wishPath(result.id)}?posted=1`);
         return;
       }
@@ -107,6 +125,7 @@ export function Composer() {
         writeDraft("");
         setText("");
         setSimilar(null);
+        leftForWish.current = true;
         router.push(wishPath(wish.id));
         return;
       }

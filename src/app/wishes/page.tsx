@@ -58,8 +58,9 @@ async function Feed({ searchParams }: Pick<PageProps<"/wishes">, "searchParams">
   return (
     <>
       <LedgerFilters status={status} sort={sort} counts={stats?.counts} />
+      {/* The ids are in the key so a refresh that brings new wishes replaces the list. */}
       <LedgerList
-        key={`${status}:${sort}:${cursor}`}
+        key={`${status}:${sort}:${cursor}:${page.items.map((w) => w.id).join(",")}`}
         status={status}
         sort={sort}
         initialItems={withLiveCounts(page.items, live)}
