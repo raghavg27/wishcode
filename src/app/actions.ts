@@ -414,7 +414,8 @@ export async function report(wishId: number, linkId: number | null, reason: Repo
     !isWishId(wishId) ||
     (linkId !== null && !isWishId(linkId)) ||
     !isReportReason(reason) ||
-    (reason === "malicious_link" && linkId === null)
+    (reason === "malicious_link" && linkId === null) ||
+    (reason === "mistake" && linkId !== null)
   ) {
     return { ok: false, code: "invalid", message: "Something is wrong with that request. Please try again." };
   }
