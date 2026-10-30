@@ -37,16 +37,8 @@ describe("celebrate", () => {
     expect(right.origin).toEqual({ x: 1, y: 1 });
     expect(left.angle).toBeLessThan(90);
     expect(right.angle).toBeGreaterThan(90);
-    expect(left.particleCount + right.particleCount).toBe(80);
-    expect(left.disableForReducedMotion).toBe(true);
-  });
-
-  it("fires a bigger burst when asked", async () => {
-    stubMotion(false);
-    const { celebrate } = await import("../celebrate");
-    await celebrate(120);
-    const [left, right] = confetti.mock.calls.map(([opts]) => opts);
     expect(left.particleCount + right.particleCount).toBe(240);
+    expect(left.disableForReducedMotion).toBe(true);
   });
 
   it("does nothing on the server", async () => {
