@@ -35,7 +35,7 @@ export function PostedMoment({
 
   useEffect(() => {
     track("share_moment_shown", { card: "wish" });
-    void celebrate();
+    void celebrate(120);
   }, []);
 
   function close() {

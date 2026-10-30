@@ -41,6 +41,14 @@ describe("celebrate", () => {
     expect(left.disableForReducedMotion).toBe(true);
   });
 
+  it("fires a bigger burst when asked", async () => {
+    stubMotion(false);
+    const { celebrate } = await import("../celebrate");
+    await celebrate(120);
+    const [left, right] = confetti.mock.calls.map(([opts]) => opts);
+    expect(left.particleCount + right.particleCount).toBe(240);
+  });
+
   it("does nothing on the server", async () => {
     const { celebrate } = await import("../celebrate");
     await celebrate();
