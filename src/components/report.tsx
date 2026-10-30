@@ -57,7 +57,7 @@ export function ReportButton({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className={clsx("inline-flex items-center gap-1.5 text-label-sm text-ink-muted hover:text-ink", className)}
+        className={clsx("inline-flex cursor-pointer items-center gap-1.5 text-label-sm text-ink-muted hover:text-ink", className)}
       >
         {children ?? (
           <>

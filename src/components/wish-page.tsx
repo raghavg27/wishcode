@@ -529,7 +529,7 @@ function WishRecord({ wish }: { wish: WishDetail }) {
       {!wish.removed && (
         <div className="mt-5 border-t border-hairline pt-4">
           <ReportButton wishId={wish.id}>
-            <Flag className="size-3.5" aria-hidden /> Report this wish
+            <Flag className="size-3.5" aria-hidden /> Report / Delete this wish
           </ReportButton>
         </div>
       )}
