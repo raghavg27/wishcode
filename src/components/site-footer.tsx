@@ -33,6 +33,9 @@ export function SiteFooter() {
             <Link href="/principles" className="hover:text-ink">
               Principles
             </Link>
+            <Link href="/features" className="hover:text-ink">
+              Features
+            </Link>
             <Link href="/about" className="hover:text-ink">
               About
             </Link>
