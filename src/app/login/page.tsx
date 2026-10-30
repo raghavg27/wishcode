@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { signInWithGithub } from "@/app/auth/actions";
-import { GithubIcon } from "@/components/icons";
+import { GithubSignInButton } from "@/components/github-sign-in-button";
 import { Avatar, Skeleton, buttonStyles } from "@/components/ui";
 import { getViewer } from "@/lib/auth";
 import { DISCLAIMER } from "@/lib/config";
@@ -104,9 +104,7 @@ async function LoginAction({ searchParams }: Pick<PageProps<"/login">, "searchPa
         </p>
       )}
       <input type="hidden" name="next" value={next} />
-      <button type="submit" className={`${buttonStyles.dark} w-full rounded-xl py-4 text-[16px]`}>
-        <GithubIcon className="size-5" /> Continue with GitHub <ArrowRight className="size-4" aria-hidden />
-      </button>
+      <GithubSignInButton />
     </form>
   );
 }
