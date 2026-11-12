@@ -221,14 +221,14 @@ export function NightSky({ className }: { className?: string }) {
       sizeObserver.observe(host);
 
       // Only animate while the sky is on screen and the tab is visible.
+      let onScreen = true;
       const viewObserver = new IntersectionObserver(([entry]) => {
-        visible = entry.isIntersecting && !document.hidden;
-        if (visible) start();
-        else stop();
+        onScreen = entry.isIntersecting;
+        onVisibility();
       });
       viewObserver.observe(host);
       function onVisibility() {
-        visible = !document.hidden;
+        visible = onScreen && !document.hidden;
         if (visible) start();
         else stop();
       }
