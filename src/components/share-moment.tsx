@@ -66,9 +66,10 @@ export function CardPreview({ src }: { src: string }) {
   const ref = useRef<HTMLImageElement>(null);
   const [state, setState] = useState<"loading" | "loaded" | "failed">("loading");
 
-  // A cached image can finish loading before hydration attaches onLoad.
+  // A cached image can finish loading, or fail, before hydration attaches onLoad and onError.
   useEffect(() => {
-    if (ref.current?.complete && ref.current.naturalWidth > 0) setState("loaded");
+    const img = ref.current;
+    if (img?.complete) setState(img.naturalWidth > 0 ? "loaded" : "failed");
   }, []);
 
   return (
