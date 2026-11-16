@@ -177,6 +177,8 @@ Limits and behavior:
 
 - Gmail sends to approximately 500 recipients each day. Google Workspace sends to approximately 2,000. If a send fails, the server writes `[notify] send failed` with the subscription ID to the log. The server does not try again.
 - Email links open `/e/verdict` (to confirm a Yes or No vote) and `/e/unsubscribe` (to stop emails for one wish, or for all wishes with `&all=1`).
+- If an address stopped all emails, `/e/unsubscribe` shows a button that turns the emails on again. Only the link in an email opens this page for the address. The subscription form on a wish page cannot turn the emails on again.
+- If a second browser enters an address that has an active subscription to the wish, the subscription stays with the first browser.
 - A link alone changes nothing, because mail scanners open all links. The user must click the button on the page.
 - One-click unsubscribe from mail clients (`List-Unsubscribe-Post`) sends a POST to `/e/unsubscribe`. Then `src/proxy.ts` sends it to `/api/unsubscribe`.
 
@@ -316,6 +318,8 @@ The wisher and the me-too visitors vote on each link. A trigger calculates the l
 
 Only live links (links that are not flagged) count for the status. The `wishes.verified` column controls the badge: **Fulfilled ✓** or **Fulfilled · unverified**. If a visitor removes a me-too, the database deletes the votes from that device and stops its emails.
 
+If a developer removes a flagged link and posts a link on the same wish again, the new link starts with the votes of the flagged link. Thus, the new link is also flagged until the voters change their votes.
+
 ### Rate limits
 
 Each limit is an atomic fixed-window counter. It is in the same transaction as the write. If a write goes over a limit, the full transaction rolls back. Daily windows start again at midnight UTC.
@@ -351,7 +355,8 @@ A network is a salted hash of the IP address. Offices, schools and mobile networ
 
 ### Moderation
 
-- Each device can report a wish or a live link one time.
+- Each device can have one report for each wish and one report for each live link. If an admin dismisses the report, the device can report the item again.
+- If a developer removes a link, the database closes the open reports on that link.
 - Reports do not hide content automatically. They go into a queue at `/admin`. The most reported items are at the top.
 - An admin removes the wish or the link, or dismisses its reports. Admins also see a remove control on each wish and each link.
 - Admin rights come from `ADMIN_GITHUB_IDS` at sign-in. The list uses GitHub IDs, not handles, because another person can register a handle after a rename. Each admin function examines `developers.is_admin` again. For all other users, `/admin` returns 404.
@@ -413,6 +418,7 @@ All changes to data use Server Actions in [`src/app/actions.ts`](src/app/actions
 | `moderate` | Removes content or dismisses reports (admins only). |
 | `emailVerdict` | Records a vote from an email link. |
 | `unsubscribe` | Stops emails from an email link. |
+| `allowEmails` | Turns emails on again from an email link. |
 
 ### Public endpoints
 
