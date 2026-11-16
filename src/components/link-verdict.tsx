@@ -33,7 +33,7 @@ type Props = VerdictState & {
 
 /** A link's verdict chip, plus Yes / No voting for the wisher and me-too-ers. */
 export function LinkVerdictPanel({ wishId, linkId, isWisher, metoo, wisherShare, ...initial }: Props) {
-  const { active } = useMetoo(wishId, metoo);
+  const { active, pending: metooPending } = useMetoo(wishId, metoo);
   const eligible = isWisher || active;
   const [local, setLocal] = useState<VerdictState | null>(null);
   const [pending, startTransition] = useTransition();
@@ -41,8 +41,9 @@ export function LinkVerdictPanel({ wishId, linkId, isWisher, metoo, wisherShare,
   const [sharing, setSharing] = useState(false);
   const state = local ?? initial;
 
-  // Taking back a me-too deletes this viewer's votes on the server.
-  if (active !== wasActive) {
+  // Taking back a me-too deletes this viewer's votes on the server. Wait for
+  // the server's answer: a removal that fails leaves the votes in place.
+  if (!metooPending && active !== wasActive) {
     setWasActive(active);
     if (!active && !isWisher && state.mine !== null) {
       const worksCount = state.worksCount - (state.mine ? 1 : 0);

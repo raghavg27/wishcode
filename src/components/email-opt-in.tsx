@@ -62,15 +62,16 @@ const SUBSCRIBED_TEXT = "We will email you when someone builds this.";
 
 /** Under the me-too control: a small link that expands into the email field. */
 export function EmailOptIn({ wishId, isWisher, subscribed: initial, metoo, className }: Props & { className?: string }) {
-  const { active } = useMetoo(wishId, metoo);
+  const { active, pending } = useMetoo(wishId, metoo);
   const eligible = isWisher || active;
   const isSubscribed = useSubscribed(wishId, initial);
   const [open, setOpen] = useState(false);
 
-  // Taking back a me-too ends a me-too-er's subscription on the server.
+  // Taking back a me-too ends a me-too-er's subscription on the server. Wait
+  // for the server's answer: a removal that fails leaves the subscription.
   useEffect(() => {
-    if (!eligible) setSubscribed(wishId, false);
-  }, [eligible, wishId]);
+    if (!eligible && !pending) setSubscribed(wishId, false);
+  }, [eligible, pending, wishId]);
 
   if (!eligible) return null;
   if (isSubscribed) {
