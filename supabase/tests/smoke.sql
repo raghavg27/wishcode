@@ -36,7 +36,8 @@ begin
   assert (select metoo_count from public.wishes where id = w1) = 0, 'no auto metoo';
   assert (select status from public.wishes where id = w1) = 'open';
 
-  -- Double submit is idempotent.
+  -- Double submit is idempotent. (Two submits at the same moment need two
+  -- sessions; create_wish locks the device row for that case.)
   r := public.create_wish(tok1, 'ip1', 'a menu bar app that mutes my mic when my dog barks', null, 5, 50);
   assert (r->>'id')::bigint = w1 and (r->>'existing')::boolean, 'idempotent create';
 
@@ -178,6 +179,7 @@ declare
   w_open  bigint;
   l1      bigint;
   l2      bigint;
+  l3      bigint;
   sub     bigint;
   r       jsonb;
   failed  boolean;
@@ -306,6 +308,13 @@ begin
   assert failed, 'subscribe rate limit';
   assert (public.viewer_wish_state(m[1], w)->>'subscribed')::boolean, 'viewer subscribed';
 
+  -- An active subscription stays with its device when another eligible
+  -- device enters the same address.
+  r := public.subscribe(m[2], 'ipm2', w, 'm1@example.com', 5, 100);
+  assert (r->>'subscribed')::boolean, 'second device gets the same answer';
+  assert (select device_id = (select id from public.devices where token_hash = m[1])
+          from public.subscriptions where email = 'm1@example.com'), 'active subscription not taken over';
+
   -- Notification recipients: wisher flag, unsubscribe, suppression.
   r := public.link_notification(l2);
   assert jsonb_array_length(r->'recipients') = 3 and r->>'handle' = 'dave', 'recipients';
@@ -329,6 +338,18 @@ begin
      and r::text !~ '"email"', 'subscription context';
   assert public.subscription_context(-1) is null, 'unknown subscription';
 
+  -- The signed link in an email turns email on again. The wish subscription
+  -- stays off.
+  r := public.allow_emails(sub);
+  assert (r->>'wish_id')::bigint = w and r::text !~ '"email"', 'allow emails';
+  perform public.allow_emails(sub);
+  r := public.subscription_context(sub);
+  assert not (r->>'suppressed')::boolean and (r->>'unsubscribed')::boolean, 'email on, wish subscription off';
+  failed := false;
+  begin perform public.allow_emails(-1);
+  exception when others then failed := sqlerrm = 'not_found'; end;
+  assert failed, 'allow emails: unknown subscription';
+
   -- Removing a me-too ends that device's subscription.
   perform public.set_metoo(m[1], 'ipm', w, false, 200, 2000);
   assert not exists (select 1 from public.subscriptions where email like 'm1%' and unsubscribed_at is null),
@@ -351,6 +372,17 @@ begin
   -- Deleted links have no recipients.
   perform public.remove_link(dev_d, l2);
   assert jsonb_array_length(public.link_notification(l2)->'recipients') = 0, 'deleted link: no recipients';
+
+  -- A flag stays with the developer: a link posted again starts with the
+  -- votes of the flagged link, and the voters can change them.
+  l3 := (public.create_link(dev_d, w, 'https://plants-again.app', 'Waters plants again', null, 20)->>'id')::bigint;
+  assert (select verdict = 'flagged' and wisher_verdict = false from public.links where id = l3), 'flag follows the developer';
+  perform public.set_verdict(wisher, l3, true);
+  assert (select verdict from public.links where id = l3) = 'verified', 'wisher can lift the flag';
+  -- A link that was not flagged leaves nothing behind.
+  perform public.remove_link(dev_d, l3);
+  l3 := (public.create_link(dev_d, w, 'https://plants-third.app', 'Waters plants once more', null, 20)->>'id')::bigint;
+  assert (select verdict = 'unverified' and wisher_verdict is null from public.links where id = l3), 'no votes carried from a link that was not flagged';
 
   -- No read RPC exposes an email address.
   assert public.get_wish(w)::text !~ '"email"' and public.viewer_wish_state(wisher, w)::text !~ '"email"'
@@ -441,8 +473,17 @@ begin
   perform public.set_verdict(wisher, l3, true);
   assert public.claim_verified_notification(l3) is null, 'suppressed: nothing';
 
+  -- The email's link turns the developer's email on again.
+  r := public.allow_developer_email(l1);
+  assert (r->>'wish_id')::bigint = w and r::text !~ '"email"', 'allow developer email';
+  perform public.allow_developer_email(l1);
+  assert not (public.developer_email_context(l1)->>'suppressed')::boolean, 'context: not suppressed';
+  failed := false;
+  begin perform public.allow_developer_email(l2);
+  exception when others then failed := sqlerrm = 'not_found'; end;
+  assert failed, 'allow: no address';
+
   -- Deleted links send nothing.
-  delete from public.email_suppressions where email = 'erin@example.com';
   update public.links set verified_notified_at = null where id = l3;
   perform public.remove_link(dev_e, l3);
   assert public.claim_verified_notification(l3) is null, 'deleted link: nothing';
@@ -520,6 +561,12 @@ begin
   assert (select deleted_at from public.links where id = l) is null, 'dismiss keeps the link';
   assert jsonb_array_length(public.admin_report_queue(mod, 50)) = 2, 'link reports resolved';
 
+  -- A report after a dismissal opens the report again with the new reason.
+  perform public.report(rep[1], 'ipq', w, l, 'spam', 5, 50);
+  assert (select reason = 'spam' and resolved_at is null and resolved_by is null
+          from public.reports where link_id = l), 'dismissed report opens again';
+  assert jsonb_array_length(public.admin_report_queue(mod, 50)) = 3, 'link is in the queue again';
+
   -- Removing a wish resolves all its reports and returns its developers.
   r := public.admin_resolve_reports(mod, w, null, true);
   assert (public.get_wish(w)->>'removed')::boolean, 'wish removed';
@@ -538,6 +585,12 @@ begin
   assert r->'handles' = '["gina"]'::jsonb;
   q := public.admin_report_queue(mod, 50);
   assert jsonb_array_length(q) = 1 and q->0->'link' = 'null'::jsonb, 'only the wish report on w2 is left';
+
+  -- A developer who removes a reported link closes its reports.
+  l := (public.create_link(dev_g, w2, 'https://mute-again.app', 'Mute tabs again', null, 20)->>'id')::bigint;
+  perform public.report(rep[2], 'ipq', w2, l, 'malicious_link', 5, 50);
+  perform public.remove_link(dev_g, l);
+  assert not exists (select 1 from public.reports where link_id = l and resolved_at is null), 'removed link: reports closed';
 
   raise notice 'reports: all assertions passed';
 end;
