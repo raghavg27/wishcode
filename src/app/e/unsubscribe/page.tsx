@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { stopDeveloperEmails, unsubscribe } from "@/app/actions";
-import { UnsubscribeForm } from "@/components/email-forms";
+import { allowEmails, stopDeveloperEmails, unsubscribe, type AllowEmailsResult } from "@/app/actions";
+import { AllowEmailsForm, UnsubscribeForm } from "@/components/email-forms";
 import { EmailNotice, EmailShell, EmailSkeleton, InvalidEmailLink, WishQuote } from "@/components/email-landing";
 import { verifyEmailToken, verifyLinkToken } from "@/lib/email-token";
 import { getDeveloperEmailContext, getSubscriptionContext, getWish } from "@/lib/data";
@@ -39,15 +39,9 @@ async function UnsubscribeView({ searchParams }: Pick<PageProps<"/e/unsubscribe"
   if (!context) return <InvalidEmailLink />;
 
   const href = wishPath(context.wish_id);
-  if (all ? context.suppressed : context.unsubscribed || context.suppressed) {
-    return (
-      <EmailNotice
-        title={context.suppressed ? "Wishcode emails are already off" : "Emails for this wish are already off"}
-        body="Nothing else to do here."
-        href={href}
-        cta="See the wish"
-      />
-    );
+  if (context.suppressed) return <EmailsOff action={allowEmails.bind(null, token, false)} wishHref={href} />;
+  if (!all && context.unsubscribed) {
+    return <EmailNotice title="Emails for this wish are already off" body="Nothing else to do here." href={href} cta="See the wish" />;
   }
 
   const wish = all ? null : await getWish(context.wish_id);
@@ -65,6 +59,20 @@ async function UnsubscribeView({ searchParams }: Pick<PageProps<"/e/unsubscribe"
   );
 }
 
+// The address stopped all Wishcode email. The token proves that the visitor
+// owns the inbox, so this page is the one place that can turn email on again.
+function EmailsOff({ action, wishHref }: { action: () => Promise<AllowEmailsResult>; wishHref: string }) {
+  return (
+    <>
+      <h1 className="font-serif text-display-sm text-ink">Wishcode emails are off</h1>
+      <p className="mt-3 text-[15px] leading-6 text-ink-muted">
+        You do not get emails about any wish. You can turn Wishcode emails on again.
+      </p>
+      <AllowEmailsForm action={action} wishHref={wishHref} />
+    </>
+  );
+}
+
 async function DeveloperStopView({ token }: { token: string }) {
   const linkId = verifyLinkToken(token, env.emailTokenSecret);
   if (!linkId) return <InvalidEmailLink />;
@@ -72,9 +80,7 @@ async function DeveloperStopView({ token }: { token: string }) {
   if (!context) return <InvalidEmailLink />;
 
   const href = wishPath(context.wish_id);
-  if (context.suppressed) {
-    return <EmailNotice title="Wishcode emails are already off" body="Nothing else to do here." href={href} cta="See the wish" />;
-  }
+  if (context.suppressed) return <EmailsOff action={allowEmails.bind(null, token, true)} wishHref={href} />;
   return (
     <>
       <h1 className="font-serif text-display-sm text-ink">Stop all Wishcode emails?</h1>

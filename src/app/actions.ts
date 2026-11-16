@@ -402,6 +402,27 @@ export async function stopDeveloperEmails(token: string): Promise<UnsubscribeRes
   }
 }
 
+export type AllowEmailsResult = { ok: true } | ActionError;
+
+/**
+ * Turns Wishcode email on again for the address behind an email link: a
+ * subscription token, or (developer) a link token. Only the email carries
+ * the token, so only the owner of the inbox can do this.
+ */
+export async function allowEmails(token: string, developer: boolean): Promise<AllowEmailsResult> {
+  const id = developer ? verifyLinkToken(token, env.emailTokenSecret) : verifyEmailToken(token, env.emailTokenSecret);
+  if (!id) return INVALID_TOKEN;
+  try {
+    const { error } = developer
+      ? await db().rpc("allow_developer_email", { p_link_id: id })
+      : await db().rpc("allow_emails", { p_subscription_id: id });
+    if (error) return error.message === "not_found" ? INVALID_TOKEN : toActionError(error, "unsubscribe");
+    return { ok: true };
+  } catch (err) {
+    return toActionError(err, "unsubscribe");
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Reports and moderation
 // ---------------------------------------------------------------------------

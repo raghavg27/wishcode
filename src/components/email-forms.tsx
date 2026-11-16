@@ -3,7 +3,7 @@
 import { Check, X } from "lucide-react";
 import Link from "next/link";
 import { useActionState, useState } from "react";
-import type { UnsubscribeResult, VerdictResult } from "@/app/actions";
+import type { AllowEmailsResult, UnsubscribeResult, VerdictResult } from "@/app/actions";
 import { ShareMoment } from "@/components/share-moment";
 import { buttonStyles } from "@/components/ui";
 import type { ShareMomentProps } from "@/lib/share-copy";
@@ -87,6 +87,34 @@ export function UnsubscribeForm({
       <button type="submit" disabled={pending} className={`${buttonStyles.dark} px-6 py-3`}>
         {all ? "Stop all Wishcode emails" : "Stop emails for this wish"}
       </button>
+    </form>
+  );
+}
+
+/** Shown when the address has stopped all Wishcode email. */
+export function AllowEmailsForm({ action, wishHref }: { action: () => Promise<AllowEmailsResult>; wishHref: string }) {
+  const [result, submit, pending] = useActionState<AllowEmailsResult | null>(action, null);
+
+  if (result?.ok) {
+    return (
+      <Outcome
+        title="Wishcode emails are on again."
+        body="To get emails about a wish, sign up again on the page of the wish."
+        wishHref={wishHref}
+      />
+    );
+  }
+  return (
+    <form action={submit} className="mt-8">
+      {result && !result.ok && <p className="mb-4 text-label text-danger">{result.message}</p>}
+      <div className="flex flex-wrap items-center gap-3">
+        <button type="submit" disabled={pending} className={`${buttonStyles.dark} px-6 py-3`}>
+          Turn Wishcode emails on again
+        </button>
+        <Link href={wishHref} className={buttonStyles.quiet}>
+          See the wish
+        </Link>
+      </div>
     </form>
   );
 }
